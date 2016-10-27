@@ -22,6 +22,7 @@ void Model::Update()
 const XMMATRIX & Model::GetWorldMat()
 {
 	// TODO: insert return statement here
+	return XMMATRIX();
 }
 
 void Model::AddChild(Model &)
@@ -40,4 +41,5 @@ unsigned int Model::GetChildCount() const
 Model & Model::GetChild(unsigned int) const
 {
 	// TODO: insert return statement here
+	return Model();
 }

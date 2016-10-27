@@ -14,6 +14,15 @@
 #include <iostream>
 #include <ctime>
 #include <windows.h>
+
+
+
+#define _WIDTH	500
+#define _HEIGHT	500
+
+
+
+
 ///////////////////////////////////////////////////////////////////
 //						Windows App Setup
 ///////////////////////////////////////////////////////////////////
@@ -43,6 +52,30 @@ public:
 
 DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 {
+	app = hinst;
+	wp = proc;
+	//make our window object
+	WNDCLASSEX wclass;
+	//zero out for safety
+	ZeroMemory(&wclass, sizeof(wclass));
+	//set properties aka fill out data
+	wclass.cbSize = sizeof(WNDCLASSEX);
+	wclass.lpfnWndProc = wp;
+	wclass.lpszClassName = L"DirectXApplication";
+	wclass.hInstance = app;
+	wclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wclass.hbrBackground = (HBRUSH)(COLOR_WINDOWFRAME);
+	//register window
+	RegisterClassEx(&wclass);
+	//define window size and attributes
+	RECT window_size = { 0, 0, _WIDTH, _HEIGHT };
+	AdjustWindowRect(&window_size, WS_OVERLAPPEDWINDOW, false);
+	HWindow = CreateWindow(L"DirectXApplication", L"FAST_RTA", WS_OVERLAPPEDWINDOW & ~(WS_THICKFRAME | WS_MAXIMIZEBOX),
+		CW_USEDEFAULT, CW_USEDEFAULT, window_size.right - window_size.left, window_size.bottom - window_size.top,
+		NULL, NULL, app, this);
+	ShowWindow(HWindow, SW_SHOW);
+
+	//once we have our window, initialize any objects we need
 
 }
 

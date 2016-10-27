@@ -1,3 +1,5 @@
-﻿  main.cpp
+﻿  Model.cpp
+c:\users\dave\desktop\ppv_fast\fast_rta_solution\fast_rta_solution\model.cpp(44): warning C4172: returning address of local variable or temporary
+c:\users\dave\desktop\ppv_fast\fast_rta_solution\fast_rta_solution\model.cpp(25): warning C4172: returning address of local variable or temporary
   FAST_RTA_SOLUTION.vcxproj -> C:\Users\Dave\Desktop\PPV_FAST\FAST_RTA_SOLUTION\Debug\FAST_RTA_SOLUTION.exe
   FAST_RTA_SOLUTION.vcxproj -> C:\Users\Dave\Desktop\PPV_FAST\FAST_RTA_SOLUTION\Debug\FAST_RTA_SOLUTION.pdb (Full PDB)

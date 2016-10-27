@@ -30,14 +30,17 @@ void Light::SetIdentity(XMFLOAT4 & _vec)
 XMFLOAT4 const & Light::GetSpacial() const
 {
 	// TODO: insert return statement here
+	return XMFLOAT4();
 }
 
 XMFLOAT4 const & Light::GetColor() const
 {
 	// TODO: insert return statement here
+	return XMFLOAT4();
 }
 
 XMFLOAT4 const & Light::GetIdentity() const
 {
 	// TODO: insert return statement here
+	return XMFLOAT4();
 }

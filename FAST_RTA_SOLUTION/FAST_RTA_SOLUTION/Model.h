@@ -20,7 +20,8 @@ public:
 	void AddChild(Model&);
 	void RemoveChild(Model&);
 	unsigned int GetChildCount() const;
+	//giving compile errors TODO
 	Model& GetChild(unsigned int) const;
-	Model& const GetChild(unsigned int) const;
+	//Model& const GetChild(unsigned int) const;
 };
 

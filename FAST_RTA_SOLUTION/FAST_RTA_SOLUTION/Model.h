@@ -2,6 +2,7 @@
 #include <vector>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include "Mesh.h"
 using namespace DirectX;
 class Model
 {
@@ -9,8 +10,8 @@ private:
 	std::vector<Model*> m_children;
 	XMMATRIX m_local;
 	XMMATRIX m_world;
+	Mesh* m_Mesh;
 	void Update(XMMATRIX& _matrix);
-
 public:
 
 	Model();

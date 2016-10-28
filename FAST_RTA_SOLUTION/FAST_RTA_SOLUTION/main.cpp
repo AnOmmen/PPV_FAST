@@ -14,11 +14,12 @@
 #include <iostream>
 #include <ctime>
 #include <windows.h>
+#include "ResourceManager.h"
 
 
 
-#define _WIDTH	500
-#define _HEIGHT	500
+#define _WIDTH	1000
+#define _HEIGHT	750
 
 
 
@@ -31,7 +32,7 @@ class DEMO_APP
 	HINSTANCE app;
 	WNDPROC wp;
 	HWND HWindow;
-
+	ResourceManager* manager;
 public:
 	DEMO_APP(HINSTANCE h, WNDPROC wp);
 
@@ -76,7 +77,8 @@ DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 	ShowWindow(HWindow, SW_SHOW);
 
 	//once we have our window, initialize any objects we need
-
+	manager = new ResourceManager();
+	manager->Init(_WIDTH, _HEIGHT, false, HWindow, false, 1.0, .01);
 }
 
 
@@ -92,7 +94,14 @@ DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 
 bool DEMO_APP::Loop()
 {
+	//input
 
+
+	//update
+	manager->Update();
+
+	//render every 1/30s if we handle fps
+	manager->Render();
 	return true;
 }
 

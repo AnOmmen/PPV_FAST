@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Helper Files">
+      <UniqueIdentifier>{662eee0d-65eb-46a2-8ef6-887d758c011b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,5 +65,21 @@
     <ClInclude Include="DeviceResources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PossibleUsefulFuncs.h">
+      <Filter>Helper Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LightCalc.hlsli">
+      <Filter>Helper Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PixelShaderNorms.hlsl">
+      <Filter>Helper Files</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShaderNorms.hlsl">
+      <Filter>Helper Files</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

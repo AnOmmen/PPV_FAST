@@ -6,16 +6,26 @@
 #define FASTFBXLOADER_API __declspec(dllimport)
 #endif
 
-#include <vector>
-
-struct XMFLOAT3;
-
+#include "FBX_SDK_Includes_Libs\include\fbxsdk.h"
+#include <string>
 
 namespace FASTFBXLoader
 {
 	class FBXLoader
 	{
+		FbxManager *m_fbxManager;
+		FbxScene *m_fbxScene;
+		std::string m_inputPath;
+		std::string m_outputPath;
+		char m_processMasks;
+
 	public:
-		
+		FBXLoader();
+		bool Init();
+		bool Load(const char *_inputPath, const char *_outputPath);
+
+	private:
+
+
 	};
 }

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FASTFBXLoader.h" />
+    <ClInclude Include="FASTFBXLoaderProcessMasks.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FASTFBXLoader.cpp" />

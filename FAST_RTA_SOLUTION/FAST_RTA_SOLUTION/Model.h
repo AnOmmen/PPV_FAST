@@ -1,9 +1,6 @@
 #pragma once
-#include <vector>
-#include <d3d11.h>
-#include <DirectXMath.h>
+
 #include "Mesh.h"
-using namespace DirectX;
 class Model
 {
 private:
@@ -12,9 +9,10 @@ private:
 	XMMATRIX m_world;
 	Mesh* m_Mesh;
 	void Update(XMMATRIX& _matrix);
+	Model();
 public:
 
-	Model();
+	Model(ID3D11Device* device);
 	~Model();
 	void Update();
 	const XMMATRIX& GetWorldMat();
@@ -24,5 +22,6 @@ public:
 	//giving compile errors TODO
 	Model& GetChild(unsigned int) const;
 	//Model& const GetChild(unsigned int) const;
+	unsigned short GetNumMeshIndeces();
 };
 

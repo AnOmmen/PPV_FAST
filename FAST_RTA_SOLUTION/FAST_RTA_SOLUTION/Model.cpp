@@ -4,10 +4,12 @@
 
 void Model::Update(XMMATRIX & _matrix)
 {
+
 }
 
-Model::Model()
+Model::Model(ID3D11Device* device)
 {
+	m_Mesh = new Mesh(device);
 }
 
 
@@ -25,11 +27,11 @@ const XMMATRIX & Model::GetWorldMat()
 	return XMMATRIX();
 }
 
-void Model::AddChild(Model &)
+void Model::AddChild(Model &child)
 {
 }
 
-void Model::RemoveChild(Model &)
+void Model::RemoveChild(Model &child)
 {
 }
 
@@ -41,5 +43,12 @@ unsigned int Model::GetChildCount() const
 Model & Model::GetChild(unsigned int) const
 {
 	// TODO: insert return statement here
-	return Model();
+	Model temp = *this;
+	return temp;
+}
+
+
+unsigned short Model::GetNumMeshIndeces()
+{
+	return m_Mesh->GetNumIndeces();
 }

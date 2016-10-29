@@ -78,7 +78,7 @@ DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 
 	//once we have our window, initialize any objects we need
 	manager = new ResourceManager();
-	manager->Init(_WIDTH, _HEIGHT, false, HWindow, false, 1.0, .01);
+	manager->Init(_WIDTH, _HEIGHT, false, HWindow, false, 100.0, .01);
 }
 
 

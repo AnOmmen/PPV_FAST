@@ -16,6 +16,18 @@
     <Filter Include="Helper Files">
       <UniqueIdentifier>{662eee0d-65eb-46a2-8ef6-887d758c011b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{f3bfb936-dd3f-4eac-801c-1c45f6f1afd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation\Headers">
+      <UniqueIdentifier>{8628c0b0-8fbb-4546-9dba-eac2d8676dfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation\Sources">
+      <UniqueIdentifier>{d8ca21bc-7ffb-4efa-978f-fc505d8f2c0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{d1c4f6bf-f934-4cc3-9c38-ae13727c451c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,6 +54,24 @@
     <ClCompile Include="DeviceResources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Animation\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSet.cpp">
+      <Filter>Animation\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="BindPose.cpp">
+      <Filter>Animation\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender.cpp">
+      <Filter>Animation\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpolator.cpp">
+      <Filter>Animation\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Cameraclass.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Light.h">
@@ -67,6 +97,24 @@
     </ClInclude>
     <ClInclude Include="PossibleUsefulFuncs.h">
       <Filter>Helper Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Animation\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSet.h">
+      <Filter>Animation\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="BindPose.h">
+      <Filter>Animation\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender.h">
+      <Filter>Animation\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpolator.h">
+      <Filter>Animation\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Cameraclass.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

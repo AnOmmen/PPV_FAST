@@ -13,7 +13,13 @@ private:
 	Mesh* m_Mesh;
 	void Update(XMMATRIX& _matrix);
 public:
-
+	struct FullVertex
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 uv;
+		DirectX::XMFLOAT3 norm;
+		DirectX::XMFLOAT4 tan;
+	};
 	Model();
 	~Model();
 	void Update();

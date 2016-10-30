@@ -154,11 +154,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="LightCalc.hlsli">
-      <Filter>Helper Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="VertexShaderNorms.hlsl">
       <Filter>Helper Files</Filter>
     </FxCompile>
@@ -173,5 +168,10 @@
     <FxCompile Include="GeometryShader.hlsl">
       <Filter>Shaders\GeometryShaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LightCalc.hlsli">
+      <Filter>Shaders\Headers</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -13,9 +13,9 @@ private:
 public:
 	struct FullVertex
 	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT2 uv;
-		DirectX::XMFLOAT3 norm;
+		DirectX::XMFLOAT4 pos;
+		DirectX::XMFLOAT4 uv;
+		DirectX::XMFLOAT4 norm;
 		DirectX::XMFLOAT4 tan;
 	};
 	Model(ID3D11Device* device);

@@ -6,10 +6,20 @@ Mesh::Mesh(ID3D11Device* device)
 {
 	//TEST CASE TO MAKE A PLANE
 	Vertex topright, topleft, bottomright, bottomleft;
-	topright.pos = XMFLOAT4(10, 0, 10, 0);
-	topleft.pos = XMFLOAT4(-10, 0, 10, 0);
-	bottomright.pos = XMFLOAT4(10, 0, -10, 0);
-	bottomleft.pos = XMFLOAT4(-10, 0, -10, 0);
+	topright.pos = XMFLOAT4(10, 0, 10, 1);
+	topleft.pos = XMFLOAT4(-10, 0, 10, 1);
+	bottomright.pos = XMFLOAT4(10, 0, -10, 1);
+	bottomleft.pos = XMFLOAT4(-10, 0, -10, 1);
+
+	topright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	topleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	bottomright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	bottomleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	topright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	topleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	bottomright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	bottomleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
 	
 	vertices.push_back(topleft);

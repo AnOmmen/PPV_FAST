@@ -1,44 +1,36 @@
-struct Light
+struct LIGHT
 {
-	//w holds type of light
-	//0 = directional
-	//1 = point
-	//2 = cone
-	float4 pos;
-	float4 norm;
-	float4 color;
-	//x = lightradius y = innerconeratio z = outerconeratio
-	float4 ratio;
-
+    float4 pos;
+    float4 color;
+    float4 normal;
+    float4 r;
 };
 
-float3 directionalCalc(Light p_light, float3 surfNorm)
+
+float4 DirLight(float4 lightdir, float4 surfacenormal, float4 color)
 {
-	float Lratio;
-	Lratio = saturate(dot(-1 * (p_light.norm.xyz), surfNorm));
-	float3 Result = Lratio * p_light.color.xyz;
-	return Result;
+    float lightratio = saturate(dot((-1 * lightdir), surfacenormal));
+    return (lightratio * color);
 }
 
-float3 pointCalc(Light p_light, float3 surfNorm, float3 surfPos)
+float4 PointLight(float4 lightpos, float4 surfacepos, float4 surfacenormal, float4 color, float4 radius)
 {
-	float3 lightDir = normalize(p_light.pos.xyz - surfPos);
-	float Lratio = saturate(dot(lightDir, surfNorm));
-
-	float Attenuation = 1.0 - saturate(length(p_light.pos.xyz - surfPos) / p_light.ratio.x);
-	Attenuation *= Attenuation;
-	float3 Result = Lratio * p_light.color.xyz * Attenuation;
-	return Result;
+    float4 lightdir = normalize(lightpos - surfacepos);
+    float attenuation = 1.0f - saturate(length(lightpos.xyz - surfacepos.xyz) / radius.x);
+    float lightratio = saturate(dot(lightdir, surfacenormal));
+    return (lightratio * color * attenuation);
 }
 
-float3 coneCalc(Light p_light, float3 surfNorm, float3 surfPos)
+float3 SpotLight(float3 surfacepos, float3 conedir,
+	float coneratio, float3 surfacenormal, LIGHT light)
 {
-	float3 lightDir = normalize(p_light.pos.xyz - surfPos);
-	float surfRatio = saturate(dot((-1 * lightDir), p_light.norm.xyz));
-	float Attenuation = 1.0 - saturate((p_light.ratio.y - surfRatio) / (p_light.ratio.y - p_light.ratio.z));
-	float falloffRadius = 1.0 - saturate(length(p_light.pos.xyz - surfPos) / p_light.ratio.x);
-
-	float Lratio = saturate(dot(lightDir, surfNorm));
-	float3 Result = Attenuation * falloffRadius * Lratio * p_light.color.xyz;
-	return Result;
+    float3 lightdir = normalize(light.pos.xyz - surfacepos);
+    float surfaceratio = saturate(dot(-1 * lightdir, conedir));
+    float a1, a2;
+    a1 = 1.0f - saturate(length(light.pos.xyz - surfacepos) / light.r.x);
+    a2 = 1.0f - saturate((light.r.y - surfaceratio) / (light.r.y - light.r.z));
+    float spotfactor = a1 * a2;
+    float lightratio = saturate(dot(lightdir.xyz, surfacenormal));
+    return (spotfactor * lightratio * light.color);
+   // return float3(0, 0, 1);
 }

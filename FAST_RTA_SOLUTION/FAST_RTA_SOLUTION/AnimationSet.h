@@ -2,20 +2,7 @@
 #include <vector>
 #include "Animation.h"
 #include "BindPose.h"
-enum BLEND_TYPE
-{
-	CUR_GO_NEXT_GO,
-	CUR_GO_NEXT_STOP,
-	CUR_STOP_NEXT_GO,
-	CUR_STOP_NEXT_STOP,
-	DEFAULT, 
-	POP_NEXT
-};
-struct BlendInfo
-{
-	BLEND_TYPE m_blendStyle;
-	float m_totalBlendTime;
-};
+
 class AnimationSet
 {
 public:

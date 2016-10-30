@@ -1,25 +1,10 @@
 #pragma once
 #include <vector>
-#include <d3d11.h>
-#include <DirectXMath.h>
+#include "StructsEnumsDefines.h"
 using namespace DirectX;
-enum ANIM_TYPE
-{
-	LOOP = 0,
-	RETURN_DEFAULT = 1,
-	RETURN_LAST = 2,
-	RUN_ONCE = 1
-};
-struct Bone
-{
-	XMMATRIX m_world;
-};
-struct KeyFrame
-{
-	int m_numBones;
-	float m_time;
-	std::vector<Bone> m_worldVec;
-};
+
+
+
 class Animation
 {
 public:

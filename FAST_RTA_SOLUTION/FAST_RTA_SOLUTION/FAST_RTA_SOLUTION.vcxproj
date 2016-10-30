@@ -162,9 +162,11 @@
     <ClInclude Include="AnimationSet.h" />
     <ClInclude Include="BindPose.h" />
     <ClInclude Include="Blender.h" />
+    <ClInclude Include="Bone.h" />
     <ClInclude Include="Cameraclass.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Interpolator.h" />
+    <ClInclude Include="KeyFrames.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
@@ -172,6 +174,7 @@
     <ClInclude Include="PossibleUsefulFuncs.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="StructsEnumsDefines.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LightCalc.hlsli" />

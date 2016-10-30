@@ -159,9 +159,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="PixelShaderNorms.hlsl">
-      <Filter>Helper Files</Filter>
-    </FxCompile>
     <FxCompile Include="VertexShaderNorms.hlsl">
       <Filter>Helper Files</Filter>
     </FxCompile>

@@ -37,6 +37,7 @@
 # Folders
 Debug/
 Release/
+.vs/
 
 # Other
 *.db

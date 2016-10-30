@@ -24,7 +24,7 @@ void Model::Update()
 const XMMATRIX & Model::GetWorldMat()
 {
 	// TODO: insert return statement here
-	return XMMATRIX();
+	return XMMatrixIdentity();
 }
 
 void Model::AddChild(Model &child)
@@ -51,4 +51,14 @@ Model & Model::GetChild(unsigned int) const
 unsigned short Model::GetNumMeshIndeces()
 {
 	return m_Mesh->GetNumIndeces();
+}
+
+
+ID3D11Buffer** Model::GetVertBuff()
+{
+	return m_Mesh->GetVertBuff();
+}
+ID3D11Buffer** Model::GetIndexBuff()
+{
+	return m_Mesh->GetIndexBuff();
 }

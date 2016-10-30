@@ -81,21 +81,22 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
 	// Lock the constant buffer so it can be written to.
-
-
+	deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	dataPtr = (MatrixBufferType*)mappedResource.pData;
 	// Copy the matrices into the constant buffer.
 	dataPtr->world = worldMatrix;
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;
-	deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
-
+	//deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
+	deviceContext->Unmap(m_matrixBuffer, 0);
 
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
 
 	// Finanly set the constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-	delete dataPtr;
+	
+	//delete dataPtr;
 
 	return true;
 
@@ -108,11 +109,26 @@ void PolyShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	UINT stride = sizeof(Vertex);
+	UINT os = 0;
+	deviceContext->IASetVertexBuffers(
+		0,
+		1,
+		key->GetVertBuff(),
+		&stride,
+		&os
+	);
+	deviceContext->IASetIndexBuffer(
+		*key->GetIndexBuff(),
+		DXGI_FORMAT_R16_UINT, // Each index is one 16-bit unsigned integer (short).  R32
+		0
+	);
+
 	// Set the vertex and pixel shaders that will be used to render this triangle.
 	deviceContext->VSSetShader(m_vs[key], NULL, 0);
 	deviceContext->PSSetShader(m_ps[key], NULL, 0);
 	// Render the triangle.
-
+	
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;
@@ -239,7 +255,11 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 
 		// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 
-		device->CreateBuffer(matrixBufferDesc, NULL, &m_matrixBuffer);
+		HRESULT hresult = device->CreateBuffer(matrixBufferDesc, NULL, &m_matrixBuffer);
+
+
+
+		numElements = 0;
 	}
 
 

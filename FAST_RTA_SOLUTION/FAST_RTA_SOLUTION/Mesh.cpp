@@ -12,20 +12,20 @@ Mesh::Mesh(ID3D11Device* device)
 	bottomleft.pos = XMFLOAT4(-10, 0, -10, 0);
 
 	
-	vertices.push_back(topright);
 	vertices.push_back(topleft);
-	vertices.push_back(bottomright);
+	vertices.push_back(topright);
 	vertices.push_back(bottomleft);
+	vertices.push_back(bottomright);
 
 	//1, 2, 4
+	indeces.push_back(0);
 	indeces.push_back(1);
 	indeces.push_back(2);
-	indeces.push_back(4);
 
 	//2, 4, 3
-	indeces.push_back(2);
-	indeces.push_back(4);
+	indeces.push_back(1);
 	indeces.push_back(3);
+	indeces.push_back(2);
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData = { 0 };
 	vertexBufferData.pSysMem = vertices.data();
@@ -62,4 +62,13 @@ Mesh::~Mesh()
 unsigned short Mesh::GetNumIndeces()
 {
 	return indeces.size();
+}
+
+ID3D11Buffer** Mesh::GetVertBuff()
+{
+	return &vertexBuffer;
+}
+ID3D11Buffer** Mesh::GetIndexBuff()
+{
+	return &indexBuffer;
 }

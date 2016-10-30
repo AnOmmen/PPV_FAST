@@ -6,6 +6,7 @@ ResourceManager::ResourceManager()
 {
 	m_deviceResources = new DeviceResources();
 	m_renderer = new Renderer();
+	
 }
 
 

@@ -7,7 +7,7 @@ class Renderer
 {
 private:
 	std::vector<Model*> m_objects;
-	std::vector<Light*> m_lights;
+	Light m_light;
 	PolyShader* m_polyShader;
 	//temp shaders
 	ID3D11VertexShader* vs;

@@ -23,5 +23,8 @@ public:
 	Model& GetChild(unsigned int) const;
 	//Model& const GetChild(unsigned int) const;
 	unsigned short GetNumMeshIndeces();
+	ID3D11Buffer** GetVertBuff();
+	ID3D11Buffer** GetIndexBuff();
+
 };
 

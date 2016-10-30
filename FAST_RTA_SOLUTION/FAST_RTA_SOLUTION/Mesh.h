@@ -21,5 +21,7 @@ public:
 	Mesh(ID3D11Device* device);
 	~Mesh();
 	unsigned short GetNumIndeces();
+	ID3D11Buffer** GetVertBuff();
+	ID3D11Buffer** GetIndexBuff();
 };
 

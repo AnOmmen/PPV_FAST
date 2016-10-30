@@ -27,10 +27,11 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj)
 	pos = { 0, 3, -15, 0 };
 	look = { 0, 0, 0, 0 };
 	up = { 0, 1, 0, 0 };
+	XMMATRIX view = (XMMatrixLookAtLH(pos, look, up));
 	for (int i = 0; i < m_objects.size(); i++)
 	{
 		m_polyShader->Render(deviceContext, m_objects[i]->GetNumMeshIndeces(), 
-			m_objects[i]->GetWorldMat(), XMMatrixLookAtLH(pos, look, up), proj, m_objects[i]);
+			(m_objects[i]->GetWorldMat()), view, proj, m_objects[i]);
 	}
 }
 

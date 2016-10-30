@@ -1,9 +1,6 @@
 #pragma once
-#include <vector>
-#include <d3d11.h>
-#include <DirectXMath.h>
+
 #include "Mesh.h"
-using namespace DirectX;
 class Model
 {
 private:
@@ -12,6 +9,7 @@ private:
 	XMMATRIX m_world;
 	Mesh* m_Mesh;
 	void Update(XMMATRIX& _matrix);
+	Model();
 public:
 	struct FullVertex
 	{
@@ -20,7 +18,7 @@ public:
 		DirectX::XMFLOAT3 norm;
 		DirectX::XMFLOAT4 tan;
 	};
-	Model();
+	Model(ID3D11Device* device);
 	~Model();
 	void Update();
 	const XMMATRIX& GetWorldMat();
@@ -30,5 +28,9 @@ public:
 	//giving compile errors TODO
 	Model& GetChild(unsigned int _index) const;
 	//Model& const GetChild(unsigned int) const;
+	unsigned short GetNumMeshIndeces();
+	ID3D11Buffer** GetVertBuff();
+	ID3D11Buffer** GetIndexBuff();
+
 };
 

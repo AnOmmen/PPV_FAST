@@ -6,9 +6,16 @@ using namespace DirectX;
 class Light
 {
 private:
-	XMFLOAT4 m_spacial;
-	XMFLOAT4 m_color;
-	XMFLOAT4 m_identity;
+	struct LIGHT
+	{
+		//w of pos 0 = directional light 1 = point light 2 = spotlight
+		XMFLOAT4 pos;
+		XMFLOAT4 color;
+		XMFLOAT4 normal;
+		XMFLOAT4 r;
+	};
+	std::vector<LIGHT> m_lights;
+	ID3D11Buffer* m_LightBuffer;
 public:
 	Light();
 	Light(XMFLOAT4& _a, XMFLOAT4& _b, XMFLOAT4& _c);

@@ -28,6 +28,21 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{d1c4f6bf-f934-4cc3-9c38-ae13727c451c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{3d02d2bb-cb09-4210-8e12-ab0d033a54b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\VertexShaders">
+      <UniqueIdentifier>{06a43533-6adb-4558-b4e8-dcbfbf8164a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\PixelShaders">
+      <UniqueIdentifier>{dc8790f5-6ce2-4e1c-90e7-1287cdbe0749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\GeometryShaders">
+      <UniqueIdentifier>{712bd418-1036-4ff6-9cbf-c674d27282ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Headers">
+      <UniqueIdentifier>{1fef7ea4-a435-45ee-978e-48c5c16b9d33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="Cameraclass.cpp">
       <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +143,9 @@
     <ClInclude Include="StructsEnumsDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightCalc.hlsli">
@@ -137,6 +158,17 @@
     </FxCompile>
     <FxCompile Include="VertexShaderNorms.hlsl">
       <Filter>Helper Files</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>Shaders\PixelShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Shaders\VertexShaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GeometryShader.hlsl">
+      <Filter>Shaders\GeometryShaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -9,10 +9,11 @@ void Model::Update(XMMATRIX & _matrix)
 	//child must also change their local matrix based on the changes
 }
 
-Model::Model()
+Model::Model(ID3D11Device* device)
 {
 	m_local = XMMatrixIdentity();
 	m_world = XMMatrixIdentity();
+	m_Mesh = new Mesh(device);
 }
 
 
@@ -28,10 +29,15 @@ void Model::Update()
 
 const XMMATRIX & Model::GetWorldMat()
 {
-	return m_world;
+
+	
+	// TODO: insert return statement here
+	return XMMatrixIdentity();
 }
 //Adds a single model to the vector of children by pushing onto the back of the vector.
 unsigned int Model::AddChild(Model &_mod)
+
+void Model::AddChild(Model &child)
 {
 	m_children.push_back(&_mod);
 	unsigned int index;
@@ -41,6 +47,8 @@ unsigned int Model::AddChild(Model &_mod)
 //is passed an index of the children vector correlating to the correct child to remove
 //copies the current vector to a new vector, excluding the child to be removed.
 void Model::RemoveChild(unsigned int _index)
+
+void Model::RemoveChild(Model &child)
 {
 	
 	std::vector<Model*> updatedVec;
@@ -62,5 +70,23 @@ size_t Model::GetChildCount() const
 
 Model& Model::GetChild(unsigned int _index) const
 {
-	return *m_children[_index];
+	// TODO: insert return statement here
+	Model temp = *this;
+	return temp;
+}
+
+
+unsigned short Model::GetNumMeshIndeces()
+{
+	return m_Mesh->GetNumIndeces();
+}
+
+
+ID3D11Buffer** Model::GetVertBuff()
+{
+	return m_Mesh->GetVertBuff();
+}
+ID3D11Buffer** Model::GetIndexBuff()
+{
+	return m_Mesh->GetIndexBuff();
 }

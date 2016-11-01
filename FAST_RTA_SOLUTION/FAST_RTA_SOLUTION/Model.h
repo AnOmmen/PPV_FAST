@@ -12,6 +12,15 @@ private:
 	void Update(DirectX::XMMATRIX& _matrix);
 public:
 	Model();
+public:
+	struct FullVertex
+	{
+		DirectX::XMFLOAT4 pos;
+		DirectX::XMFLOAT4 uv;
+		DirectX::XMFLOAT4 norm;
+		DirectX::XMFLOAT4 tan;
+	};
+	Model(ID3D11Device* device);
 	~Model();
 	void Update();
 	const DirectX::XMMATRIX& GetWorldMat();
@@ -21,5 +30,6 @@ public:
 	//giving compile errors TODO
 	Model& GetChild(unsigned int _index) const;
 	//Model& const GetChild(unsigned int) const;
+	unsigned short GetNumIndeces();
 };
 

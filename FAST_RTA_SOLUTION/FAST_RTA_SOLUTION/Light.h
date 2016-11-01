@@ -14,17 +14,16 @@ private:
 		XMFLOAT4 normal;
 		XMFLOAT4 r;
 	};
-	std::vector<LIGHT> m_lights;
+	LIGHT m_lights[3];
 	ID3D11Buffer* m_LightBuffer;
 public:
 	Light();
-	Light(XMFLOAT4& _a, XMFLOAT4& _b, XMFLOAT4& _c);
+	Light(ID3D11Device* device);
+
 	~Light();
-	void SetSpacial(XMFLOAT4& _vec);
-	void SetColor(XMFLOAT4& _vec);
-	void SetIdentity(XMFLOAT4& _vec);
-	XMFLOAT4 const & GetSpacial() const;
-	XMFLOAT4 const & GetColor() const;
-	XMFLOAT4 const & GetIdentity() const;
+	void AddDirLight(XMFLOAT4& _pos, XMFLOAT4& _color, XMFLOAT4& _normal, XMFLOAT4& _r, ID3D11DeviceContext* context);
+	void AddSpotLight(XMFLOAT4& _pos, XMFLOAT4& _color, XMFLOAT4& _normal, XMFLOAT4& _r, ID3D11DeviceContext* context);
+	void AddPointLight(XMFLOAT4& _pos, XMFLOAT4& _color, XMFLOAT4& _normal, XMFLOAT4& _r, ID3D11DeviceContext* context);
+	void UpdateBuffer(ID3D11DeviceContext* context);
 };
 

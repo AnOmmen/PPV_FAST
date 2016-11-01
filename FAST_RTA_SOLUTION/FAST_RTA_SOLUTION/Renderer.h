@@ -7,15 +7,16 @@ class Renderer
 {
 private:
 	std::vector<Model*> m_objects;
-	Light m_light;
+	Light* m_light;
 	PolyShader* m_polyShader;
 	//temp shaders
 	ID3D11VertexShader* vs;
 	ID3D11PixelShader* ps;
 
 	//Camera m_camera;
-public:
 	Renderer();
+public:
+	Renderer(ID3D11Device* device, ID3D11DeviceContext* context);
 	~Renderer();
 
 	

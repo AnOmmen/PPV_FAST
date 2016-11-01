@@ -24,6 +24,7 @@ Model::~Model()
 void Model::Update()
 {
 	//stuff that we havent decided yet
+
 }
 
 const DirectX::XMMATRIX & Model::GetWorldMat()
@@ -63,4 +64,10 @@ size_t Model::GetChildCount() const
 Model& Model::GetChild(unsigned int _index) const
 {
 	return *m_children[_index];
+}
+
+
+unsigned short Model::GetNumIndeces()
+{
+	return m_Mesh->GetNumIndeces();
 }

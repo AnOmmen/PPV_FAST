@@ -241,6 +241,14 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 		polygonLayout[numElements].InstanceDataStepRate = 0;
 		numElements++;
 
+		polygonLayout[numElements].SemanticName = "NORMAL";
+		polygonLayout[numElements].SemanticIndex = 0;
+		polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		polygonLayout[numElements].InputSlot = 0;
+		polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		polygonLayout[numElements].InstanceDataStepRate = 0;
+		numElements++;
 		// Create the vertex input layout.
 		device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
 			vertexShaderBuffer->GetBufferSize(), &m_layout);

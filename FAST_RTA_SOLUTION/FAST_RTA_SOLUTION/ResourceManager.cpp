@@ -5,7 +5,6 @@
 ResourceManager::ResourceManager()
 {
 	m_deviceResources = new DeviceResources();
-	m_renderer = new Renderer();
 	
 }
 
@@ -22,6 +21,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 {
 	m_deviceResources->Initialize(screenWidth, screenHeight, vsync, hwnd, fullscreen, screenDepth, screenNear);
 	Model* model = new Model(m_deviceResources->GetDevice());
+	m_renderer = new Renderer(m_deviceResources->GetDevice(), m_deviceResources->GetDeviceContext());
 	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 }
 

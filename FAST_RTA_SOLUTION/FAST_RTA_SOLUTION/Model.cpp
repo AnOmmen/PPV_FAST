@@ -2,7 +2,7 @@
 
 
 
-void Model::Update(XMMATRIX & _matrix)
+void Model::Update(DirectX::XMMATRIX & _matrix)
 {
 	//the parent passes their updated matrix to each child
 	//child must update their world matrix according to the parent's matrix
@@ -11,8 +11,8 @@ void Model::Update(XMMATRIX & _matrix)
 
 Model::Model()
 {
-	m_local = XMMatrixIdentity();
-	m_world = XMMatrixIdentity();
+	m_local = DirectX::XMMatrixIdentity();
+	m_world = DirectX::XMMatrixIdentity();
 }
 
 
@@ -26,7 +26,7 @@ void Model::Update()
 	//stuff that we havent decided yet
 }
 
-const XMMATRIX & Model::GetWorldMat()
+const DirectX::XMMATRIX & Model::GetWorldMat()
 {
 	return m_world;
 }

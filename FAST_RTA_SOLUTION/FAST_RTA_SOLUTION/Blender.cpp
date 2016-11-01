@@ -11,7 +11,7 @@ Blender::~Blender()
 {
 }
 
-const XMMATRIX * Blender::GetSkinningMatrix()
+const DirectX::XMMATRIX * Blender::GetSkinningMatrix()
 {
 	return nullptr;
 }

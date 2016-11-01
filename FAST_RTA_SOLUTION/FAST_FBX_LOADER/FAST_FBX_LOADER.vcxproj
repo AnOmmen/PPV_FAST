@@ -77,23 +77,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
+    <LibraryPath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
+    <LibraryPath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
+    <LibraryPath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;D:\SchoolFiles\PPV\PPV_FAST\FAST_RTA_SOLUTION\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;$(IncludePath)</IncludePath>
+    <LibraryPath>FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

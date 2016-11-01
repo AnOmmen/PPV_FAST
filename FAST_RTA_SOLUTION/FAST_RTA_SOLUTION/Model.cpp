@@ -25,6 +25,7 @@ Model::~Model()
 void Model::Update()
 {
 	//stuff that we havent decided yet
+
 }
 
 const XMMATRIX & Model::GetWorldMat()

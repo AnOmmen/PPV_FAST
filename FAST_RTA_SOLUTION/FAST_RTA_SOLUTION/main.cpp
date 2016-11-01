@@ -15,6 +15,7 @@
 #include <ctime>
 #include <windows.h>
 #include "ResourceManager.h"
+#include "Input.h"
 
 
 
@@ -33,6 +34,7 @@ class DEMO_APP
 	WNDPROC wp;
 	HWND HWindow;
 	ResourceManager* manager;
+	Input* m_Input;
 public:
 	DEMO_APP(HINSTANCE h, WNDPROC wp);
 
@@ -53,6 +55,7 @@ public:
 
 DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 {
+
 	app = hinst;
 	wp = proc;
 	//make our window object
@@ -78,7 +81,7 @@ DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 
 	//once we have our window, initialize any objects we need
 	manager = new ResourceManager();
-	manager->Init(_WIDTH, _HEIGHT, false, HWindow, false, 1.0, .01);
+	manager->Init(_WIDTH, _HEIGHT, false, HWindow, false, 100.0, .01);
 }
 
 

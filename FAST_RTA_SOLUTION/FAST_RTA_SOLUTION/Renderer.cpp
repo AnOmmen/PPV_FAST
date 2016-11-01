@@ -46,7 +46,7 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj)
 	for (int i = 0; i < m_objects.size(); i++)
 	{
 		m_light->UpdateBuffer(deviceContext);
-		m_polyShader->Render(deviceContext, m_objects[i]->GetNumMeshIndeces(), 
+		m_polyShader->Render(deviceContext, m_objects[i]->GetNumIndeces(), 
 			(m_objects[i]->GetWorldMat()), view, proj, m_objects[i]);
 	}
 }

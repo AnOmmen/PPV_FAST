@@ -10,7 +10,6 @@ private:
 	DirectX::XMMATRIX m_world;
 	Mesh* m_Mesh;
 	void Update(DirectX::XMMATRIX& _matrix);
-public:
 	Model();
 public:
 	struct FullVertex
@@ -31,5 +30,9 @@ public:
 	Model& GetChild(unsigned int _index) const;
 	//Model& const GetChild(unsigned int) const;
 	unsigned short GetNumIndeces();
+	ID3D11Buffer** GetVertBuffer();
+	ID3D11Buffer** GetIndexBuffer();
+
+
 };
 

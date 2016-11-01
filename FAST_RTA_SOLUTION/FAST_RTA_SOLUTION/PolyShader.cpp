@@ -114,12 +114,12 @@ void PolyShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount
 	deviceContext->IASetVertexBuffers(
 		0,
 		1,
-		key->GetVertBuff(),
+		key->GetVertBuffer(),
 		&stride,
 		&os
 	);
 	deviceContext->IASetIndexBuffer(
-		*key->GetIndexBuff(),
+		*key->GetIndexBuffer(),
 		DXGI_FORMAT_R16_UINT, // Each index is one 16-bit unsigned integer (short).  R32
 		0
 	);
@@ -211,7 +211,7 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 	}
 	if (_ps)
 	{
-		m_ps.emplace(key, _ps);
+		m_ps[key] = _ps;
 	}
 	if (_gs)
 	{

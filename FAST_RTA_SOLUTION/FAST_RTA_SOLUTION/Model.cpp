@@ -65,3 +65,9 @@ Model& Model::GetChild(unsigned int _index) const
 {
 	return *m_children[_index];
 }
+
+
+unsigned short Model::GetNumIndeces()
+{
+	return m_Mesh->GetNumIndeces();
+}

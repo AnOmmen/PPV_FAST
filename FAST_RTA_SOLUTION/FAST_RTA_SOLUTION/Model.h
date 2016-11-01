@@ -30,5 +30,6 @@ public:
 	//giving compile errors TODO
 	Model& GetChild(unsigned int _index) const;
 	//Model& const GetChild(unsigned int) const;
+	unsigned short GetNumIndeces();
 };
 

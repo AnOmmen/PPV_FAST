@@ -31,16 +31,16 @@ namespace FASTFBXLoader
 		bool m_hasAnimation;
 
 	public:
-		FBXLoader();
-		~FBXLoader();
-		bool Init();
-		bool Load(const char *_inputPath, const char *_outputPath);
-		bool HasAnimation() const;
-		unsigned int GetTriangleCount() const;
-		std::vector<unsigned int> & GetIndices();
-		std::vector<KeyFrame> & GetKeyFrames();
-		std::vector<FullVertex> & GetVertices();
-		BindPose & GetBindPose();
+		FASTFBXLOADER_API FBXLoader();
+		FASTFBXLOADER_API ~FBXLoader();
+		FASTFBXLOADER_API bool Init();
+		FASTFBXLOADER_API bool Load(const char *_inputPath, const char *_outputPath);
+		FASTFBXLOADER_API bool HasAnimation() const;
+		FASTFBXLOADER_API unsigned int GetTriangleCount() const;
+		FASTFBXLOADER_API std::vector<unsigned int> & GetIndices();
+		FASTFBXLOADER_API std::vector<KeyFrame> & GetKeyFrames();
+		FASTFBXLOADER_API std::vector<FullVertex> & GetVertices();
+		FASTFBXLOADER_API BindPose & GetBindPose();
 
 	private:
 		void ProcessSkeleton(FbxNode *_inRootNode);

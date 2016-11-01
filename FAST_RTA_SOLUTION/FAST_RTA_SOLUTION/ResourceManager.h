@@ -10,7 +10,7 @@ private:
 public:
 	void Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
 		float screenDepth, float screenNear);
-	void Update();
+	void Update(bool* keys, float dt);
 	void Render();
 	ResourceManager();
 	~ResourceManager();

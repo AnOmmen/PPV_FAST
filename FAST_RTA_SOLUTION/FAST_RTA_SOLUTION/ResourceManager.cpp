@@ -26,9 +26,9 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 }
 
 
-void ResourceManager::Update()
+void ResourceManager::Update(bool* keys, float dt)
 {
-
+	m_renderer->Update(keys, dt);
 }
 
 void ResourceManager::Render()

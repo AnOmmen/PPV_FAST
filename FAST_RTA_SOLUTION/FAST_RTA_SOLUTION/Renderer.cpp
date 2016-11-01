@@ -5,7 +5,7 @@ void CreateLights(Light* lights, ID3D11DeviceContext* context)
 	XMFLOAT4 temp1 = XMFLOAT4(0, 1, 0, 1.0f);
 	XMFLOAT4 temp2 = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	XMFLOAT4 temp3 = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	XMFLOAT4 temp4 = XMFLOAT4(10.0f, 0.0f, 0.0f, 0.0f);
+	XMFLOAT4 temp4 = XMFLOAT4(100.0f, 0.0f, 0.0f, 0.0f);
 
 
 	lights->AddPointLight(temp1,temp2 ,temp3
@@ -57,4 +57,9 @@ void Renderer::AddModel(ID3D11Device* device, HWND hwnd, Model* key)
 	m_objects.push_back(key);
 	m_polyShader->AddModel(key, vs, ps, NULL, device, hwnd, L"VertexShader.hlsl", L"PixelShader.hlsl", NULL);
 
+}
+
+void Renderer::Update(bool* keys, float dt)
+{
+	m_light->Update(keys, dt);
 }

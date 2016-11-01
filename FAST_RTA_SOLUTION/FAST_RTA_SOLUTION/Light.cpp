@@ -19,6 +19,17 @@ Light::Light(ID3D11Device* device)
 }
 
 
+void Light::Update(bool*keys, float dt)
+{
+	if (keys[6])
+	{
+		m_lights[POINT_LIGHT].pos.z = m_lights[POINT_LIGHT].pos.z + (3 * dt);
+	}
+	if (keys[7])
+	{
+		m_lights[POINT_LIGHT].pos.z = m_lights[POINT_LIGHT].pos.z - (3 * dt);
+	}
+}
 
 
 Light::~Light()

@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "StructsEnumsDefines.h"
-using namespace DirectX;
 
 
 

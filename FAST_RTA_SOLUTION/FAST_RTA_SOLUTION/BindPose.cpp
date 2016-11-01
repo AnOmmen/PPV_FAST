@@ -11,7 +11,7 @@ BindPose::~BindPose()
 {
 }
 
-const XMMATRIX * BindPose::GetBindPose()
+const DirectX::XMMATRIX * BindPose::GetBindPose()
 {
 	return nullptr;
 }
@@ -21,6 +21,6 @@ int BindPose::GetNumBones()
 	return 0;
 }
 
-void BindPose::init(int _num, XMMATRIX * _mat)
+void BindPose::init(int _num, DirectX::XMMATRIX * _mat)
 {
 }

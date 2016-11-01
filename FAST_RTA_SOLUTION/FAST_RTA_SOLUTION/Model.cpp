@@ -11,10 +11,15 @@ void Model::Update(DirectX::XMMATRIX & _matrix)
 
 Model::Model()
 {
-	m_local = DirectX::XMMatrixIdentity();
-	m_world = DirectX::XMMatrixIdentity();
-}
 
+
+}
+Model::Model(ID3D11Device* device)
+{
+	m_Mesh = new Mesh(device);
+	m_world = DirectX::XMMatrixIdentity();
+	m_local = DirectX::XMMatrixIdentity();
+}
 
 Model::~Model()
 {
@@ -70,4 +75,16 @@ Model& Model::GetChild(unsigned int _index) const
 unsigned short Model::GetNumIndeces()
 {
 	return m_Mesh->GetNumIndeces();
+}
+
+
+ID3D11Buffer** Model::GetVertBuffer()
+{
+	return m_Mesh->Mesh::GetVertBuff();
+}
+
+
+ID3D11Buffer** Model::GetIndexBuffer()
+{
+	return m_Mesh->Mesh::GetIndexBuff();
 }

@@ -58,7 +58,6 @@ namespace FASTFBXLoader
 
 	FASTFBXLOADER_API bool Init()
 	{
-		m_vertices.resize(1);
 		m_fbxManager = FbxManager::Create();
 		if (!m_fbxManager)
 			return false;
@@ -538,7 +537,7 @@ namespace FASTFBXLoader
 		unsigned int i, j;
 		for (i = 0; i < m_triangleCount; ++i)
 			for (j = 0; j < 3; ++j)
-				if (FindVertex(m_vertices[i * 3 + j], uniqueVertices) == -1)
+				if (FindVertex(m_vertices[i * 3 + j], uniqueVertices) == USHRT_MAX)
 					uniqueVertices.push_back(m_vertices[i * 3 + j]);
 
 		for (i = 0; i < m_triangleCount; ++i)

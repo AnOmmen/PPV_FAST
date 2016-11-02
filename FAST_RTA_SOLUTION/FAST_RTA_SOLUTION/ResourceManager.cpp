@@ -1,7 +1,7 @@
 #include "ResourceManager.h"
 #include "DDSTextureLoader.h"
 #include "../FAST_FBX_LOADER/FASTFBXLoader.h"
-
+#include "BindPose.h"
 ResourceManager::ResourceManager()
 {
 	m_deviceResources = new DeviceResources();
@@ -12,13 +12,14 @@ ResourceManager::~ResourceManager()
 {
 	m_deviceResources->Shutdown();
 	delete m_deviceResources;
+	delete m_renderer;
 }
 
 void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
 	float screenDepth, float screenNear)
 {
 	m_deviceResources->Initialize(screenWidth, screenHeight, vsync, hwnd, fullscreen, screenDepth, screenNear);
-
+	m_renderer = new Renderer(m_deviceResources->GetDevice(), m_deviceResources->GetDeviceContext());
 	{
 		FASTFBXLoader::Init();
 		FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx", NULL);
@@ -30,18 +31,15 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		unsigned int vertexCount;
 		vertexCount = FASTFBXLoader::GetVertexCount();
 		pindeces = &(FASTFBXLoader::GetIndices());
-		for (size_t i = 0; i < pindeces->size(); i++)
-		{
-			indeces.push_back(pindeces->at(i));
-		}
+		indeces.resize(pindeces->size());
+		indeces = *pindeces;
 
 
 		vertices.resize(vertexCount);
 		void * verts = FASTFBXLoader::GetVertices();
-		for (size_t i = 0; i < vertexCount; i++)
-		{
-			memcpy_s(&vertices[i], vertexCount * sizeof(FullVertex), verts, vertexCount * sizeof(FullVertex));
-		}
+
+		memcpy(&vertices[0], verts, vertexCount * sizeof(FullVertex));
+		
 
 		std::vector<Vertex> rverts;
 	
@@ -49,9 +47,10 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		for (size_t i = 0; i < vertexCount; i++)
 		{
 			Vertex temp;
-			temp.pos = XMFLOAT4(vertArray[(i * sizeof(FullVertex))], vertArray[(i * sizeof(FullVertex)) + 1], vertArray[(i * sizeof(FullVertex)) + 2], 1.0f);
-			temp.color = XMFLOAT4(1.0, 1.0, 1.0, 1.0);
-			temp.norm = XMFLOAT4(vertArray[(i * sizeof(FullVertex)) + 5], vertArray[(i * sizeof(FullVertex)) + 6], vertArray[(i * sizeof(FullVertex)) + 7], 1.0f);
+			temp.color = XMFLOAT4(0.0, 1.0, 1.0, 1.0);
+			temp.pos = XMFLOAT4(vertices[i].pos.x, vertices[i].pos.y, vertices[i].pos.z, 1.0f);
+			temp.norm = XMFLOAT4(vertices[i].norm.x, vertices[i].norm.y, vertices[i].norm.z, 1.0f);
+			
 			rverts.push_back(temp);
 		}
 
@@ -61,17 +60,21 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		model = new Model(m_deviceResources->GetDevice(), rverts, indeces);
 
 
+		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 
 
 
-
+		BindPose bindpose;
+		std::vector<XMFLOAT4X4> mats;
+		mats = FASTFBXLoader::GetBindPose();
+		bindpose.init(mats.size(), &mats[0]);
 
 
 		FASTFBXLoader::Clean();
 	}
 	std::vector<Vertex> vertices;
 	std::vector<unsigned short> indeces;
-	m_renderer = new Renderer(m_deviceResources->GetDevice(), m_deviceResources->GetDeviceContext());
+	
 	Model* model;
 	//
 	//char* myFilename = "Cube.obj";

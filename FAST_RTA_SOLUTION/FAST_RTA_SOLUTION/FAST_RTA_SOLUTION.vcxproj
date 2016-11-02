@@ -152,8 +152,8 @@
     <ClCompile Include="Blender.cpp" />
     <ClCompile Include="Cameraclass.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
-    <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Interpolator.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -172,14 +172,15 @@
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Cameraclass.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DeviceResources.h" />
-    <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Interpolator.h" />
     <ClInclude Include="KeyFrames.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="PolyShader.h" />
     <ClInclude Include="PossibleUsefulFuncs.h" />
     <ClInclude Include="Renderer.h" />
@@ -190,6 +191,12 @@
     <None Include="LightCalc.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="SkyboxPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="VertexShaderNorms.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Light.h"
 #include "PolyShader.h"
+#include "Camera.h"
 class Renderer
 {
 private:
@@ -13,7 +14,7 @@ private:
 	ID3D11VertexShader* vs;
 	ID3D11PixelShader* ps;
 
-	//Camera m_camera;
+	Camera* m_camera;
 	Renderer();
 public:
 	Renderer(ID3D11Device* device, ID3D11DeviceContext* context);

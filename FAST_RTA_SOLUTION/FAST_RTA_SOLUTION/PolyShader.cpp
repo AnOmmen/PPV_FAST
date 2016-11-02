@@ -95,7 +95,8 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	// Finanly set the constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-	
+	if(key->shaderview)
+	deviceContext->PSSetShaderResources(0, 1, &key->shaderview);
 	//delete dataPtr;
 
 	return true;

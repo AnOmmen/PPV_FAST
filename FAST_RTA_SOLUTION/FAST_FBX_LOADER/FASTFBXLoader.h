@@ -6,7 +6,7 @@
 #define FASTFBXLOADER_API __declspec(dllimport)
 #endif
 
-#include "FBX_SDK_Includes_Libs\include\fbxsdk.h"
+#include "FBX_SDK_Includes_Libs/include/fbxsdk.h"
 #include "../FAST_RTA_SOLUTION/StructsEnumsDefines.h"
 #include "../FAST_RTA_SOLUTION/BindPose.h"
 #include <string>

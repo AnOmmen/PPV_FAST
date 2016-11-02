@@ -29,6 +29,17 @@ void Light::Update(bool*keys, float dt)
 	{
 		m_lights[POINT_LIGHT].pos.z = m_lights[POINT_LIGHT].pos.z - (3 * dt);
 	}
+
+
+
+	if (keys[8])
+	{
+		m_lights[POINT_LIGHT].pos.y = m_lights[POINT_LIGHT].pos.y + (3 * dt);
+	}
+	if (keys[9])
+	{
+		m_lights[POINT_LIGHT].pos.y = m_lights[POINT_LIGHT].pos.y - (3 * dt);
+	}
 }
 
 

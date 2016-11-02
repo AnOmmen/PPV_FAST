@@ -9,9 +9,10 @@ private:
 	DirectX::XMMATRIX m_local;
 	DirectX::XMMATRIX m_world;
 	Mesh* m_Mesh;
-	void Update(DirectX::XMMATRIX& _matrix);
 	Model();
 public:
+	ID3D11ShaderResourceView* shaderview;
+
 	struct FullVertex
 	{
 		DirectX::XMFLOAT4 pos;
@@ -19,9 +20,10 @@ public:
 		DirectX::XMFLOAT4 norm;
 		DirectX::XMFLOAT4 tan;
 	};
-	Model(ID3D11Device* device);
+	Model(ID3D11Device* device, std::vector<Vertex> _vertices, std::vector<unsigned short> _indices);
 	~Model();
-	void Update();
+	void Update(float dt);
+	void Update(DirectX::XMMATRIX& _matrix);
 	const DirectX::XMMATRIX& GetWorldMat();
 	unsigned int AddChild(Model& _mod);
 	void RemoveChild(unsigned int _index);

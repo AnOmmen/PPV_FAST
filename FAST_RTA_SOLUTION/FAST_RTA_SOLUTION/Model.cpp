@@ -7,6 +7,7 @@ void Model::Update(DirectX::XMMATRIX & _matrix)
 	//the parent passes their updated matrix to each child
 	//child must update their world matrix according to the parent's matrix
 	//child must also change their local matrix based on the changes
+	m_world = XMMatrixMultiply(m_world, _matrix);
 }
 
 Model::Model()
@@ -14,11 +15,13 @@ Model::Model()
 
 
 }
-Model::Model(ID3D11Device* device)
+Model::Model(ID3D11Device* device, std::vector<Vertex> _vertices, std::vector<unsigned short> _indices)
 {
 	m_Mesh = new Mesh(device);
+	m_Mesh->CreateMesh(device, _vertices, _indices);
 	m_world = DirectX::XMMatrixIdentity();
 	m_local = DirectX::XMMatrixIdentity();
+	shaderview = nullptr;
 }
 
 Model::~Model()
@@ -26,7 +29,7 @@ Model::~Model()
 
 }
 
-void Model::Update()
+void Model::Update(float dt)
 {
 	//stuff that we havent decided yet
 

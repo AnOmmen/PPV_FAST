@@ -283,27 +283,27 @@ DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 
 void DEMO_APP::inputCheck()
 {
-	if (GetAsyncKeyState('w'))
+	if (GetAsyncKeyState('W'))
 		keys[0] = true;
 	else
 		keys[0] = false;
-	if (GetAsyncKeyState('a'))
+	if (GetAsyncKeyState('A'))
 		keys[1] = true;
 	else
 		keys[1] = false;
-	if (GetAsyncKeyState('s'))
+	if (GetAsyncKeyState('S'))
 		keys[2] = true;
 	else
 		keys[2] = false;
-	if (GetAsyncKeyState('d'))
+	if (GetAsyncKeyState('D'))
 		keys[3] = true;
 	else
 		keys[3] = false;
-	if (GetAsyncKeyState('q'))
+	if (GetAsyncKeyState('Q'))
 		keys[4] = true;
 	else
 		keys[4] = false;
-	if (GetAsyncKeyState('e'))
+	if (GetAsyncKeyState('E'))
 		keys[5] = true;
 	else
 		keys[5] = false;
@@ -331,19 +331,19 @@ void DEMO_APP::inputCheck()
 		keys[11] = true;
 	else
 		keys[11] = false;
-	if (GetAsyncKeyState('7'))
+	if (GetAsyncKeyState(VK_RIGHT))
 		keys[12] = true;
 	else
 		keys[12] = false;
-	if (GetAsyncKeyState('8'))
+	if (GetAsyncKeyState(VK_LEFT))
 		keys[13] = true;
 	else
 		keys[13] = false;
-	if (GetAsyncKeyState('9'))
+	if (GetAsyncKeyState(VK_DOWN))
 		keys[14] = true;
 	else
 		keys[14] = false;
-	if (GetAsyncKeyState(VK_RBUTTON))
+	if (GetAsyncKeyState(VK_UP))
 		keys[15] = true;
 	else
 		keys[15] = false;

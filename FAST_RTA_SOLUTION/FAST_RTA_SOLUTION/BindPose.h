@@ -4,12 +4,12 @@
 
 class BindPose
 {
+	std::vector<DirectX::XMFLOAT4X4> bindposeInverses;
 public:
-	std::vector<DirectX::XMMATRIX> bindposeInverses;
 	BindPose();
 	~BindPose();
-	const DirectX::XMMATRIX* GetBindPose();
-	int GetNumBones();
-	void init(int _num, DirectX::XMMATRIX* _mat);
+	const DirectX::XMFLOAT4X4* GetBindPose() const;
+	int GetNumBones() const;
+	void init(int _num, const DirectX::XMFLOAT4X4* _mat);
 };
 

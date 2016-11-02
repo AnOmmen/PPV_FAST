@@ -51,10 +51,3 @@ struct FullVertex
 	DirectX::XMFLOAT4 bWeights;
 	DirectX::XMFLOAT4 bIndices;
 };
-
-struct ControlPoint
-{
-	DirectX::XMFLOAT3 position;
-	std::vector<float> bWeights;
-	std::vector<float> bIndices;
-};

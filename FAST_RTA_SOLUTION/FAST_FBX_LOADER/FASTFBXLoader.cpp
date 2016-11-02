@@ -1,19 +1,62 @@
 #include "FASTFBXLoader.h"
+#include "fbxsdk.h"
+#include <DirectXMath.h>
+#include <unordered_map>
+#include <string>
 
 namespace FASTFBXLoader
 {
-	FBXLoader::FBXLoader() : m_fbxManager(nullptr), m_fbxScene(nullptr) { }
+	namespace FBXLoaderStructs
+	{
+		struct KeyFrame
+		{
+			float m_time;
+			std::vector<DirectX::XMFLOAT4X4> m_skeleton;
+		};
 
-	FBXLoader::~FBXLoader()
+		struct FullVertex
+		{
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMFLOAT2 uv;
+			DirectX::XMFLOAT3 norm;
+			DirectX::XMFLOAT3 tan;
+			DirectX::XMFLOAT4 bWeights;
+			DirectX::XMFLOAT4 bIndices;
+		};
+
+		struct ControlPoint
+		{
+			DirectX::XMFLOAT3 position;
+			std::vector<float> bWeights;
+			std::vector<float> bIndices;
+		};
+	}
+
+	FbxManager *m_fbxManager;
+	FbxScene *m_fbxScene;
+	std::string m_inputPath;
+	std::string m_outputPath;
+	std::vector<DirectX::XMFLOAT4X4> m_skeleton;
+	std::vector<std::string> m_skeletonBoneNames;
+	std::vector<DirectX::XMFLOAT4X4> m_skeletonBindPose;
+	std::vector<FBXLoaderStructs::KeyFrame> m_keyFrames;
+	std::unordered_map<unsigned int, FBXLoaderStructs::ControlPoint*> m_controlPoints;
+	unsigned int m_triangleCount;
+	std::vector<FBXLoaderStructs::FullVertex> m_vertices;
+	std::vector<unsigned short> m_indices;
+	bool m_hasAnimation;
+
+
+	FASTFBXLOADER_API void Clean()
 	{
 		m_fbxScene->Destroy();
 		m_fbxManager->Destroy();
 		m_indices.clear();
 		m_vertices.clear();
-		m_skeleton.sk.clear();
+		m_skeleton.clear();
 	}
 
-	bool FBXLoader::Init()
+	FASTFBXLOADER_API bool Init()
 	{
 		m_fbxManager = FbxManager::Create();
 		if (!m_fbxManager)
@@ -27,7 +70,7 @@ namespace FASTFBXLoader
 		return true;
 	}
 
-	bool FBXLoader::Load(const char * _inputPath, const char * _outputPath)
+	FASTFBXLOADER_API bool Load(const char * _inputPath, const char * _outputPath)
 	{
 		m_inputPath = _inputPath;
 		m_outputPath = _outputPath;
@@ -45,7 +88,7 @@ namespace FASTFBXLoader
 		fbxImporter->Destroy();
 
 		ProcessSkeleton(m_fbxScene->GetRootNode());
-		if (m_skeleton.sk.empty())
+		if (m_skeleton.empty())
 			m_hasAnimation = false;
 		else
 			m_hasAnimation = true;
@@ -56,63 +99,74 @@ namespace FASTFBXLoader
 		return true;
 	}
 
-	bool FBXLoader::HasAnimation() const
+	FASTFBXLOADER_API bool HasAnimation()
 	{
 		return m_hasAnimation;
 	}
 
-	unsigned int FBXLoader::GetTriangleCount() const
+	FASTFBXLOADER_API unsigned int GetTriangleCount()
 	{
 		return m_triangleCount;
 	}
 
-	std::vector<unsigned int>& FBXLoader::GetIndices()
+	FASTFBXLOADER_API std::vector<unsigned short>& GetIndices()
 	{
 		return m_indices;
 	}
 
-	std::vector<KeyFrame>& FBXLoader::GetKeyFrames()
+	FASTFBXLOADER_API void * GetKeyFrames()
 	{
-		return m_keyFrames;
+		return &m_keyFrames[0];
 	}
 
-	std::vector<FullVertex>& FBXLoader::GetVertices()
+	FASTFBXLOADER_API unsigned int GetKeyFrameCount()
 	{
-		return m_vertices;
+		return (unsigned int)m_keyFrames.size();
 	}
 
-	BindPose & FBXLoader::GetBindPose()
+	FASTFBXLOADER_API void * GetVertices()
+	{
+		return &m_vertices[0];
+	}
+
+	FASTFBXLOADER_API unsigned int GetVertexCount()
+	{
+		return (unsigned int)m_vertices.size();
+	}
+
+	FASTFBXLOADER_API std::vector<DirectX::XMFLOAT4X4> & GetBindPose()
 	{
 		return m_skeletonBindPose;
 	}
 
-	void FBXLoader::ProcessSkeleton(FbxNode * _inRootNode)
+
+	void ProcessSkeleton(fbxsdk::FbxNode * _inRootNode)
 	{
 		unsigned int i;
-		for (i = 0; i < _inRootNode->GetChildCount(); ++i)
+		for (i = 0; i < (unsigned int)_inRootNode->GetChildCount(); ++i)
 		{
 			FbxNode* currNode = _inRootNode->GetChild(i);
 
 		}
 	}
 	
-	void FBXLoader::ProcessSKeletonRecursively(FbxNode * _inNode)
+	void ProcessSKeletonRecursively(fbxsdk::FbxNode * _inNode)
 	{
 		if (_inNode->GetNodeAttribute() && _inNode->GetNodeAttribute()->GetAttributeType() &&
 			_inNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eSkeleton)
 		{
-			Bone currBone;
-			m_skeleton.sk.push_back(currBone);
+			DirectX::XMFLOAT4X4 currBone;
+			m_skeleton.push_back(currBone);
 			std::string currName = _inNode->GetName();
 			m_skeletonBoneNames.push_back(currName);
 		}
 		
 		unsigned int i;
-		for (i = 0; i < _inNode->GetChildCount(); ++i)
+		for (i = 0; i < (unsigned int)_inNode->GetChildCount(); ++i)
 			ProcessSKeletonRecursively(_inNode->GetChild(i));
 	}
 
-	void FBXLoader::ProcessGeometry(FbxNode * _inNode)
+	void ProcessGeometry(fbxsdk::FbxNode * _inNode)
 	{
 		if (_inNode->GetNodeAttribute())
 			switch (_inNode->GetNodeAttribute()->GetAttributeType())
@@ -129,13 +183,13 @@ namespace FASTFBXLoader
 			ProcessGeometry(_inNode->GetChild(i));
 	}
 
-	void FBXLoader::ProcessControlPoints(FbxNode * _inNode)
+	void ProcessControlPoints(fbxsdk::FbxNode * _inNode)
 	{
 		FbxMesh* currMesh = _inNode->GetMesh();
 		unsigned int i;
-		for (i = 0; i < currMesh->GetControlPointsCount(); ++i)
+		for (i = 0; i < (unsigned int)currMesh->GetControlPointsCount(); ++i)
 		{
-			ControlPoint *currCtrlPoint = new ControlPoint();
+			FBXLoaderStructs::ControlPoint *currCtrlPoint = new FBXLoaderStructs::ControlPoint();
 			currCtrlPoint->position.x = static_cast<float>(currMesh->GetControlPointAt(i).mData[0]);
 			currCtrlPoint->position.y = static_cast<float>(currMesh->GetControlPointAt(i).mData[1]);
 			currCtrlPoint->position.z = static_cast<float>(currMesh->GetControlPointAt(i).mData[2]);
@@ -143,7 +197,7 @@ namespace FASTFBXLoader
 		}
 	}
 
-	void FBXLoader::ProcessBonesAndAnimations(FbxNode * _inNode)
+	void ProcessBonesAndAnimations(fbxsdk::FbxNode * _inNode)
 	{
 		FbxMesh *currMesh = _inNode->GetMesh();
 		unsigned int numbOfDeformers = currMesh->GetDeformerCount();
@@ -157,7 +211,7 @@ namespace FASTFBXLoader
 			if (!currSkin)
 				continue;
 
-			m_skeletonBindPose.bindposeInverses.resize(m_skeleton.sk.size());
+			m_skeletonBindPose.resize(m_skeleton.size());
 			FbxAnimStack *currAnimStack = m_fbxScene->GetSrcObject<FbxAnimStack>(0);
 			FbxString animStackName = currAnimStack->GetName();
 			FbxTakeInfo *takeInfo = m_fbxScene->GetTakeInfo(animStackName.Buffer());
@@ -166,7 +220,7 @@ namespace FASTFBXLoader
 			for (FbxLongLong i = start.GetFrameCount(FbxTime::eFrames24);
 				i <= end.GetFrameCount(FbxTime::eFrames24); ++i)
 			{
-				KeyFrame tempKF;
+				FBXLoaderStructs::KeyFrame tempKF;
 				FbxTime currTime;
 				currTime.SetFrame(i, FbxTime::eFrames24);
 				tempKF.m_time = (float)currTime.GetSecondDouble();
@@ -188,41 +242,38 @@ namespace FASTFBXLoader
 
 					// ONLY DO THIS ONCE
 					if (start.GetFrameCount(FbxTime::eFrames24) == i)
-						m_skeletonBindPose.bindposeInverses[currBoneIndex] =
-							FBXAMatrixToDXMatrix(globalBindposeInverseMatrix);
+						m_skeletonBindPose[currBoneIndex] = FBXAMatrixToDXMatrix(globalBindposeInverseMatrix);
 
 					unsigned int j, numOfIndices = currCluster->GetControlPointIndicesCount();
 					for (j = 0; j < numOfIndices; ++j)
 					{
 						int ctrlPointIndex = currCluster->GetControlPointIndices()[j];
-						m_controlPoints[ctrlPointIndex]->bIndices.push_back(currBoneIndex);
-						m_controlPoints[ctrlPointIndex]->bWeights.push_back(currCluster->GetControlPointWeights()[j]);
+						m_controlPoints[ctrlPointIndex]->bIndices.push_back((float)currBoneIndex);
+						m_controlPoints[ctrlPointIndex]->bWeights.push_back((float)currCluster->GetControlPointWeights()[j]);
 					}
 
 					FbxAMatrix currentTransfromOffset = _inNode->EvaluateGlobalTransform(currTime) * geometryTransform;
-					Bone tempBone;
-					tempBone.m_world = FBXAMatrixToDXMatrix(
-						currentTransfromOffset.Inverse() * currCluster->GetLink()->EvaluateGlobalTransform(currTime)
-					);
-					tempKF.m_skeleton.sk.push_back(tempBone);
+					DirectX::XMFLOAT4X4 tempBone;
+					tempBone = FBXAMatrixToDXMatrix(currentTransfromOffset.Inverse() * currCluster->GetLink()->EvaluateGlobalTransform(currTime));
+					tempKF.m_skeleton.push_back(tempBone);
 				}
 			}
 		}
 
 		for (auto itr = m_controlPoints.begin(); itr != m_controlPoints.end(); ++itr)
 		{
-			for (unsigned int i = itr->second->bIndices.size(); i <= 4; ++i)
+			for (unsigned int i = (unsigned int)itr->second->bIndices.size(); i <= 4; ++i)
 				itr->second->bIndices.push_back(0);
-			for (unsigned int i = itr->second->bWeights.size(); i <= 4; ++i)
+			for (unsigned int i = (unsigned int)itr->second->bWeights.size(); i <= 4; ++i)
 				itr->second->bWeights.push_back(0);
 		}
 	}
 
-	void FBXLoader::ProcessMesh(FbxNode * _inNode)
+	void ProcessMesh(fbxsdk::FbxNode * _inNode)
 	{
 		FbxMesh *currMesh = _inNode->GetMesh();
 		m_triangleCount = currMesh->GetPolygonCount();
-		int vertexCounter = 0;
+		unsigned short vertexCounter = 0;
 		
 		unsigned int i, j;
 		for (i = 0; i < m_triangleCount; ++i)
@@ -234,13 +285,13 @@ namespace FASTFBXLoader
 			for (j = 0; j < 3; ++j)
 			{
 				int ctrlPointIndex = currMesh->GetPolygonVertex(i, j);
-				ControlPoint *currCtrlPoint = m_controlPoints[ctrlPointIndex];
+				FBXLoaderStructs::ControlPoint *currCtrlPoint = m_controlPoints[ctrlPointIndex];
 
 				ReadNormal(currMesh, ctrlPointIndex, vertexCounter, normal[j]);
 				ReadUV(currMesh, ctrlPointIndex, currMesh->GetTextureUVIndex(i, j), 0, UV[j]);
 				ReadTangent(currMesh, ctrlPointIndex, vertexCounter, tangent[j]);
 				
-				FullVertex temp;
+				FBXLoaderStructs::FullVertex temp;
 				temp.pos = currCtrlPoint->position;
 				temp.norm = normal[j];
 				temp.uv = UV[j];
@@ -267,7 +318,7 @@ namespace FASTFBXLoader
 		m_controlPoints.clear();
 	}
 
-	void FBXLoader::ReadNormal(FbxMesh *_inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 &_outNormal)
+	void ReadNormal(fbxsdk::FbxMesh *_inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 &_outNormal)
 	{
 		FbxGeometryElementNormal* vertexNormal = _inMesh->GetElementNormal(0);
 		switch (vertexNormal->GetMappingMode())
@@ -324,7 +375,7 @@ namespace FASTFBXLoader
 		}
 	}
 
-	void FBXLoader::ReadUV(FbxMesh * _inMesh, int _inCtrlPointIndex, int _inTextureUVIndex, int _inUVLayer, DirectX::XMFLOAT2 & _outUV)
+	void ReadUV(fbxsdk::FbxMesh * _inMesh, int _inCtrlPointIndex, int _inTextureUVIndex, int _inUVLayer, DirectX::XMFLOAT2 & _outUV)
 	{
 		FbxGeometryElementUV *vertexUV = _inMesh->GetElementUV(_inUVLayer);
 		switch (vertexUV->GetMappingMode())
@@ -370,7 +421,7 @@ namespace FASTFBXLoader
 		}
 	}
 
-	void FBXLoader::ReadTangent(FbxMesh * _inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 & _outTangent)
+	void ReadTangent(fbxsdk::FbxMesh * _inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 & _outTangent)
 	{
 		FbxGeometryElementTangent *vertexTangent = _inMesh->GetElementTangent(0);
 		switch (vertexTangent->GetMappingMode())
@@ -427,7 +478,7 @@ namespace FASTFBXLoader
 		}
 	}
 
-	void FBXLoader::SortBlendingInfoByWeight(FullVertex & _vertex)
+	void SortBlendingInfoByWeight(FBXLoaderStructs::FullVertex & _vertex)
 	{
 		float indices[4] =
 		{
@@ -469,9 +520,9 @@ namespace FASTFBXLoader
 		_vertex.bWeights.w = weights[3];
 	}
 
-	void FBXLoader::Optimize()
+	void Optimize()
 	{
-		std::vector<FullVertex> uniqueVertices;
+		std::vector<FBXLoaderStructs::FullVertex> uniqueVertices;
 		unsigned int i, j;
 		for (i = 0; i < m_triangleCount; ++i)
 			for (j = 0; j < 3; ++j)
@@ -487,9 +538,9 @@ namespace FASTFBXLoader
 		uniqueVertices.clear();
 	}
 
-	int FBXLoader::FindVertex(const FullVertex & _inTargetVertex, const std::vector<FullVertex>& _uniqueVertices)
+	unsigned short FindVertex(const FBXLoaderStructs::FullVertex & _inTargetVertex, const std::vector<FBXLoaderStructs::FullVertex>& _uniqueVertices)
 	{
-		unsigned int i;
+		unsigned short i;
 		for (i = 0; i < _uniqueVertices.size(); ++i)
 			if (_inTargetVertex.pos.x == _uniqueVertices[i].pos.x &&
 				_inTargetVertex.pos.y == _uniqueVertices[i].pos.y &&
@@ -511,9 +562,10 @@ namespace FASTFBXLoader
 				_inTargetVertex.bIndices.z == _uniqueVertices[i].bIndices.z &&
 				_inTargetVertex.bIndices.w == _uniqueVertices[i].bIndices.w)
 				return i;
+		return USHRT_MAX;
 	}
 
-	unsigned int FBXLoader::FindBoneIndexUsingName(const std::string & _inBoneName)
+	unsigned int FindBoneIndexUsingName(const std::string & _inBoneName)
 	{
 		unsigned int i;
 		for (i = 0; i < m_skeletonBoneNames.size(); ++i)
@@ -522,7 +574,7 @@ namespace FASTFBXLoader
 		return UINT32_MAX;
 	}
 
-	FbxAMatrix FBXLoader::GetGeometryTransformation(FbxNode * _inNode)
+	fbxsdk::FbxAMatrix GetGeometryTransformation(fbxsdk::FbxNode * _inNode)
 	{
 		if (!_inNode)
 			return FbxAMatrix();
@@ -534,29 +586,13 @@ namespace FASTFBXLoader
 		return FbxAMatrix(lT, lR, lS);
 	}
 
-	DirectX::XMMATRIX FBXLoader::FBXAMatrixToDXMatrix(FbxAMatrix const & _inMatrix)
+	DirectX::XMFLOAT4X4 FBXAMatrixToDXMatrix(fbxsdk::FbxAMatrix const & _inMatrix)
 	{
-		DirectX::XMMATRIX retMatrix;
-		retMatrix.r[0].m128_f32[0] = (float)_inMatrix.mData[0].mData[0];
-		retMatrix.r[0].m128_f32[1] = (float)_inMatrix.mData[0].mData[1];
-		retMatrix.r[0].m128_f32[2] = (float)_inMatrix.mData[0].mData[2];
-		retMatrix.r[0].m128_f32[3] = (float)_inMatrix.mData[0].mData[3];
-
-		retMatrix.r[1].m128_f32[0] = (float)_inMatrix.mData[1].mData[0];
-		retMatrix.r[1].m128_f32[1] = (float)_inMatrix.mData[1].mData[1];
-		retMatrix.r[1].m128_f32[2] = (float)_inMatrix.mData[1].mData[2];
-		retMatrix.r[1].m128_f32[3] = (float)_inMatrix.mData[1].mData[3];
-
-		retMatrix.r[2].m128_f32[0] = (float)_inMatrix.mData[2].mData[0];
-		retMatrix.r[2].m128_f32[1] = (float)_inMatrix.mData[2].mData[1];
-		retMatrix.r[2].m128_f32[2] = (float)_inMatrix.mData[2].mData[2];
-		retMatrix.r[2].m128_f32[3] = (float)_inMatrix.mData[2].mData[3];
-
-		retMatrix.r[3].m128_f32[0] = (float)_inMatrix.mData[3].mData[0];
-		retMatrix.r[3].m128_f32[1] = (float)_inMatrix.mData[3].mData[1];
-		retMatrix.r[3].m128_f32[2] = (float)_inMatrix.mData[3].mData[2];
-		retMatrix.r[3].m128_f32[3] = (float)_inMatrix.mData[3].mData[3];
-
+		DirectX::XMFLOAT4X4 retMatrix;
+		unsigned int i, j;
+		for (i = 0; i < 4; ++i)
+			for (j = 0; j < 4; ++j)
+				retMatrix.m[i][j] = (float)_inMatrix.mData[i].mData[j];
 		return retMatrix;
 	}
 }

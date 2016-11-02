@@ -11,18 +11,29 @@ Animation::~Animation()
 {
 }
 
-const Bone * Animation::GetFrame(int _index)
+const KeyFrame * Animation::GetFrame(int _index)
 {
-	return &Bone();
+	return &m_keyFrames[_index];
 }
 
-int Animation::GetNumBones()
+unsigned int Animation::GetNumKeyFrames() const
 {
-	return 0;
+	return m_keyFrames.size();
 }
 
-void Animation::Init(int _num, ANIM_TYPE _type)
+unsigned int Animation::GetNumBones() const
 {
-	m_numKeyframes = _num;
-	m_animType = _type;
+	return m_numBones;
+}
+
+void Animation::Init(KeyFrame const *_keyFrames, unsigned int _numKeyFrames, ANIM_TYPE _animType)
+{
+	if (NULL != _numKeyFrames && nullptr != _keyFrames)
+	{
+		m_numBones = _keyFrames[0].m_bones.size();
+		m_keyFrames.resize(_numKeyFrames);
+		for (unsigned int i = 0; i < _numKeyFrames; ++i)
+			m_keyFrames[i].m_bones.resize(m_numBones);
+		memcpy_s(&m_keyFrames[0], m_keyFrames.size(), _keyFrames, _numKeyFrames);
+	}
 }

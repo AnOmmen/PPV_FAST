@@ -6,15 +6,16 @@
 
 class Animation
 {
-public:
 	ANIM_TYPE m_animType;
-	std::vector<KeyFrame> m_bones;
-	int m_numKeyframes;
+	std::vector<KeyFrame> m_keyFrames;
+	unsigned int m_numBones;
 	float m_totaltime;
+public:
 	Animation();
 	~Animation();
-	const Bone* GetFrame(int _index);
-	int GetNumBones();
-	void Init(int _num, ANIM_TYPE _type);
+	const KeyFrame* GetFrame(int _index);
+	unsigned int GetNumKeyFrames() const;
+	unsigned int GetNumBones() const;
+	void Init(KeyFrame const *_keyFrames, unsigned int _numKeyFrames, ANIM_TYPE _animType);
 };
 

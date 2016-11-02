@@ -73,6 +73,7 @@ namespace FASTFBXLoader
 	FASTFBXLOADER_API bool Load(const char * _inputPath, const char * _outputPath)
 	{
 		m_inputPath = _inputPath;
+		if(_outputPath)
 		m_outputPath = _outputPath;
 
 		FbxImporter *fbxImporter = FbxImporter::Create(m_fbxManager, "_placeHolder");
@@ -146,7 +147,7 @@ namespace FASTFBXLoader
 		for (i = 0; i < (unsigned int)_inRootNode->GetChildCount(); ++i)
 		{
 			FbxNode* currNode = _inRootNode->GetChild(i);
-
+			ProcessSKeletonRecursively(currNode);
 		}
 	}
 	
@@ -257,6 +258,7 @@ namespace FASTFBXLoader
 					tempBone = FBXAMatrixToDXMatrix(currentTransfromOffset.Inverse() * currCluster->GetLink()->EvaluateGlobalTransform(currTime));
 					tempKF.m_skeleton.push_back(tempBone);
 				}
+				m_keyFrames.push_back(tempKF);
 			}
 		}
 
@@ -423,6 +425,12 @@ namespace FASTFBXLoader
 
 	void ReadTangent(fbxsdk::FbxMesh * _inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 & _outTangent)
 	{
+		if (_inMesh->GetElementTangentCount() < 1)
+		{
+			_outTangent = DirectX::XMFLOAT3(0, 0, 0);
+			return;
+		}
+
 		FbxGeometryElementTangent *vertexTangent = _inMesh->GetElementTangent(0);
 		switch (vertexTangent->GetMappingMode())
 		{

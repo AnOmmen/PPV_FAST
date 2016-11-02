@@ -1,6 +1,6 @@
 #include "ResourceManager.h"
 #include "DDSTextureLoader.h"
-
+#include "../FAST_FBX_LOADER/FASTFBXLoader.h"
 
 ResourceManager::ResourceManager()
 {
@@ -8,20 +8,21 @@ ResourceManager::ResourceManager()
 	
 }
 
-
 ResourceManager::~ResourceManager()
 {
 	m_deviceResources->Shutdown();
 	delete m_deviceResources;
 }
 
-
 void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
 	float screenDepth, float screenNear)
 {
 	m_deviceResources->Initialize(screenWidth, screenHeight, vsync, hwnd, fullscreen, screenDepth, screenNear);
 
+	FASTFBXLoader::Init();
+	FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx", NULL);
 
+	FASTFBXLoader::Clean();
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned short> indeces;
@@ -169,8 +170,6 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 }
 
-
-
 void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device* device, XMFLOAT3 offset,
 	std::vector<Vertex> &_vertices, std::vector<unsigned short> &_indeces)
 {
@@ -194,7 +193,6 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 				int res = fscanf_s(file, "%s", header, 128);
 				if (res == EOF)
 				{
-
 					break;
 				}
 				if (strcmp(header, "v") == 0)
@@ -276,9 +274,6 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 
 	}
 }
-
-
-
 
 void ResourceManager::Update(bool* keys, float dt)
 {

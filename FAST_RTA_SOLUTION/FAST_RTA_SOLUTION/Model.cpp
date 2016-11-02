@@ -2,31 +2,40 @@
 
 
 
-void Model::Update(XMMATRIX & _matrix)
+void Model::Update(DirectX::XMMATRIX & _matrix)
 {
 	//the parent passes their updated matrix to each child
 	//child must update their world matrix according to the parent's matrix
 	//child must also change their local matrix based on the changes
+	m_world = XMMatrixMultiply(m_world, _matrix);
 }
 
 Model::Model()
 {
-	m_local = XMMatrixIdentity();
-	m_world = XMMatrixIdentity();
-}
 
+
+}
+Model::Model(ID3D11Device* device, std::vector<Vertex> _vertices, std::vector<unsigned short> _indices)
+{
+	m_Mesh = new Mesh(device);
+	m_Mesh->CreateMesh(device, _vertices, _indices);
+	m_world = DirectX::XMMatrixIdentity();
+	m_local = DirectX::XMMatrixIdentity();
+	shaderview = nullptr;
+}
 
 Model::~Model()
 {
 
 }
 
-void Model::Update()
+void Model::Update(float dt)
 {
 	//stuff that we havent decided yet
+
 }
 
-const XMMATRIX & Model::GetWorldMat()
+const DirectX::XMMATRIX & Model::GetWorldMat()
 {
 	return m_world;
 }
@@ -63,4 +72,22 @@ size_t Model::GetChildCount() const
 Model& Model::GetChild(unsigned int _index) const
 {
 	return *m_children[_index];
+}
+
+
+unsigned short Model::GetNumIndeces()
+{
+	return m_Mesh->GetNumIndeces();
+}
+
+
+ID3D11Buffer** Model::GetVertBuffer()
+{
+	return m_Mesh->Mesh::GetVertBuff();
+}
+
+
+ID3D11Buffer** Model::GetIndexBuffer()
+{
+	return m_Mesh->Mesh::GetIndexBuff();
 }

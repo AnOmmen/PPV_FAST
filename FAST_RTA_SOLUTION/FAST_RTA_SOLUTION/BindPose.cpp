@@ -11,16 +11,19 @@ BindPose::~BindPose()
 {
 }
 
-const XMMATRIX * BindPose::GetBindPose()
+const DirectX::XMFLOAT4X4 * BindPose::GetBindPose() const
 {
-	return nullptr;
+	return &bindposeInverses[0];
 }
 
-int BindPose::GetNumBones()
+int BindPose::GetNumBones() const
 {
-	return 0;
+	return bindposeInverses.size();
 }
 
-void BindPose::init(int _num, XMMATRIX * _mat)
+void BindPose::init(int _num, const DirectX::XMFLOAT4X4 * _mat)
 {
+	bindposeInverses.clear();
+	bindposeInverses.resize(_num);
+	memcpy_s(&bindposeInverses[0], bindposeInverses.size(), _mat, _num);
 }

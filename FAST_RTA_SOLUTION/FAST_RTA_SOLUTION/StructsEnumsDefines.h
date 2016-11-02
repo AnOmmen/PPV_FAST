@@ -1,8 +1,7 @@
 #pragma once
-#include <d3d11.h>
 #include <vector>
 #include <DirectXMath.h>
-using namespace DirectX;
+
 enum ANIM_TYPE
 {
 	LOOP = 0,
@@ -10,16 +9,23 @@ enum ANIM_TYPE
 	RETURN_LAST = 2,
 	RUN_ONCE = 1
 };
+
 struct Bone
 {
-	XMMATRIX m_world;
+	DirectX::XMMATRIX m_world;
 };
+
+struct Skeleton
+{
+	std::vector<Bone> sk;
+};
+
 struct KeyFrame
 {
-	int m_numBones;
 	float m_time;
-	std::vector<Bone> m_worldVec;
+	Skeleton m_skeleton;
 };
+
 enum BLEND_TYPE
 {
 	CUR_GO_NEXT_GO,
@@ -29,8 +35,19 @@ enum BLEND_TYPE
 	DEFAULT,
 	POP_NEXT
 };
+
 struct BlendInfo
 {
 	BLEND_TYPE m_blendStyle;
 	float m_totalBlendTime;
+};
+
+struct FullVertex
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT3 norm;
+	DirectX::XMFLOAT3 tan;
+	DirectX::XMFLOAT4 bWeights;
+	DirectX::XMFLOAT4 bIndices;
 };

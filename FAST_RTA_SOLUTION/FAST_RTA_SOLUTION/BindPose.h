@@ -1,17 +1,15 @@
 #pragma once
 #include <vector>
-#include <d3d11.h>
 #include <DirectXMath.h>
-using namespace DirectX;
+
 class BindPose
 {
+	std::vector<DirectX::XMFLOAT4X4> bindposeInverses;
 public:
-	XMMATRIX m_invBindPose;
-	int num_bones;
 	BindPose();
 	~BindPose();
-	const XMMATRIX* GetBindPose();
-	int GetNumBones();
-	void init(int _num, XMMATRIX* _mat);
+	const DirectX::XMFLOAT4X4* GetBindPose() const;
+	int GetNumBones() const;
+	void init(int _num, const DirectX::XMFLOAT4X4* _mat);
 };
 

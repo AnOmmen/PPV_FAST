@@ -58,6 +58,7 @@ namespace FASTFBXLoader
 
 	FASTFBXLOADER_API bool Init()
 	{
+		m_vertices.resize(1);
 		m_fbxManager = FbxManager::Create();
 		if (!m_fbxManager)
 			return false;
@@ -66,7 +67,7 @@ namespace FASTFBXLoader
 		m_fbxManager->SetIOSettings(fbxIOSettings);
 
 		m_fbxScene = FbxScene::Create(m_fbxManager, "_placeHolder");
-
+		
 		return true;
 	}
 
@@ -127,7 +128,10 @@ namespace FASTFBXLoader
 
 	FASTFBXLOADER_API void * GetVertices()
 	{
-		return &m_vertices[0];
+		if (m_vertices.size())
+			return &m_vertices[0];
+		else
+			return NULL;
 	}
 
 	FASTFBXLOADER_API unsigned int GetVertexCount()

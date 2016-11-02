@@ -60,7 +60,7 @@ void Renderer::AddModel(ID3D11Device* device, HWND hwnd, Model* key)
 	m_objects.push_back(key);
 	if (m_objects.size() == 1)
 	{
-		m_polyShader->AddModel(key, vs, ps, NULL, device, hwnd, L"VertexShader.hlsl", L"SkyboxPixelShader.hlsl", NULL);
+		m_polyShader->AddModel(key, vs, ps, NULL, device, hwnd, L"VertexShader.hlsl", L"PixelShader.hlsl", NULL);
 	}
 	else
 	{
@@ -72,9 +72,9 @@ void Renderer::Update(bool* keys, float dt)
 {
 	m_light->Update(keys, dt);
 	m_camera->Update(keys, dt);
-	m_objects[0]->Update(dt);
-	m_objects[1]->Update(-dt);
-	m_objects[2]->Update(-dt);
-
-
+	
+	for (size_t i = 0; i < m_objects.size(); i++)
+	{
+		m_objects[i]->Update(dt);
+	}
 }

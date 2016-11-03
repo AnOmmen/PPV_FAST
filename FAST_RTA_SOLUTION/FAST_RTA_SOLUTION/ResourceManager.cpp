@@ -22,7 +22,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 	m_renderer = new Renderer(m_deviceResources->GetDevice(), m_deviceResources->GetDeviceContext());
 	{
 		FASTFBXLoader::Init();
-		FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx", NULL);
+		FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx");
 		Model* model;
 		std::vector<FullVertex> vertices;
 		std::vector<unsigned short>* pindeces;

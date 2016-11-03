@@ -58,9 +58,9 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj)
 void Renderer::AddModel(ID3D11Device* device, HWND hwnd, Model* key)
 {
 	m_objects.push_back(key);
-	if (m_objects.size() == 1)
+	if (key->hasAnimation)
 	{
-		m_polyShader->AddModel(key, vs, ps, NULL, device, hwnd, L"VertexShader.hlsl", L"PixelShader.hlsl", NULL);
+		m_polyShader->AddModel(key, vs, ps, NULL, device, hwnd, L"SkinningShader.hlsl", L"PixelShader.hlsl", NULL);
 	}
 	else
 	{

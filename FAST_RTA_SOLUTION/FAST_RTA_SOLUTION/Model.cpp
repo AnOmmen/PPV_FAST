@@ -17,6 +17,7 @@ Model::Model()
 }
 Model::Model(ID3D11Device* device, std::vector<Vertex> _vertices, std::vector<unsigned short> _indices)
 {
+	hasAnimation = false;
 	m_Mesh = new Mesh(device);
 	m_Mesh->CreateMesh(device, _vertices, _indices);
 	m_world = DirectX::XMMatrixIdentity();

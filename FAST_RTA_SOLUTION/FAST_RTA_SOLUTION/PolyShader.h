@@ -12,8 +12,8 @@ private:
 	std::unordered_map<Model*, ID3D11VertexShader*> m_vs;
 	std::unordered_map<Model*, ID3D11PixelShader*> m_ps;
 	std::unordered_map<Model*, ID3D11GeometryShader*> m_gs;
-	ID3D11InputLayout* m_layout;
-	ID3D11Buffer* m_matrixBuffer;
+	ID3D11InputLayout** m_layout;
+	ID3D11Buffer* m_matrixBuffer[2];
 
 	struct MatrixBufferType
 	{

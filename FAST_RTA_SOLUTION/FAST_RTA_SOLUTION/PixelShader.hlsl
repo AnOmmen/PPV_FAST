@@ -18,7 +18,7 @@ cbuffer LightBuffer
 
 float4 main(PSINPUT input) : SV_TARGET
 {
-    float4 baseColor = float4(1.0f, 0.0f, 0.0f, 1.0f); //input.color;
+    float4 baseColor = input.color; //input.color;
     float3 color1, color2, color3;
     color1 = DirLight(light[0].pos, input.normal, light[0].color);
     color2 = PointLight(light[1].pos, input.world, input.normal, light[1].color, light[1].r);

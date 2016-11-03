@@ -22,7 +22,6 @@ struct PSINPUT
 PSINPUT main(VSINPUT input)
 {
 	PSINPUT output;
-	
     // Change the position vector to be 4 units for proper matrix calculations.
 	input.position.w = 1.0f;
     output.world = float4(input.position.xyz, 1.0f);
@@ -32,7 +31,7 @@ PSINPUT main(VSINPUT input)
 	output.position = mul(output.position, viewMatrix);
 	output.position = mul(output.position, projectionMatrix);
     // Store the input color for the pixel shader to use.
-	output.color = float4(1.0, 0.0, 0.0, 1.0);
+	output.color = input.color;
     output.normal = mul(input.normal, worldMatrix);
     output.normal = normalize(output.normal);
 	return output;

@@ -59,7 +59,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 		model = new Model(m_deviceResources->GetDevice(), rverts, indeces);
 
-
+		model->hasAnimation = false;//true;
 		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 
 

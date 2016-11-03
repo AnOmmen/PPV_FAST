@@ -169,6 +169,9 @@
     <FxCompile Include="SkyboxPixelShader.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>
+    <FxCompile Include="SkinningShader.hlsl">
+      <Filter>Shaders\VertexShaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">

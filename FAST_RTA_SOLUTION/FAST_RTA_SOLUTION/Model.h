@@ -34,6 +34,7 @@ public:
 	unsigned short GetNumIndeces();
 	ID3D11Buffer** GetVertBuffer();
 	ID3D11Buffer** GetIndexBuffer();
+	bool hasAnimation;
 
 
 };

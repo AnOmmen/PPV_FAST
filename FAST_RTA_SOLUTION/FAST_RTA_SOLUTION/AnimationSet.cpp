@@ -1,5 +1,5 @@
 #include "AnimationSet.h"
-
+#include "../FAST_BINARY_IO/FASTBinaryIO.h"
 
 
 AnimationSet::AnimationSet() : m_bindPose(nullptr), m_defaultAnim(NULL)
@@ -13,6 +13,14 @@ AnimationSet::~AnimationSet()
 
 bool AnimationSet::AddAnimation(FILE * _file)
 {
+	FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::WRITE);
+	std::string thing = "hi-oh!";
+	unsigned long num;
+	FASTBinaryIO::Open(fastFile, "../guyo.txt");
+	FASTBinaryIO::Write(fastFile, thing.size() + 1, thing.c_str(), num);
+	FASTBinaryIO::Close(fastFile);
+	FASTBinaryIO::Destroy(fastFile);
+
 	return false;
 }
 

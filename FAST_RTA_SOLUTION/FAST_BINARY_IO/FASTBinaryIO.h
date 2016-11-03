@@ -14,20 +14,20 @@ namespace FASTBinaryIO
 		{
 			WRITE,
 			APPEND,
-			READ,
-			NUMIOS
+			READ
 		};
 	
 	FASTBINARYIO_API FASTFile * Create(IOMODE _iomode);
 	FASTBINARYIO_API void Destroy(FASTFile *_fastFile);
+	FASTBINARYIO_API void ChangeIOMode(FASTFile *_fastFile, IOMODE _iomode);
 	FASTBINARYIO_API bool Open(FASTFile *_fastFile, const char *_filePath);
 	FASTBINARYIO_API bool Close(FASTFile *_fastFile);
 	FASTBINARYIO_API bool ToStart(FASTFile *_fastFile);
 	FASTBINARYIO_API bool ToEnd(FASTFile *_fastFile);
 	FASTBINARYIO_API bool MoveTo(FASTFile *_fastFile, unsigned long _offset);
 	FASTBINARYIO_API bool Move(FASTFile *_fastFile, unsigned long _offset);
-	FASTBINARYIO_API bool ReadTo(FASTFile *_fastFile, unsigned long _size, void **_data, unsigned long &_read);
-	FASTBINARYIO_API bool ReadAll(FASTFile *_fastFile, void **_data, unsigned long &_read);
+	FASTBINARYIO_API bool ReadTo(FASTFile *_fastFile, unsigned long _size, char **_data, unsigned long &_read);
+	FASTBINARYIO_API bool ReadAll(FASTFile *_fastFile, char **_data, unsigned long &_read);
 	FASTBINARYIO_API bool IsEOF(FASTFile *_fastFile);
 	FASTBINARYIO_API bool Write(FASTFile *_fastFile, unsigned long _size, char const *_data, unsigned long &_wrote);
 }

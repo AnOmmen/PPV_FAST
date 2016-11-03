@@ -10,15 +10,16 @@ namespace FASTBinaryIO
 		unsigned long fileLength;
 		FASTFile(IOMODE _iomode) : file(nullptr), iomode(_iomode), fileLength(0) { }
 		FASTFile(const FASTFile &) { }
-		friend FASTFile * FASTBinaryIO::Create(IOMODE _iomode);
-		friend bool FASTBinaryIO::Open(FASTFile *_fastFile, const char *_filePath);
+		friend FASTFile * Create(IOMODE _iomode);
+		friend void ChangeIOMode(FASTFile *_fastFile, IOMODE _iomode);
+		friend bool Open(FASTFile *_fastFile, const char *_filePath);
 		friend bool Close(FASTFile *_fastFile);
 		friend bool ToStart(FASTFile *_fastFile);
 		friend bool ToEnd(FASTFile *_fastFile);
 		friend bool MoveTo(FASTFile *_fastFile, unsigned long _offset);
 		friend bool Move(FASTFile *_fastFile, unsigned long _offset);
-		friend bool ReadTo(FASTFile *_fastFile, unsigned long _size, void **_data, unsigned long &_read);
-		friend bool ReadAll(FASTFile *_fastFile, void **_data, unsigned long &_read);
+		friend bool ReadTo(FASTFile *_fastFile, unsigned long _size, char **_data, unsigned long &_read);
+		friend bool ReadAll(FASTFile *_fastFile, char **_data, unsigned long &_read);
 		friend bool IsEOF(FASTFile *_fastFile);
 		friend bool Write(FASTFile *_fastFile, unsigned long _size, char const *_data, unsigned long &_wrote);
 	};
@@ -32,6 +33,11 @@ namespace FASTBinaryIO
 	FASTBINARYIO_API void Destroy(FASTFile *_fastFile)
 	{
 		delete _fastFile;
+	}
+
+	FASTBINARYIO_API void ChangeIOMode(FASTFile *_fastFile, IOMODE _iomode)
+	{
+		_fastFile->iomode = _iomode;
 	}
 
 	FASTBINARYIO_API bool Open(FASTFile *_fastFile, const char *_filePath)
@@ -109,20 +115,20 @@ namespace FASTBinaryIO
 		return false;
 	}
 
-	FASTBINARYIO_API bool ReadTo(FASTFile *_fastFile, unsigned long _size, void **_data, unsigned long &_read)
+	FASTBINARYIO_API bool ReadTo(FASTFile *_fastFile, unsigned long _size, char **_data, unsigned long &_read)
 	{
 		if (UINT32_MAX == _size)
 			return false;
 		
-		*_data = new uint8_t[_size];
-		_read = (unsigned long)fread_s(*_data, _size, sizeof(uint8_t), _size, _fastFile->file);
+		*_data = new char[_size];
+		_read = (unsigned long)fread_s(*_data, _size, sizeof(char), _size, _fastFile->file);
 
 		if (_read == _size)
 			return true;
 		
 		int ret = feof(_fastFile->file);
 
-		uint8_t *temp = new uint8_t[_read];
+		char *temp = new char[_read];
 		memcpy_s(temp, _read, *_data, _read);
 		delete[] * _data;
 		*_data = temp;
@@ -132,18 +138,18 @@ namespace FASTBinaryIO
 		return false;
 	}
 
-	FASTBINARYIO_API bool ReadAll(FASTFile *_fastFile, void **_data, unsigned long &_read)
+	FASTBINARYIO_API bool ReadAll(FASTFile *_fastFile, char **_data, unsigned long &_read)
 	{
 		_read = _fastFile->fileLength;
-		*_data = new uint8_t[_read];
-		_read = (unsigned long)fread_s(*_data, _read, sizeof(uint8_t), _read, _fastFile->file);
+		*_data = new char[_read];
+		_read = (unsigned long)fread_s(*_data, _read, sizeof(char), _read, _fastFile->file);
 		
 		if (_read == _fastFile->fileLength)
 			return true;
 
 		int ret = feof(_fastFile->file);
 
-		uint8_t *temp = new uint8_t[_read];
+		char *temp = new char[_read];
 		memcpy_s(temp, _read, *_data, _read);
 		delete[] * _data;
 		*_data = temp;

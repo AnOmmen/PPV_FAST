@@ -28,9 +28,12 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short *_ind
 			unsigned long toRead = (*(unsigned long*)&header[0] * INDICES_PER_TRI * sizeof(unsigned short)) +
 				(*(unsigned long*)&header[4] * sizeof(FullVertex)) +
 				(*(unsigned long*)&header[8] * sizeof(DirectX::XMFLOAT4X4));
-			if (FASTBinaryIO::ReadTo(fastFile, toRead, &block, read))
+			if (m_bindPose)
+				FASTBinaryIO::Move(fastFile, toRead);
+			else
 			{
-				memcpy_s(_indices, *(unsigned long*)&)
+				if (!FASTBinaryIO::ReadTo(fastFile, toRead, &block, read))
+					return false;
 			}
 		}
 	}

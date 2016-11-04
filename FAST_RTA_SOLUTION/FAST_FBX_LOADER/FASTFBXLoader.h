@@ -9,18 +9,8 @@
 
 #include <vector>
 
-namespace fbxsdk
-{
-	class FbxNode;
-	class FbxMesh;
-	class FbxAMatrix;
-}
-
 namespace DirectX
 {
-	struct XMFLOAT2;
-	struct XMFLOAT3;
-	struct XMFLOAT4;
 	struct XMFLOAT4X4;
 }
 

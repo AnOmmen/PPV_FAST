@@ -26,15 +26,10 @@ unsigned int Animation::GetNumBones() const
 	return m_numBones;
 }
 
-// COPIES INFORMATION DOES NOT STORE IT DYNAMICALLY //
-void Animation::Init(KeyFrame const *_keyFrames, unsigned int _numKeyFrames, ANIM_TYPE _animType)
+void Animation::Init(std::vector<KeyFrame> &_keyFrames, ANIM_TYPE _animType)
 {
-	if (NULL != _numKeyFrames && nullptr != _keyFrames)
-	{
-		m_numBones = _keyFrames[0].m_bones.size();
-		m_keyFrames.resize(_numKeyFrames);
-		for (unsigned int i = 0; i < _numKeyFrames; ++i)
-			m_keyFrames[i].m_bones.resize(m_numBones);
-		memcpy_s(&m_keyFrames[0], m_keyFrames.size(), _keyFrames, _numKeyFrames);
-	}
+	m_keyFrames = _keyFrames;
+	m_animType = _animType;
+	m_numBones = m_keyFrames[0].m_bones.size();
+	m_totaltime = m_keyFrames[m_keyFrames.size() - 1].m_time - m_keyFrames[0].m_time;
 }

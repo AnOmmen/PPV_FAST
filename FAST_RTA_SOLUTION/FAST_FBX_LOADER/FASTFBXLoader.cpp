@@ -110,28 +110,39 @@ namespace FASTFBXLoader
 		return true;
 	}
 
-#define HEADER_SIZE		16
+#define TRIANGLE_COUNT		0
+#define VERTEX_COUNT		1
+#define BONE_COUNT			2
+#define KEYFRAME_COUNT		3
+#define HEADER_SIZE			4
 	FASTFBXLOADER_API bool Export(const char * _outputPath)
 	{
 		FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::WRITE);
 		if (FASTBinaryIO::Open(fastFile, _outputPath))
 		{
-			char header[HEADER_SIZE];
-			*(unsigned long*)header[0] = m_triangleCount;
-			*(unsigned long*)header[4] = m_vertices.size();
-			*(unsigned long*)header[8] = m_skeletonBindPose.size();
-			*(unsigned long*)header[12] = m_keyFrames.size();
+			unsigned long header[HEADER_SIZE];
+			header[TRIANGLE_COUNT] = m_triangleCount;
+			header[VERTEX_COUNT] = m_vertices.size();
+			header[BONE_COUNT] = m_skeletonBindPose.size();
+			header[KEYFRAME_COUNT] = m_keyFrames.size();
 			unsigned long wrote;
-			if (FASTBinaryIO::Write(fastFile, HEADER_SIZE, header, wrote))
+			if (FASTBinaryIO::Write(fastFile, HEADER_SIZE * sizeof(unsigned long), (char*)header, wrote))
 				if (FASTBinaryIO::Write(fastFile, m_indices.size() * sizeof(unsigned short), (char*)&m_indices[0], wrote))
 					if (FASTBinaryIO::Write(fastFile, m_vertices.size() * sizeof(FBXLoaderStructs::FullVertex), (char*)&m_vertices[0], wrote))
 						if (FASTBinaryIO::Write(fastFile, m_skeletonBindPose.size() * sizeof(DirectX::XMFLOAT4X4), (char*)&m_skeletonBindPose[0], wrote))
-							if (FASTBinaryIO::Write(fastFile, m_keyFrames.size() * sizeof(m_keyFrames[0]), (char*)&m_keyFrames[0], wrote))
-							{
-								FASTBinaryIO::Close(fastFile);
-								FASTBinaryIO::Destroy(fastFile);
-								return true;
-							}
+						{
+							for (unsigned long i = 0; i < m_keyFrames.size(); ++i)
+								if (!FASTBinaryIO::Write(fastFile, sizeof(float), (char*)&m_keyFrames[i].m_time, wrote) ||
+									!FASTBinaryIO::Write(fastFile, m_keyFrames[i].m_skeleton.size() * sizeof(DirectX::XMFLOAT4X4), (char*)&m_keyFrames[i].m_skeleton[0], wrote))
+								{
+									FASTBinaryIO::Close(fastFile);
+									FASTBinaryIO::Destroy(fastFile);
+									return false;
+								}
+							FASTBinaryIO::Close(fastFile);
+							FASTBinaryIO::Destroy(fastFile);
+							return true;
+						}
 		}
 		FASTBinaryIO::Close(fastFile);
 		FASTBinaryIO::Destroy(fastFile);

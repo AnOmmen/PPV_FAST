@@ -9,7 +9,8 @@ public:
 	BindPose();
 	~BindPose();
 	const DirectX::XMFLOAT4X4* GetBindPose() const;
-	int GetNumBones() const;
-	void init(int _num, const DirectX::XMFLOAT4X4* _mat);
+	unsigned long GetNumBones() const;
+	// THIS COPIES DATA, IT DOES NOT POINT TO THE CONSTANT DATA //
+	void init(unsigned long _num, const DirectX::XMFLOAT4X4* _mat);
 };
 

@@ -16,6 +16,7 @@ public:
 	const KeyFrame* GetFrame(int _index);
 	unsigned int GetNumKeyFrames() const;
 	unsigned int GetNumBones() const;
-	void Init(KeyFrame const *_keyFrames, unsigned int _numKeyFrames, ANIM_TYPE _animType);
+	// COPIES INFORMATION DOES NOT STORE IT DYNAMICALLY //
+	void Init(std::vector<KeyFrame> &_keyFrames, ANIM_TYPE _animType);
 };
 

@@ -30,7 +30,7 @@ ID3D11Buffer** Mesh::GetIndexBuff()
 	return &indexBuffer;
 }
 
-void Mesh::CreateMesh(ID3D11Device* device, std::vector<Vertex> _vertices, std::vector<unsigned short> _indices)
+void Mesh::CreateMesh(ID3D11Device* device, std::vector<FullVertex> _vertices, std::vector<unsigned short> _indices)
 {
 	
 

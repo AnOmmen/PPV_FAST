@@ -12,14 +12,20 @@ private:
 	std::unordered_map<Model*, ID3D11VertexShader*> m_vs;
 	std::unordered_map<Model*, ID3D11PixelShader*> m_ps;
 	std::unordered_map<Model*, ID3D11GeometryShader*> m_gs;
-	ID3D11InputLayout** m_layout;
-	ID3D11Buffer* m_matrixBuffer[2];
+	ID3D11InputLayout* m_layout;
+	ID3D11Buffer* m_matrixBuffer;
+	ID3D11Buffer* m_changeBuffer;
 
 	struct MatrixBufferType
 	{
 		XMMATRIX world;
 		XMMATRIX view;
 		XMMATRIX projection;
+	};
+
+	struct ChangeBufferType
+	{
+		XMFLOAT4X4 BoneOffset[32];
 	};
 	unsigned int m_modelCount;
 
@@ -29,6 +35,7 @@ private:
 	void RenderShader(ID3D11DeviceContext*, int, Model* key);
 
 public:
+	XMFLOAT4X4 offsets[32];
 	PolyShader();
 	~PolyShader();
 

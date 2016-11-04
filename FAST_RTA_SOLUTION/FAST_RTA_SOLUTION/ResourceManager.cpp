@@ -39,25 +39,9 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		void * verts = FASTFBXLoader::GetVertices();
 
 		memcpy(&vertices[0], verts, vertexCount * sizeof(FullVertex));
-		
-
-		std::vector<Vertex> rverts;
 	
-		float* vertArray = (float*)verts;
-		for (size_t i = 0; i < vertexCount; i++)
-		{
-			Vertex temp;
-			temp.color = XMFLOAT4(0.0, 1.0, 1.0, 1.0);
-			temp.pos = XMFLOAT4(vertices[i].pos.x, vertices[i].pos.y, vertices[i].pos.z, 1.0f);
-			temp.norm = XMFLOAT4(vertices[i].norm.x, vertices[i].norm.y, vertices[i].norm.z, 1.0f);
-			
-			rverts.push_back(temp);
-		}
 
-
-
-
-		model = new Model(m_deviceResources->GetDevice(), rverts, indeces);
+		model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
 
 		model->hasAnimation = false;//true;
 		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
@@ -68,6 +52,15 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		std::vector<XMFLOAT4X4> mats;
 		mats = FASTFBXLoader::GetBindPose();
 		bindpose.init(mats.size(), &mats[0]);
+		unsigned int KFCount = FASTFBXLoader::GetKeyFrameCount();
+		std::vector<KeyFrame> KF;
+		KF.resize(KFCount);
+		void * keys = FASTFBXLoader::GetKeyFrames();
+		memcpy(&KF[0], keys, KFCount * sizeof(KeyFrame));
+
+		memcpy(&m_renderer->m_polyShader->offsets[0], &mats[0], mats.size() * sizeof(XMFLOAT4X4));
+		
+		
 
 
 		FASTFBXLoader::Clean();
@@ -96,45 +89,45 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 	//m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 	//
 	//
-	Vertex topright, topleft, bottomright, bottomleft;
-	topright.pos = XMFLOAT4(10, 0, 10, 1);
-	topleft.pos = XMFLOAT4(-10, 0, 10, 1);
-	bottomright.pos = XMFLOAT4(10, 0, -10, 1);
-	bottomleft.pos = XMFLOAT4(-10, 0, -10, 1);
-	
-	topright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	topleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	bottomright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	bottomleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	
-	topright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	topleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	bottomright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	bottomleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	
-	vertices.clear();
-	vertices.push_back(topleft);
-	vertices.push_back(topright);
-	vertices.push_back(bottomleft);
-	vertices.push_back(bottomright);
-	
-	//1, 2, 4
-	
-	indeces.clear();
-	indeces.push_back(0);
-	indeces.push_back(1);
-	indeces.push_back(2);
-	
-	//2, 4, 3
-	indeces.push_back(1);
-	indeces.push_back(3);
-	indeces.push_back(2);
-	
-	
-	
-	
-	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
+	//FullVertex topright, topleft, bottomright, bottomleft;
+	//topright.pos = XMFLOAT3(10, 0, 10, 1);
+	//topleft.pos = XMFLOAT4(-10, 0, 10, 1);
+	//bottomright.pos = XMFLOAT4(10, 0, -10, 1);
+	//bottomleft.pos = XMFLOAT4(-10, 0, -10, 1);
+	//
+	//topright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	//topleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	//bottomright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	//bottomleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	//
+	//topright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//topleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//bottomright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//bottomleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//
+	//vertices.clear();
+	//vertices.push_back(topleft);
+	//vertices.push_back(topright);
+	//vertices.push_back(bottomleft);
+	//vertices.push_back(bottomright);
+	//
+	////1, 2, 4
+	//
+	//indeces.clear();
+	//indeces.push_back(0);
+	//indeces.push_back(1);
+	//indeces.push_back(2);
+	//
+	////2, 4, 3
+	//indeces.push_back(1);
+	//indeces.push_back(3);
+	//indeces.push_back(2);
+	//
+	//
+	//
+	//
+	//model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+	//m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 	//
 	//std::vector<unsigned short> backward;
 	//backward.resize(indeces.size());

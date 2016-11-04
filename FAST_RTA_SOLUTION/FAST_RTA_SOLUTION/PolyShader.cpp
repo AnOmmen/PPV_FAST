@@ -7,9 +7,7 @@ PolyShader::PolyShader()
 	m_modelCount = 0;
 	// Create the vertex input layout description.
 	// This setup needs to match the VertexType stucture in the Model Class and in the shader.
-	m_layout = new ID3D11InputLayout*[2];
-	m_layout[0] = 0;
-	m_layout[1] = 0;
+	ZeroMemory(offsets, 32 * sizeof(XMFLOAT4X4));
 }
 
 
@@ -32,19 +30,17 @@ void PolyShader::ShutdownShader(Model* key)
 
 	if (m_matrixBuffer)
 	{
-		m_matrixBuffer[0]->Release();
-		m_matrixBuffer[0] = 0;
-		m_matrixBuffer[1]->Release();
-		m_matrixBuffer[1] = 0;
+		m_matrixBuffer->Release();
+		m_matrixBuffer = 0;
+
 	}
 
 	// Release the layout.
 	if (m_layout)
 	{
-		m_layout[0]->Release();
-		m_layout[0] = 0;
-		m_layout[1]->Release();
-		m_layout[1] = 0;
+		m_layout->Release();
+		m_layout = 0;
+
 	}
 
 	// Release the pixel shader.
@@ -76,8 +72,10 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	XMMATRIX projectionMatrix, Model* key)
 {
 	HRESULT result;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	D3D11_MAPPED_SUBRESOURCE mappedResource, mr;
 	MatrixBufferType* dataPtr = new MatrixBufferType;
+	ChangeBufferType* changePtr = new ChangeBufferType;
+
 	unsigned int bufferNumber;
 
 	// Transpose the matrices to prepare them for the shader.
@@ -86,44 +84,41 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
 	// Lock the constant buffer so it can be written to.
-	if (key->hasAnimation)
-	{
-		deviceContext->Map(m_matrixBuffer[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+		deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		dataPtr = (MatrixBufferType*)(mappedResource.pData);
 		// Copy the matrices into the constant buffer.
 		dataPtr->world = worldMatrix;
 		dataPtr->view = viewMatrix;
 		dataPtr->projection = projectionMatrix;
-		//deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
-		deviceContext->Unmap(m_matrixBuffer[0], 0);
+		deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
+		deviceContext->Unmap(m_matrixBuffer, 0);
 
-		// Set the position of the constant buffer in the vertex shader.
-		bufferNumber = 0;
 
-		// Finanly set the constant buffer in the vertex shader with the updated values.
-		deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer[0]);
-		if (key->shaderview)
-			deviceContext->PSSetShaderResources(0, 1, &key->shaderview);
-	}
-	else
-	{
-		deviceContext->Map(m_matrixBuffer[1], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		dataPtr = (MatrixBufferType*)(mappedResource.pData);
+		deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mr);
+		changePtr = (ChangeBufferType*)(mappedResource.pData);
 		// Copy the matrices into the constant buffer.
-		dataPtr->world = worldMatrix;
-		dataPtr->view = viewMatrix;
-		dataPtr->projection = projectionMatrix;
-		//deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
-		deviceContext->Unmap(m_matrixBuffer[1], 0);
 
+		for (size_t i = 0; i < 32; i++)
+		{
+			changePtr->BoneOffset[i] = offsets[i];
+		}
+		
+
+		deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);
+		deviceContext->Unmap(m_changeBuffer, 0);
 		// Set the position of the constant buffer in the vertex shader.
 		bufferNumber = 0;
 
 		// Finanly set the constant buffer in the vertex shader with the updated values.
-		deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer[1]);
+		deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_changeBuffer);
+		bufferNumber++;
+		deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+
 		if (key->shaderview)
 			deviceContext->PSSetShaderResources(0, 1, &key->shaderview);
-	}
+	
+	
 	//delete dataPtr;
 
 	return true;
@@ -135,10 +130,9 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 void PolyShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount, Model* key)
 {
 	// Set the vertex input layout.
-	if(key->hasAnimation)
-		deviceContext->IASetInputLayout(m_layout[0]);
-	else
-		deviceContext->IASetInputLayout(m_layout[1]);
+
+	deviceContext->IASetInputLayout(m_layout);
+
 
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	UINT stride = sizeof(Vertex);
@@ -184,6 +178,7 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 
 	
 	D3D11_BUFFER_DESC* matrixBufferDesc = new D3D11_BUFFER_DESC;
+	D3D11_BUFFER_DESC* changeBufferDesc = new D3D11_BUFFER_DESC;
 
 
 	// Initialize the pointers this function will use to null.
@@ -251,137 +246,90 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 	}
 
 	numElements = 0;
-		if (key->hasAnimation && !m_layout[0])
-		{
-			D3D11_INPUT_ELEMENT_DESC polygonLayout[6];
-			polygonLayout[numElements].SemanticName = "POSITION";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
+	if (m_layout)
+	{
+		D3D11_INPUT_ELEMENT_DESC polygonLayout[6];
+		polygonLayout[numElements].SemanticName = "POSITION";
+		polygonLayout[numElements].SemanticIndex = 0;
+		polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		polygonLayout[numElements].InputSlot = 0;
+		polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		polygonLayout[numElements].InstanceDataStepRate = 0;
+		numElements++;
 
-			polygonLayout[numElements].SemanticName = "UV";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
+		polygonLayout[numElements].SemanticName = "UV";
+		polygonLayout[numElements].SemanticIndex = 0;
+		polygonLayout[numElements].Format = DXGI_FORMAT_R32G32_FLOAT;
+		polygonLayout[numElements].InputSlot = 0;
+		polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		polygonLayout[numElements].InstanceDataStepRate = 0;
+		numElements++;
 
-			polygonLayout[numElements].SemanticName = "NORMAL";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
-
-
-			polygonLayout[numElements].SemanticName = "TANGENT";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
-
-			polygonLayout[numElements].SemanticName = "BWEIGHTS";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
-
-			polygonLayout[numElements].SemanticName = "BINDICES";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
+		polygonLayout[numElements].SemanticName = "NORMAL";
+		polygonLayout[numElements].SemanticIndex = 0;
+		polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		polygonLayout[numElements].InputSlot = 0;
+		polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		polygonLayout[numElements].InstanceDataStepRate = 0;
+		numElements++;
 
 
-			device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
-				vertexShaderBuffer->GetBufferSize(), &m_layout[0]);
+		polygonLayout[numElements].SemanticName = "TANGENT";
+		polygonLayout[numElements].SemanticIndex = 0;
+		polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		polygonLayout[numElements].InputSlot = 0;
+		polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		polygonLayout[numElements].InstanceDataStepRate = 0;
+		numElements++;
+
+		polygonLayout[numElements].SemanticName = "BWEIGHTS";
+		polygonLayout[numElements].SemanticIndex = 0;
+		polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		polygonLayout[numElements].InputSlot = 0;
+		polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		polygonLayout[numElements].InstanceDataStepRate = 0;
+		numElements++;
+
+		polygonLayout[numElements].SemanticName = "BINDICES";
+		polygonLayout[numElements].SemanticIndex = 0;
+		polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		polygonLayout[numElements].InputSlot = 0;
+		polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		polygonLayout[numElements].InstanceDataStepRate = 0;
+		numElements++;
 
 
-			matrixBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
-			matrixBufferDesc->ByteWidth = sizeof(MatrixBufferType);
-			matrixBufferDesc->BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			matrixBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			matrixBufferDesc->MiscFlags = 0;
-			matrixBufferDesc->StructureByteStride = 0;
-
-			device->CreateBuffer(matrixBufferDesc, NULL, &m_matrixBuffer[0]);
-			numElements = 0;
+		device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
+			vertexShaderBuffer->GetBufferSize(), &m_layout);
 
 
+		matrixBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
+		matrixBufferDesc->ByteWidth = sizeof(MatrixBufferType);
+		matrixBufferDesc->BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		matrixBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		matrixBufferDesc->MiscFlags = 0;
+		matrixBufferDesc->StructureByteStride = 0;
+
+		device->CreateBuffer(matrixBufferDesc, NULL, &m_matrixBuffer);
+		numElements = 0;
 
 
+		//init changebuffer
 
-
-		}
-		else if (!m_layout[1])
-		{
-			D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
-			polygonLayout[numElements].SemanticName = "POSITION";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = 0;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
-
-			// Create the pixel input layout description.
-			// This setup needs to match the VertexType stucture in the Model Class and in the shader.
-
-			polygonLayout[numElements].SemanticName = "COLOR";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
-
-			polygonLayout[numElements].SemanticName = "NORMAL";
-			polygonLayout[numElements].SemanticIndex = 0;
-			polygonLayout[numElements].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-			polygonLayout[numElements].InputSlot = 0;
-			polygonLayout[numElements].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-			polygonLayout[numElements].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			polygonLayout[numElements].InstanceDataStepRate = 0;
-			numElements++;
-			// Create the vertex input layout.
-			device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
-				vertexShaderBuffer->GetBufferSize(), &m_layout[1]);
-
-
-			matrixBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
-			matrixBufferDesc->ByteWidth = sizeof(MatrixBufferType);
-			matrixBufferDesc->BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			matrixBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			matrixBufferDesc->MiscFlags = 0;
-			matrixBufferDesc->StructureByteStride = 0;
-
-			// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-
-			HRESULT hresult = device->CreateBuffer(matrixBufferDesc, NULL, &m_matrixBuffer[1]);
-
-
-
-			numElements = 0;
-		}
+		changeBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
+		changeBufferDesc->ByteWidth = sizeof(ChangeBufferType);
+		changeBufferDesc->BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		changeBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		changeBufferDesc->MiscFlags = 0;
+		changeBufferDesc->StructureByteStride = 0;
+		device->CreateBuffer(changeBufferDesc, NULL, &m_changeBuffer);
+	}
 	
 	
 

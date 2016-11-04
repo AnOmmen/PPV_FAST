@@ -12,15 +12,7 @@ private:
 	Model();
 public:
 	ID3D11ShaderResourceView* shaderview;
-
-	struct FullVertex
-	{
-		DirectX::XMFLOAT4 pos;
-		DirectX::XMFLOAT4 uv;
-		DirectX::XMFLOAT4 norm;
-		DirectX::XMFLOAT4 tan;
-	};
-	Model(ID3D11Device* device, std::vector<Vertex> _vertices, std::vector<unsigned short> _indices);
+	Model(ID3D11Device* device, std::vector<FullVertex> _vertices, std::vector<unsigned short> _indices);
 	~Model();
 	void Update(float dt);
 	void Update(DirectX::XMMATRIX& _matrix);

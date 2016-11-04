@@ -15,7 +15,7 @@ Model::Model()
 
 
 }
-Model::Model(ID3D11Device* device, std::vector<Vertex> _vertices, std::vector<unsigned short> _indices)
+Model::Model(ID3D11Device* device, std::vector<FullVertex> _vertices, std::vector<unsigned short> _indices)
 {
 	hasAnimation = false;
 	m_Mesh = new Mesh(device);

@@ -29,6 +29,7 @@ namespace FASTFBXLoader
 	FASTFBXLOADER_API void Clean();
 	FASTFBXLOADER_API bool Init();
 	FASTFBXLOADER_API bool Load(const char *_inputPath);
+	FASTFBXLOADER_API bool Export(const char *_outputPath);
 	FASTFBXLOADER_API bool HasAnimation();
 	FASTFBXLOADER_API unsigned int GetTriangleCount();
 	FASTFBXLOADER_API std::vector<unsigned short> & GetIndices();

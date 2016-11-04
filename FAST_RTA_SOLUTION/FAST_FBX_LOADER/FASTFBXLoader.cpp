@@ -110,6 +110,34 @@ namespace FASTFBXLoader
 		return true;
 	}
 
+#define HEADER_SIZE		16
+	FASTFBXLOADER_API bool Export(const char * _outputPath)
+	{
+		FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::WRITE);
+		if (FASTBinaryIO::Open(fastFile, _outputPath))
+		{
+			char header[HEADER_SIZE];
+			*(unsigned long*)header[0] = m_triangleCount;
+			*(unsigned long*)header[4] = m_vertices.size();
+			*(unsigned long*)header[8] = m_skeletonBindPose.size();
+			*(unsigned long*)header[12] = m_keyFrames.size();
+			unsigned long wrote;
+			if (FASTBinaryIO::Write(fastFile, HEADER_SIZE, header, wrote))
+				if (FASTBinaryIO::Write(fastFile, m_indices.size() * sizeof(unsigned short), (char*)&m_indices[0], wrote))
+					if (FASTBinaryIO::Write(fastFile, m_vertices.size() * sizeof(FBXLoaderStructs::FullVertex), (char*)&m_vertices[0], wrote))
+						if (FASTBinaryIO::Write(fastFile, m_skeletonBindPose.size() * sizeof(DirectX::XMFLOAT4X4), (char*)&m_skeletonBindPose[0], wrote))
+							if (FASTBinaryIO::Write(fastFile, m_keyFrames.size() * sizeof(m_keyFrames[0]), (char*)&m_keyFrames[0], wrote))
+							{
+								FASTBinaryIO::Close(fastFile);
+								FASTBinaryIO::Destroy(fastFile);
+								return true;
+							}
+		}
+		FASTBinaryIO::Close(fastFile);
+		FASTBinaryIO::Destroy(fastFile);
+		return false;
+	}
+
 	FASTFBXLOADER_API bool HasAnimation()
 	{
 		return m_hasAnimation;

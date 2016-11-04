@@ -1,4 +1,5 @@
 #include "AnimationSet.h"
+#include "BindPose.h"
 #include "../FAST_BINARY_IO/FASTBinaryIO.h"
 
 
@@ -11,20 +12,29 @@ AnimationSet::~AnimationSet()
 {
 }
 
-bool AnimationSet::AddAnimation(FILE * _file)
+#define HEADER_SIZE			16
+#define INDICES_PER_TRI		3
+bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short *_indices, unsigned long &_indexCount,
+	FullVertex *_vertices, unsigned long &_vertexCount)
 {
-	
-
-	return false;
-}
-
-bool AnimationSet::AddBindPose(const BindPose * _pose)
-{
-	if (nullptr != _pose)
+	FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::READ);
+	if (FASTBinaryIO::Open(fastFile, _filePath))
 	{
-		m_bindPose = _pose;
-		return true;
+		char *header;
+		unsigned long read;
+		if (FASTBinaryIO::ReadTo(fastFile, HEADER_SIZE, &header, read))
+		{
+			char *block;
+			unsigned long toRead = (*(unsigned long*)&header[0] * INDICES_PER_TRI * sizeof(unsigned short)) +
+				(*(unsigned long*)&header[4] * sizeof(FullVertex)) +
+				(*(unsigned long*)&header[8] * sizeof(DirectX::XMFLOAT4X4));
+			if (FASTBinaryIO::ReadTo(fastFile, toRead, &block, read))
+			{
+				memcpy_s(_indices, *(unsigned long*)&)
+			}
+		}
 	}
+
 	return false;
 }
 

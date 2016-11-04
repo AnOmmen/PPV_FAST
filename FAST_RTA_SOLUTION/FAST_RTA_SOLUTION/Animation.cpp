@@ -26,6 +26,7 @@ unsigned int Animation::GetNumBones() const
 	return m_numBones;
 }
 
+// COPIES INFORMATION DOES NOT STORE IT DYNAMICALLY //
 void Animation::Init(KeyFrame const *_keyFrames, unsigned int _numKeyFrames, ANIM_TYPE _animType)
 {
 	if (NULL != _numKeyFrames && nullptr != _keyFrames)

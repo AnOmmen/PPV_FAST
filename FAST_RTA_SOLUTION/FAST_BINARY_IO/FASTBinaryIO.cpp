@@ -117,7 +117,7 @@ namespace FASTBinaryIO
 
 	FASTBINARYIO_API bool ReadTo(FASTFile *_fastFile, unsigned long _size, char **_data, unsigned long &_read)
 	{
-		if (UINT32_MAX == _size)
+		if (ULONG_MAX == _size || READ != _fastFile->iomode)
 			return false;
 		
 		*_data = new char[_size];
@@ -140,6 +140,9 @@ namespace FASTBinaryIO
 
 	FASTBINARYIO_API bool ReadAll(FASTFile *_fastFile, char **_data, unsigned long &_read)
 	{
+		if (READ != _fastFile->iomode)
+			return false;
+
 		_read = _fastFile->fileLength;
 		*_data = new char[_read];
 		_read = (unsigned long)fread_s(*_data, _read, sizeof(char), _read, _fastFile->file);
@@ -166,6 +169,9 @@ namespace FASTBinaryIO
 
 	FASTBINARYIO_API bool Write(FASTFile *_fastFile, unsigned long _size, char const *_data, unsigned long &_wrote)
 	{
+		if (READ == _fastFile->iomode)
+			return false;
+
 		_wrote = fwrite(_data, sizeof(char), _size, _fastFile->file);
 		if (_wrote == _size)
 			return true;

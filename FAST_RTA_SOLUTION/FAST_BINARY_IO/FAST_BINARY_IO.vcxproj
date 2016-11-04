@@ -18,16 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FASTFBXLoader.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="FASTFBXLoader.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C9F6A183-4DFE-4A03-90FB-C66589B17B0A}</ProjectGuid>
+    <ProjectGuid>{D64E2617-39A5-44AC-BD38-323BAAC5E333}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>FAST_FBX_LOADER</RootNamespace>
+    <RootNamespace>FAST_BINARY_IO</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -77,27 +71,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\lib\vs2015\x64\debug;E:\FBXSDK\2017.0.1\lib\vs2015\x64\debug;$(LibraryPath)</LibraryPath>
-    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,17 +87,11 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FAST_FBX_LOADER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>
-      </RuntimeLibrary>
-      <SDLCheck>
-      </SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FAST_BINARY_IO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -124,17 +100,11 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;FAST_FBX_LOADER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <SDLCheck>
-      </SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;FAST_BINARY_IO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk-md.lib;$(SolutionDir)$(Platform)\$(Configuration)\FAST_BINARY_IO.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,19 +115,13 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FAST_FBX_LOADER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>
-      </RuntimeLibrary>
-      <SDLCheck>
-      </SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FAST_BINARY_IO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -168,21 +132,21 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;FAST_FBX_LOADER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>
-      </RuntimeLibrary>
-      <SDLCheck>
-      </SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;FAST_BINARY_IO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x86;.\FAST_FBX_LOADER\FBX_SDK_Includes_Libs\lib\vs2015\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="FASTBinaryIO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FASTBinaryIO.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -4,26 +4,22 @@
 
 enum ANIM_TYPE
 {
-	LOOP = 0,
-	RETURN_DEFAULT = 1,
-	RETURN_LAST = 2,
-	RUN_ONCE = 1
+	INIT_ERROR = -1,
+	LOOP,
+	RETURN_DEFAULT,
+	RETURN_LAST,
+	RUN_ONCE
 };
 
 struct Bone
 {
-	DirectX::XMMATRIX m_world;
-};
-
-struct Skeleton
-{
-	std::vector<Bone> sk;
+	DirectX::XMFLOAT4X4 m_world;
 };
 
 struct KeyFrame
 {
 	float m_time;
-	Skeleton m_skeleton;
+	std::vector<Bone> m_bones;
 };
 
 enum BLEND_TYPE

@@ -1,5 +1,6 @@
 #include "FASTFBXLoader.h"
 #include "fbxsdk.h"
+#include "../FAST_BINARY_IO/FASTBinaryIO.h"
 #include <DirectXMath.h>
 #include <unordered_map>
 #include <string>
@@ -34,8 +35,6 @@ namespace FASTFBXLoader
 
 	FbxManager *m_fbxManager;
 	FbxScene *m_fbxScene;
-	std::string m_inputPath;
-	std::string m_outputPath;
 	std::vector<DirectX::XMFLOAT4X4> m_skeleton;
 	std::vector<std::string> m_skeletonBoneNames;
 	std::vector<DirectX::XMFLOAT4X4> m_skeletonBindPose;
@@ -46,6 +45,21 @@ namespace FASTFBXLoader
 	std::vector<unsigned short> m_indices;
 	bool m_hasAnimation;
 
+	void ProcessSkeleton(fbxsdk::FbxNode *_inRootNode);
+	void ProcessSKeletonRecursively(fbxsdk::FbxNode *_inNode);
+	void ProcessGeometry(fbxsdk::FbxNode *_inNode);
+	void ProcessControlPoints(fbxsdk::FbxNode *_inNode);
+	void ProcessBonesAndAnimations(fbxsdk::FbxNode *_inNode);
+	void ProcessMesh(fbxsdk::FbxNode *_inNode);
+	void ReadNormal(fbxsdk::FbxMesh *_inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 &_outNormal);
+	void ReadUV(fbxsdk::FbxMesh *_inMesh, int _inCtrlPointIndex, int _inTextureUVIndex, int _inUVLayer, DirectX::XMFLOAT2 &_outUV);
+	void ReadTangent(fbxsdk::FbxMesh *_inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 &_outTangent);
+	void SortBlendingInfoByWeight(FBXLoaderStructs::FullVertex &_vertex);
+	void Optimize();
+	unsigned short FindVertex(const FBXLoaderStructs::FullVertex &_inTargetVertex, const std::vector<FBXLoaderStructs::FullVertex> &_uniqueVertices);
+	unsigned int FindBoneIndexUsingName(const std::string &_inBoneName);
+	fbxsdk::FbxAMatrix GetGeometryTransformation(fbxsdk::FbxNode *_inNode);
+	DirectX::XMFLOAT4X4 FBXAMatrixToDXMatrix(fbxsdk::FbxAMatrix const &_inMatrix);
 
 	FASTFBXLOADER_API void Clean()
 	{
@@ -70,12 +84,8 @@ namespace FASTFBXLoader
 		return true;
 	}
 
-	FASTFBXLOADER_API bool Load(const char * _inputPath, const char * _outputPath)
+	FASTFBXLOADER_API bool Load(const char * _inputPath)
 	{
-		m_inputPath = _inputPath;
-		if(_outputPath)
-		m_outputPath = _outputPath;
-
 		FbxImporter *fbxImporter = FbxImporter::Create(m_fbxManager, "_placeHolder");
 		if (!fbxImporter)
 			return false;
@@ -98,6 +108,45 @@ namespace FASTFBXLoader
 		Optimize();
 
 		return true;
+	}
+
+#define TRIANGLE_COUNT		0
+#define VERTEX_COUNT		1
+#define BONE_COUNT			2
+#define KEYFRAME_COUNT		3
+#define HEADER_SIZE			4
+	FASTFBXLOADER_API bool Export(const char * _outputPath)
+	{
+		FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::WRITE);
+		if (FASTBinaryIO::Open(fastFile, _outputPath))
+		{
+			unsigned long header[HEADER_SIZE];
+			header[TRIANGLE_COUNT] = m_triangleCount;
+			header[VERTEX_COUNT] = m_vertices.size();
+			header[BONE_COUNT] = m_skeletonBindPose.size();
+			header[KEYFRAME_COUNT] = m_keyFrames.size();
+			unsigned long wrote;
+			if (FASTBinaryIO::Write(fastFile, HEADER_SIZE * sizeof(unsigned long), (char*)header, wrote))
+				if (FASTBinaryIO::Write(fastFile, m_indices.size() * sizeof(unsigned short), (char*)&m_indices[0], wrote))
+					if (FASTBinaryIO::Write(fastFile, m_vertices.size() * sizeof(FBXLoaderStructs::FullVertex), (char*)&m_vertices[0], wrote))
+						if (FASTBinaryIO::Write(fastFile, m_skeletonBindPose.size() * sizeof(DirectX::XMFLOAT4X4), (char*)&m_skeletonBindPose[0], wrote))
+						{
+							for (unsigned long i = 0; i < m_keyFrames.size(); ++i)
+								if (!FASTBinaryIO::Write(fastFile, sizeof(float), (char*)&m_keyFrames[i].m_time, wrote) ||
+									!FASTBinaryIO::Write(fastFile, m_keyFrames[i].m_skeleton.size() * sizeof(DirectX::XMFLOAT4X4), (char*)&m_keyFrames[i].m_skeleton[0], wrote))
+								{
+									FASTBinaryIO::Close(fastFile);
+									FASTBinaryIO::Destroy(fastFile);
+									return false;
+								}
+							FASTBinaryIO::Close(fastFile);
+							FASTBinaryIO::Destroy(fastFile);
+							return true;
+						}
+		}
+		FASTBinaryIO::Close(fastFile);
+		FASTBinaryIO::Destroy(fastFile);
+		return false;
 	}
 
 	FASTFBXLOADER_API bool HasAnimation()

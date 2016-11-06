@@ -42,7 +42,7 @@ void Mesh::CreateMesh(ID3D11Device* device, std::vector<FullVertex> _vertices, s
 	vertexBufferData.pSysMem = vertices.data();
 	vertexBufferData.SysMemPitch = 0;
 	vertexBufferData.SysMemSlicePitch = 0;
-	CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(Vertex) * vertices.size(), D3D11_BIND_VERTEX_BUFFER);
+	CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(FullVertex) * vertices.size(), D3D11_BIND_VERTEX_BUFFER);
 	device->CreateBuffer(
 		&vertexBufferDesc,
 		&vertexBufferData,
@@ -61,4 +61,20 @@ void Mesh::CreateMesh(ID3D11Device* device, std::vector<FullVertex> _vertices, s
 		&cubeindexBufferData,
 		&indexBuffer
 	);
+}
+
+
+unsigned short* Mesh::GetIndeces()
+{
+	return (&indeces[0]);
+}
+
+FullVertex* Mesh::GetVertices()
+{
+	return &vertices[0];
+}
+
+unsigned int Mesh::GetNumVerts()
+{
+	return vertices.size();
 }

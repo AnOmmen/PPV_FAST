@@ -26,5 +26,8 @@ public:
 	ID3D11Buffer** GetVertBuff();
 	ID3D11Buffer** GetIndexBuff();
 	void CreateMesh(ID3D11Device* device, std::vector < FullVertex > _vertices, std::vector<unsigned short> _indices);
+	unsigned short* GetIndeces();
+	FullVertex* GetVertices();
+	unsigned int GetNumVerts();
 };
 

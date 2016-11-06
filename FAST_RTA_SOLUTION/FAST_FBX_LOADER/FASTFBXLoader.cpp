@@ -245,7 +245,7 @@ namespace FASTFBXLoader
 			FBXLoaderStructs::ControlPoint *currCtrlPoint = new FBXLoaderStructs::ControlPoint();
 			currCtrlPoint->position.x = static_cast<float>(currMesh->GetControlPointAt(i).mData[0]);
 			currCtrlPoint->position.y = static_cast<float>(currMesh->GetControlPointAt(i).mData[1]);
-			currCtrlPoint->position.z = static_cast<float>(currMesh->GetControlPointAt(i).mData[2]);
+			currCtrlPoint->position.z = static_cast<float>(currMesh->GetControlPointAt(i).mData[2]) * -1.0f;
 			m_controlPoints[i] = currCtrlPoint;
 		}
 	}
@@ -295,14 +295,16 @@ namespace FASTFBXLoader
 
 					// ONLY DO THIS ONCE
 					if (start.GetFrameCount(FbxTime::eFrames24) == i)
+					{
 						m_skeletonBindPose[currBoneIndex] = FBXAMatrixToDXMatrix(globalBindposeInverseMatrix);
 
-					unsigned int j, numOfIndices = currCluster->GetControlPointIndicesCount();
-					for (j = 0; j < numOfIndices; ++j)
-					{
-						int ctrlPointIndex = currCluster->GetControlPointIndices()[j];
-						m_controlPoints[ctrlPointIndex]->bIndices.push_back((float)currBoneIndex);
-						m_controlPoints[ctrlPointIndex]->bWeights.push_back((float)currCluster->GetControlPointWeights()[j]);
+						unsigned int j, numOfIndices = currCluster->GetControlPointIndicesCount();
+						for (j = 0; j < numOfIndices; ++j)
+						{
+							int ctrlPointIndex = currCluster->GetControlPointIndices()[j];
+							m_controlPoints[ctrlPointIndex]->bIndices.push_back((float)currBoneIndex);
+							m_controlPoints[ctrlPointIndex]->bWeights.push_back((float)currCluster->GetControlPointWeights()[j]);
+						}
 					}
 
 					FbxAMatrix currentTransfromOffset = _inNode->EvaluateGlobalTransform(currTime) * geometryTransform;
@@ -427,6 +429,7 @@ namespace FASTFBXLoader
 			}
 			break;
 		}
+		_outNormal.z *= -1.0f;
 	}
 
 	void ReadUV(fbxsdk::FbxMesh * _inMesh, int _inCtrlPointIndex, int _inTextureUVIndex, int _inUVLayer, DirectX::XMFLOAT2 & _outUV)
@@ -473,6 +476,7 @@ namespace FASTFBXLoader
 			}
 			break;
 		}
+		_outUV.y = 1.0f - _outUV.y;
 	}
 
 	void ReadTangent(fbxsdk::FbxMesh * _inMesh, int _inCtrlPointIndex, int _inVertexCounter, DirectX::XMFLOAT3 & _outTangent)
@@ -652,7 +656,13 @@ namespace FASTFBXLoader
 		unsigned int i, j;
 		for (i = 0; i < 4; ++i)
 			for (j = 0; j < 4; ++j)
+			{
 				retMatrix.m[i][j] = (float)_inMatrix.mData[i].mData[j];
+				if (2 == j)
+					retMatrix.m[i][j] *= -1.0f;
+				if (2 == i)
+					retMatrix.m[i][j] *= -1.0f;
+			}
 		return retMatrix;
 	}
 }

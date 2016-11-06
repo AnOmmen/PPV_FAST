@@ -1,6 +1,7 @@
 #pragma once
 #include "Mesh.h"
 #include "StructsEnumsDefines.h"
+#include "AnimationSet.h"
 
 class Model
 {
@@ -10,9 +11,10 @@ private:
 	DirectX::XMMATRIX m_world;
 	Mesh* m_Mesh;
 	Model();
+	AnimationSet m_animSet;
 public:
 	ID3D11ShaderResourceView* shaderview;
-	Model(ID3D11Device* device, std::vector<FullVertex> _vertices, std::vector<unsigned short> _indices);
+	Model(ID3D11Device* device, std::vector<FullVertex> &_vertices, std::vector<unsigned short> &_indices);
 	~Model();
 	void Update(float dt);
 	void Update(DirectX::XMMATRIX& _matrix);
@@ -27,6 +29,9 @@ public:
 	ID3D11Buffer** GetVertBuffer();
 	ID3D11Buffer** GetIndexBuffer();
 	bool hasAnimation;
+	void LoadAnimation(const char*);
+
+	AnimationSet &GetAnimationSet();
 
 
 };

@@ -85,38 +85,42 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	// Lock the constant buffer so it can be written to.
 
-		deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		dataPtr = (MatrixBufferType*)(mappedResource.pData);
-		// Copy the matrices into the constant buffer.
-		dataPtr->world = worldMatrix;
-		dataPtr->view = viewMatrix;
-		dataPtr->projection = projectionMatrix;
-		deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
-		deviceContext->Unmap(m_matrixBuffer, 0);
+	deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	dataPtr = (MatrixBufferType*)(mappedResource.pData);
+	// Copy the matrices into the constant buffer.
+	dataPtr->world = worldMatrix;
+	dataPtr->view = viewMatrix;
+	dataPtr->projection = projectionMatrix;
+	deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
+	deviceContext->Unmap(m_matrixBuffer, 0);
 
 
-		deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mr);
-		changePtr = (ChangeBufferType*)(mappedResource.pData);
-		// Copy the matrices into the constant buffer.
+	deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mr);
+	changePtr = (ChangeBufferType*)(mappedResource.pData);
+	// Copy the matrices into the constant buffer.
+	AnimationSet* tempanimset = &key->GetAnimationSet();
+	for (size_t i = 0; i < key->GetAnimationSet().GetDefaultAnimation()->GetNumBones(); i++)
+	{
+	
+		XMMATRIX bpi = XMLoadFloat4x4(&tempanimset->GetBindPose()->GetBindPose()[i]);
+		XMMATRIX notworld = XMLoadFloat4x4(&tempanimset->GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world);
+		XMMATRIX mult = XMMatrixMultiply(bpi, notworld);
+		XMStoreFloat4x4(&changePtr->BoneOffset[i], mult);
+	}
+	
 
-		for (size_t i = 0; i < 32; i++)
-		{
-			changePtr->BoneOffset[i] = offsets[i];
-		}
-		
+	deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);
+	deviceContext->Unmap(m_changeBuffer, 0);
+	// Set the position of the constant buffer in the vertex shader.
+	bufferNumber = 0;
 
-		deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);
-		deviceContext->Unmap(m_changeBuffer, 0);
-		// Set the position of the constant buffer in the vertex shader.
-		bufferNumber = 0;
+	// Finanly set the constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_changeBuffer);
+	bufferNumber++;
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-		// Finanly set the constant buffer in the vertex shader with the updated values.
-		deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_changeBuffer);
-		bufferNumber++;
-		deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-
-		if (key->shaderview)
-			deviceContext->PSSetShaderResources(0, 1, &key->shaderview);
+	if (key->shaderview)
+		deviceContext->PSSetShaderResources(0, 1, &key->shaderview);
 	
 	
 	//delete dataPtr;
@@ -135,7 +139,7 @@ void PolyShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount
 
 
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	UINT stride = sizeof(Vertex);
+	UINT stride = sizeof(FullVertex);
 	UINT os = 0;
 	deviceContext->IASetVertexBuffers(
 		0,

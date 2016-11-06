@@ -90,17 +90,17 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				delete[] block;
 			}
 			
-			toRead = (sizeof(float) + sizeof(DirectX::XMFLOAT4X4)) * header[KEYFRAME_COUNT];
+			toRead = (sizeof(float) + sizeof(DirectX::XMFLOAT4X4) * header[BONE_COUNT]) * header[KEYFRAME_COUNT];
 			if (FASTBinaryIO::ReadTo(fastFile, toRead, &block, read))
 			{
 				std::vector<KeyFrame> keyFrames;
 				keyFrames.resize(header[KEYFRAME_COUNT]);
-				for (unsigned int i; i < keyFrames.size(); ++i)
+				for (unsigned int i = 0; i < keyFrames.size(); ++i)
 				{
 					keyFrames[i].m_time = *(float*)&block[i * sizeof(float) + sizeof(DirectX::XMFLOAT4X4) * header[BONE_COUNT] * i];
 					keyFrames[i].m_bones.resize(header[BONE_COUNT]);
 					memcpy_s(&keyFrames[i].m_bones[0], keyFrames[i].m_bones.size() * sizeof(DirectX::XMFLOAT4X4),
-						&block[(i + 1) * sizeof(float) + sizeof(DirectX::XMFLOAT4X4) * header[BONE_COUNT] * i], header[BONE_COUNT]);
+						&block[(i + 1) * sizeof(float) + sizeof(DirectX::XMFLOAT4X4) * header[BONE_COUNT] * i], header[BONE_COUNT] * sizeof(DirectX::XMFLOAT4X4));
 				}
 				delete[] block;
 

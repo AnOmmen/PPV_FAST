@@ -20,51 +20,35 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 {
 	m_deviceResources->Initialize(screenWidth, screenHeight, vsync, hwnd, fullscreen, screenDepth, screenNear);
 	m_renderer = new Renderer(m_deviceResources->GetDevice(), m_deviceResources->GetDeviceContext());
+
+
+
 	{
-		FASTFBXLoader::Init();
-		FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx");
+		bool noerror = true;
+		noerror = FASTFBXLoader::Init();
+		noerror = FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx");
+		noerror = FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
 		Model* model;
 		std::vector<FullVertex> vertices;
 		std::vector<unsigned short>* pindeces;
 		std::vector<unsigned short> indeces;
-
 		unsigned int vertexCount;
 		vertexCount = FASTFBXLoader::GetVertexCount();
 		pindeces = &(FASTFBXLoader::GetIndices());
 		indeces.resize(pindeces->size());
 		indeces = *pindeces;
-
-
 		vertices.resize(vertexCount);
 		void * verts = FASTFBXLoader::GetVertices();
-
 		memcpy(&vertices[0], verts, vertexCount * sizeof(FullVertex));
-	
-
 		model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-
-		model->hasAnimation = false;//true;
+		model->hasAnimation = true;//true;
 		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
-
-
-
-		BindPose bindpose;
-		std::vector<XMFLOAT4X4> mats;
-		mats = FASTFBXLoader::GetBindPose();
-		bindpose.init(mats.size(), &mats[0]);
-		unsigned int KFCount = FASTFBXLoader::GetKeyFrameCount();
-		std::vector<KeyFrame> KF;
-		KF.resize(KFCount);
-		void * keys = FASTFBXLoader::GetKeyFrames();
-		memcpy(&KF[0], keys, KFCount * sizeof(KeyFrame));
-
-		memcpy(&m_renderer->m_polyShader->offsets[0], &mats[0], mats.size() * sizeof(XMFLOAT4X4));
-		
-		
-
-
+		model->LoadAnimation("../FAST_RTA_SOLUTION/model.bin");
 		FASTFBXLoader::Clean();
 	}
+
+
+
 	std::vector<Vertex> vertices;
 	std::vector<unsigned short> indeces;
 	

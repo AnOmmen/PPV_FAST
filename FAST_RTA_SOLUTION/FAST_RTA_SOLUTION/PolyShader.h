@@ -2,6 +2,7 @@
 #include "Model.h"
 #include <unordered_map>
 #include <d3dcompiler.h>
+#include "BindPose.h"
 #pragma comment(lib, "d3dcompiler.lib")
 #include <fstream>
 using namespace DirectX;

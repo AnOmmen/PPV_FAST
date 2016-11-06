@@ -13,7 +13,7 @@ class Animation
 public:
 	Animation();
 	~Animation();
-	const KeyFrame* GetFrame(int _index);
+	const KeyFrame* GetFrame(int _index) const;
 	unsigned int GetNumKeyFrames() const;
 	unsigned int GetNumBones() const;
 	// COPIES INFORMATION DOES NOT STORE IT DYNAMICALLY //

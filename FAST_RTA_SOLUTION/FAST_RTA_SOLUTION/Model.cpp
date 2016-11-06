@@ -8,6 +8,7 @@ void Model::Update(DirectX::XMMATRIX & _matrix)
 	//child must update their world matrix according to the parent's matrix
 	//child must also change their local matrix based on the changes
 	m_world = XMMatrixMultiply(m_world, _matrix);
+
 }
 
 Model::Model()
@@ -15,7 +16,7 @@ Model::Model()
 
 
 }
-Model::Model(ID3D11Device* device, std::vector<FullVertex> _vertices, std::vector<unsigned short> _indices)
+Model::Model(ID3D11Device* device, std::vector<FullVertex> &_vertices, std::vector<unsigned short> &_indices)
 {
 	hasAnimation = false;
 	m_Mesh = new Mesh(device);
@@ -23,6 +24,7 @@ Model::Model(ID3D11Device* device, std::vector<FullVertex> _vertices, std::vecto
 	m_world = DirectX::XMMatrixIdentity();
 	m_local = DirectX::XMMatrixIdentity();
 	shaderview = nullptr;
+	
 }
 
 Model::~Model()
@@ -33,7 +35,7 @@ Model::~Model()
 void Model::Update(float dt)
 {
 	//stuff that we havent decided yet
-
+	
 }
 
 const DirectX::XMMATRIX & Model::GetWorldMat()
@@ -91,4 +93,20 @@ ID3D11Buffer** Model::GetVertBuffer()
 ID3D11Buffer** Model::GetIndexBuffer()
 {
 	return m_Mesh->Mesh::GetIndexBuff();
+}
+
+void Model::LoadAnimation(const char* _filePath)
+{
+	unsigned short* tempin = m_Mesh->GetIndeces();
+	FullVertex* tempvert = m_Mesh->GetVertices();
+	unsigned long tempnum = m_Mesh->GetNumIndeces();
+	unsigned long tempnumverts = m_Mesh->GetNumVerts();
+	m_animSet.LoadAnimationFile(_filePath, &tempin, &tempnum, &tempvert, &tempnumverts);
+
+}
+
+
+AnimationSet &Model::GetAnimationSet()
+{
+	return m_animSet;
 }

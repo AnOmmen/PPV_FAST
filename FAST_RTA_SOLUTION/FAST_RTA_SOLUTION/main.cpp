@@ -367,7 +367,7 @@ bool DEMO_APP::Loop()
 	//update
 	manager->Update(keys, .1);
 
-	//render every 1/30s if we handle fps
+
 	manager->Render();
 	return true;
 }
@@ -381,7 +381,7 @@ bool DEMO_APP::Loop()
 
 bool DEMO_APP::CleanUp()
 {
-
+	delete manager;
 	return true;
 }
 

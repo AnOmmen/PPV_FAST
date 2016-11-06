@@ -53,16 +53,23 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
     VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
     VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
 
-    output.world = float4(input.pos, 1.0f);
+   
+
     // Calculate the position of the vertex against the world, view, and projection matrices.
-    output.position.w = 1;
-    output.position = mul(input.pos, worldMatrix);
+    output.position = mul(VertexOut, worldMatrix);
+    output.world = float4(output.position.xyz, 1.0f);
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
     // Store the input color for the pixel shader to use.
-    output.normal = mul(input.normal, worldMatrix);
-    output.normal = normalize(output.normal);
-    output.position = VertexOut;
+
+    temp = float4(input.normal, 0.0f);
+    VertexOut = mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
+
+
+    output.normal = mul(VertexOut, worldMatrix);
 
 
     output.color = float4(1.0f, 0.0f, 1.0f, 1.0f);

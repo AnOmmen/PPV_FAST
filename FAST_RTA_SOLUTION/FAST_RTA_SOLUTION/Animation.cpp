@@ -11,7 +11,7 @@ Animation::~Animation()
 {
 }
 
-const KeyFrame * Animation::GetFrame(int _index)
+const KeyFrame * Animation::GetFrame(int _index) const
 {
 	return &m_keyFrames[_index];
 }

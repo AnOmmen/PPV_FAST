@@ -16,7 +16,8 @@ public:
 	Bone* GetCurrentWorld(int &_num);
 	float GetTime();
 	void SetAnimation(const Animation* _anim);
-	void SetTime(float _time);
+	void SetCurrTime(float _time);
+	void SetTotalTime(float _time);
 	ANIM_TYPE Update(float _time);
 };
 

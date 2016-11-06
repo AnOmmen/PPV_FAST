@@ -11,9 +11,14 @@ Animation::~Animation()
 {
 }
 
-const KeyFrame * Animation::GetFrame(int _index)
+const KeyFrame * Animation::GetFrame(int _index) const
 {
 	return &m_keyFrames[_index];
+}
+
+float Animation::GetTotalTime() const
+{
+	return m_totaltime;
 }
 
 unsigned int Animation::GetNumKeyFrames() const

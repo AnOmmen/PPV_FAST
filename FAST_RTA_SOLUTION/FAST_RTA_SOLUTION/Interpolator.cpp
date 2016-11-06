@@ -76,7 +76,7 @@ ANIM_TYPE Interpolator::Update(float _time)
 	{
 		DirectX::XMVECTORF32 prevPos;
 		DirectX::XMVECTORF32 nextPos;
-		DirectX::XMVECTORF32 currPos;
+		
 		prevPos.f[0] = prevVec[i].m_world._41;
 		prevPos.f[1] = prevVec[i].m_world._42;
 		prevPos.f[2] = prevVec[i].m_world._43;
@@ -87,7 +87,6 @@ ANIM_TYPE Interpolator::Update(float _time)
 		nextPos.f[2] = nextVec[i].m_world._43;
 		nextPos.f[3] = nextVec[i].m_world._44;
 
-		currPos.v = DirectX::XMVectorLerp(prevPos.v, nextPos.v, ratio);
 		DirectX::XMVECTOR* prevScale;
 		DirectX::XMVECTOR* prevQuat;
 		DirectX::XMVECTOR* prevTrans;
@@ -100,7 +99,13 @@ ANIM_TYPE Interpolator::Update(float _time)
 		nextMat = DirectX::XMLoadFloat4x4(&nextVec[i].m_world);
 		DirectX::XMMatrixDecompose(prevScale, prevQuat, prevTrans, prevMat);
 		DirectX::XMMatrixDecompose(nextScale, nextQuat, nextTrans, nextMat);
-		DirectX::XMQuaternionSlerp(*prevQuat, *nextQuat, ratio);
+		DirectX::XMVECTOR currRot = DirectX::XMQuaternionSlerp(*prevQuat, *nextQuat, ratio);
+		DirectX::XMVECTOR currScale = DirectX::XMVectorLerp(prevPos, nextPos, ratio);
+		DirectX::XMVECTOR currPos = DirectX::XMVectorLerp(prevPos.v, nextPos.v, ratio);
+		DirectX::XMMATRIX tempCatch = DirectX::XMMatrixAffineTransformation(currScale, DirectX::XMVectorZero(), currRot, currPos);
+		Bone newBone;
+		DirectX::XMStoreFloat4x4(&newBone.m_world, tempCatch);
+		m_world.push_back(newBone);
 	}
-	return ANIM_TYPE();
+	return m_animation->GetAnimType();
 }

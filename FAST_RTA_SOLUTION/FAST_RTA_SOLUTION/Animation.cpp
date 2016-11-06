@@ -31,6 +31,11 @@ unsigned int Animation::GetNumBones() const
 	return m_numBones;
 }
 
+ANIM_TYPE Animation::GetAnimType() const
+{
+	return m_animType;
+}
+
 void Animation::Init(std::vector<KeyFrame> &_keyFrames, ANIM_TYPE _animType)
 {
 	m_keyFrames = _keyFrames;

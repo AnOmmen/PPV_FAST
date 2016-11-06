@@ -17,6 +17,7 @@ public:
 	float GetTotalTime() const;
 	unsigned int GetNumKeyFrames() const;
 	unsigned int GetNumBones() const;
+	ANIM_TYPE GetAnimType() const;
 	// COPIES INFORMATION DOES NOT STORE IT DYNAMICALLY //
 	void Init(std::vector<KeyFrame> &_keyFrames, ANIM_TYPE _animType);
 };

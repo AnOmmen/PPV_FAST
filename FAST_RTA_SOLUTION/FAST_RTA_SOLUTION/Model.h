@@ -29,7 +29,7 @@ public:
 	ID3D11Buffer** GetVertBuffer();
 	ID3D11Buffer** GetIndexBuffer();
 	bool hasAnimation;
-	void LoadAnimation(const char*);
+	void LoadAnimation(const char* _filePath, ID3D11Device* device);
 
 	AnimationSet &GetAnimationSet();
 

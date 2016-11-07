@@ -22,7 +22,7 @@ SamplerState filter : register(s0);
 // A pass-through function for the (interpolated) color data.
 float4 main(PSINPUT input) : SV_TARGET
 {
-    float4 baseColor = basetexture.Sample(filter, input.color);
+    float4 baseColor = basetexture.Sample(filter, (input.color).xyz);
 
     return baseColor;
 }

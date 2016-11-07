@@ -280,7 +280,7 @@ DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 
 	//once we have our window, initialize any objects we need
 	manager = new ResourceManager();
-	manager->Init(_WIDTH, _HEIGHT, false, HWindow, false, 100.0, .01);
+	manager->Init(_WIDTH, _HEIGHT, false, HWindow, false, 100.0f, .01f);
 }
 
 
@@ -365,7 +365,7 @@ bool DEMO_APP::Loop()
 	inputCheck();
 
 	//update
-	manager->Update(keys, .1);
+	manager->Update(keys, .1f);
 
 
 	manager->Render();

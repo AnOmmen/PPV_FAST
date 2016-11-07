@@ -20,14 +20,12 @@ float4 main(PSINPUT input) : SV_TARGET
 {
     float4 baseColor = input.color; //input.color;
     float3 color1, color2, color3;
-    color1 = DirLight(light[0].pos, input.normal, light[0].color);
-    color2 = PointLight(light[1].pos, input.world, input.normal, light[1].color, light[1].r);
+    color1 = DirLight(light[0].pos, input.normal, light[0].color).xyz;
+    color2 = PointLight(light[1].pos, input.world, input.normal, light[1].color, light[1].r).xyz;
     color3 = SpotLight(input.world.xyz, light[2].normal.xyz, light[2].r.z, float3(input.normal.xyz), light[2]);
     float3 finalcolor = color1 + color2 + color3;
      finalcolor = saturate(finalcolor);
      finalcolor = finalcolor * baseColor.xyz;
-
-
-   // return float4(finalcolor.xyz, baseColor.w);
-    return float4(1, 0, 0, 1);
+    return float4(finalcolor.xyz, baseColor.w);
+   // return float4(1, 0, 0, 1);
 }

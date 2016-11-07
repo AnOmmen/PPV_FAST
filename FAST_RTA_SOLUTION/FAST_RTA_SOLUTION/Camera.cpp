@@ -74,22 +74,22 @@ void Camera::Update(bool* keyarray, float dt)
 	if (keyarray[12])
 	{
 		//positive y rotation
-		identity = XMMatrixMultiply(identity, XMMatrixRotationY(-0.5 * dt));
+		identity = XMMatrixMultiply(identity, XMMatrixRotationY(-0.5f * dt));
 	}
 	if (keyarray[13])
 	{
 		//negative y rotation
-		identity = XMMatrixMultiply(identity, XMMatrixRotationY(0.5 * dt));
+		identity = XMMatrixMultiply(identity, XMMatrixRotationY(0.5f * dt));
 	}
 	if (keyarray[14])
 	{
 		//negative x rotation
-		identity = XMMatrixMultiply(identity, XMMatrixRotationX(-0.5 * dt));
+		identity = XMMatrixMultiply(identity, XMMatrixRotationX(-0.5f * dt));
 	}
 	if (keyarray[15])
 	{
 		//positive x rotation
-		identity = XMMatrixMultiply(identity, XMMatrixRotationX(0.5 * dt));
+		identity = XMMatrixMultiply(identity, XMMatrixRotationX(0.5f * dt));
 	}
 	if (keyarray[0])
 	{

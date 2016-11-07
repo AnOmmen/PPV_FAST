@@ -42,6 +42,8 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				{
 					FASTBinaryIO::Close(fastFile);
 					FASTBinaryIO::Destroy(fastFile);
+					delete[] header;
+					delete[] block;
 					return false;
 				}
 
@@ -49,6 +51,8 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				{
 					FASTBinaryIO::Close(fastFile);
 					FASTBinaryIO::Destroy(fastFile);
+					delete[] header;
+					delete[] block;
 					return false;
 				}
 				*_indexCount = header[TRIANGLE_COUNT] * INDICES_PER_TRI;
@@ -57,6 +61,8 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				{
 					FASTBinaryIO::Close(fastFile);
 					FASTBinaryIO::Destroy(fastFile);
+					delete[] header;
+					delete[] block;
 					return false;
 				}
 				*_indices = new unsigned short[*_indexCount];
@@ -67,6 +73,8 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				{
 					FASTBinaryIO::Close(fastFile);
 					FASTBinaryIO::Destroy(fastFile);
+					delete[] header;
+					delete[] block;
 					return false;
 				}
 				*_vertexCount = header[VERTEX_COUNT];
@@ -75,6 +83,8 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				{
 					FASTBinaryIO::Close(fastFile);
 					FASTBinaryIO::Destroy(fastFile);
+					delete[] header;
+					delete[] block;
 					return false;
 				}
 				*_vertices = new FullVertex[*_vertexCount];
@@ -103,6 +113,7 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 						&block[(i + 1) * sizeof(float) + sizeof(DirectX::XMFLOAT4X4) * header[BONE_COUNT] * i], header[BONE_COUNT] * sizeof(DirectX::XMFLOAT4X4));
 				}
 				delete[] block;
+				delete[] header;
 
 				Animation temp;
 				temp.Init(keyFrames, LOOP);
@@ -112,7 +123,9 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				FASTBinaryIO::Destroy(fastFile);
 				return true;
 			}
+			delete[] block;
 		}
+		delete[] header;
 	}
 
 	FASTBinaryIO::Close(fastFile);
@@ -122,7 +135,7 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 
 unsigned int AnimationSet::GetAnimationCount() const
 {
-	return m_animations.size();
+	return (unsigned int)m_animations.size();
 }
 
 const Animation * AnimationSet::GetAnimation(int _key) const

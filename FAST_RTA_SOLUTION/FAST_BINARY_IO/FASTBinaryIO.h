@@ -28,6 +28,6 @@ namespace FASTBinaryIO
 	FASTBINARYIO_API bool Move(FASTFile *_fastFile, unsigned long _offset);
 	FASTBINARYIO_API bool ReadTo(FASTFile *_fastFile, unsigned long _size, char **_data, unsigned long &_read);
 	FASTBINARYIO_API bool ReadAll(FASTFile *_fastFile, char **_data, unsigned long &_read);
-	FASTBINARYIO_API bool IsEOF(FASTFile *_fastFile);
+	FASTBINARYIO_API int IsEOF(FASTFile *_fastFile);
 	FASTBINARYIO_API bool Write(FASTFile *_fastFile, unsigned long _size, char const *_data, unsigned long &_wrote);
 }

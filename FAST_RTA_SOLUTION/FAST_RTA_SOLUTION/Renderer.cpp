@@ -36,9 +36,11 @@ Renderer::~Renderer()
 	for (int i = 0; i < m_objects.size(); i++)
 	{
 		m_polyShader->RemoveModel(m_objects[i]);
+		delete m_objects[i];
 	}
 	delete m_polyShader;
 	delete m_light;
+	delete m_camera;
 }
 
 void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj)

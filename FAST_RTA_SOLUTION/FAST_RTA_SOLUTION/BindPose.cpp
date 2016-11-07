@@ -18,7 +18,7 @@ const DirectX::XMFLOAT4X4 * BindPose::GetBindPose() const
 
 unsigned long BindPose::GetNumBones() const
 {
-	return bindposeInverses.size();
+	return (unsigned long)bindposeInverses.size();
 }
 
 void BindPose::init(unsigned long _num, const DirectX::XMFLOAT4X4 * _mat)

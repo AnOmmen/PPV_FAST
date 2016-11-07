@@ -163,9 +163,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShaderNorms.hlsl">
-      <Filter>Helper Files</Filter>
-    </FxCompile>
     <FxCompile Include="SkyboxPixelShader.hlsl">
       <Filter>Shaders\PixelShaders</Filter>
     </FxCompile>

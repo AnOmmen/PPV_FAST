@@ -20,7 +20,7 @@ namespace FASTBinaryIO
 		friend bool Move(FASTFile *_fastFile, unsigned long _offset);
 		friend bool ReadTo(FASTFile *_fastFile, unsigned long _size, char **_data, unsigned long &_read);
 		friend bool ReadAll(FASTFile *_fastFile, char **_data, unsigned long &_read);
-		friend bool IsEOF(FASTFile *_fastFile);
+		friend int IsEOF(FASTFile *_fastFile);
 		friend bool Write(FASTFile *_fastFile, unsigned long _size, char const *_data, unsigned long &_wrote);
 	};
 
@@ -162,7 +162,7 @@ namespace FASTBinaryIO
 		return false;
 	}
 
-	FASTBINARYIO_API bool IsEOF(FASTFile *_fastFile)
+	FASTBINARYIO_API int IsEOF(FASTFile *_fastFile)
 	{
 		return feof(_fastFile->file);
 	}
@@ -172,7 +172,7 @@ namespace FASTBinaryIO
 		if (READ == _fastFile->iomode)
 			return false;
 
-		_wrote = fwrite(_data, sizeof(char), _size, _fastFile->file);
+		_wrote = (unsigned long)fwrite(_data, sizeof(char), _size, _fastFile->file);
 		if (_wrote == _size)
 			return true;
 		return false;

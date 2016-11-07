@@ -122,18 +122,18 @@ namespace FASTFBXLoader
 		{
 			unsigned long header[HEADER_SIZE];
 			header[TRIANGLE_COUNT] = m_triangleCount;
-			header[VERTEX_COUNT] = m_vertices.size();
-			header[BONE_COUNT] = m_skeletonBindPose.size();
-			header[KEYFRAME_COUNT] = m_keyFrames.size();
+			header[VERTEX_COUNT] = (unsigned long)m_vertices.size();
+			header[BONE_COUNT] = (unsigned long)m_skeletonBindPose.size();
+			header[KEYFRAME_COUNT] = (unsigned long)m_keyFrames.size();
 			unsigned long wrote;
 			if (FASTBinaryIO::Write(fastFile, HEADER_SIZE * sizeof(unsigned long), (char*)header, wrote))
-				if (FASTBinaryIO::Write(fastFile, m_indices.size() * sizeof(unsigned short), (char*)&m_indices[0], wrote))
-					if (FASTBinaryIO::Write(fastFile, m_vertices.size() * sizeof(FBXLoaderStructs::FullVertex), (char*)&m_vertices[0], wrote))
-						if (FASTBinaryIO::Write(fastFile, m_skeletonBindPose.size() * sizeof(DirectX::XMFLOAT4X4), (char*)&m_skeletonBindPose[0], wrote))
+				if (FASTBinaryIO::Write(fastFile, (unsigned long)(m_indices.size() * sizeof(unsigned short)), (char*)&m_indices[0], wrote))
+					if (FASTBinaryIO::Write(fastFile, (unsigned long)(m_vertices.size() * sizeof(FBXLoaderStructs::FullVertex)), (char*)&m_vertices[0], wrote))
+						if (FASTBinaryIO::Write(fastFile, (unsigned long)(m_skeletonBindPose.size() * sizeof(DirectX::XMFLOAT4X4)), (char*)&m_skeletonBindPose[0], wrote))
 						{
 							for (unsigned long i = 0; i < m_keyFrames.size(); ++i)
 								if (!FASTBinaryIO::Write(fastFile, sizeof(float), (char*)&m_keyFrames[i].m_time, wrote) ||
-									!FASTBinaryIO::Write(fastFile, m_keyFrames[i].m_skeleton.size() * sizeof(DirectX::XMFLOAT4X4), (char*)&m_keyFrames[i].m_skeleton[0], wrote))
+									!FASTBinaryIO::Write(fastFile, (unsigned long)(m_keyFrames[i].m_skeleton.size() * sizeof(DirectX::XMFLOAT4X4)), (char*)&m_keyFrames[i].m_skeleton[0], wrote))
 								{
 									FASTBinaryIO::Close(fastFile);
 									FASTBinaryIO::Destroy(fastFile);
@@ -367,6 +367,8 @@ namespace FASTFBXLoader
 				m_vertices.push_back(temp);
 				m_indices.push_back(vertexCounter++);
 			}
+
+			
 		}
 
 		for (auto itr = m_controlPoints.begin(); itr != m_controlPoints.end(); ++itr)
@@ -594,9 +596,14 @@ namespace FASTFBXLoader
 					uniqueVertices.push_back(m_vertices[i * 3 + j]);
 
 		for (i = 0; i < m_triangleCount; ++i)
+		{
 			for (j = 0; j < 3; ++j)
 				m_indices[i * 3 + j] = FindVertex(m_vertices[i * 3 + j], uniqueVertices);
-	
+			m_indices[i * 3] ^= m_indices[i * 3 + 1];
+			m_indices[i * 3 + 1] ^= m_indices[i * 3];
+			m_indices[i * 3] ^= m_indices[i * 3 + 1];
+		}
+
 		m_vertices.clear();
 		m_vertices = uniqueVertices;
 		uniqueVertices.clear();

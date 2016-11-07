@@ -31,6 +31,6 @@ float3 SpotLight(float3 surfacepos, float3 conedir,
     a2 = 1.0f - saturate((light.r.y - surfaceratio) / (light.r.y - light.r.z));
     float spotfactor = a1 * a2;
     float lightratio = saturate(dot(lightdir.xyz, surfacenormal));
-    return (spotfactor * lightratio * light.color);
+    return (spotfactor * lightratio * light.color).xyz;
    // return float3(0, 0, 1);
 }

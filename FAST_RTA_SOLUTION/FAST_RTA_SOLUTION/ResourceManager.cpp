@@ -20,7 +20,65 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 {
 	m_deviceResources->Initialize(screenWidth, screenHeight, vsync, hwnd, fullscreen, screenDepth, screenNear);
 	m_renderer = new Renderer(m_deviceResources->GetDevice(), m_deviceResources->GetDeviceContext());
+	std::vector<FullVertex> vertices;
+	std::vector<unsigned short> indeces;
 
+	Model* model;
+	FullVertex topright, topleft, bottomright, bottomleft;
+	topright.pos = XMFLOAT3(10, 0, 10);
+	topleft.pos = XMFLOAT3(-10, 0, 10);
+	bottomright.pos = XMFLOAT3(10, 0, -10);
+	bottomleft.pos = XMFLOAT3(-10, 0, -10);
+
+
+	topright.norm = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	topleft.norm = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	bottomright.norm = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	bottomleft.norm = XMFLOAT3(0.0f, 1.0f, 0.0f);
+
+
+	topright.bIndices = XMFLOAT4(0, 0, 0, 0);
+	topleft.bIndices = XMFLOAT4(0, 0, 0, 0);
+	bottomright.bIndices = XMFLOAT4(0, 0, 0, 0);
+	bottomleft.bIndices = XMFLOAT4(0, 0, 0, 0);
+
+	topright.bWeights = XMFLOAT4(0, 0, 0, 0);
+	topleft.bWeights = XMFLOAT4(0, 0, 0, 0);
+	bottomright.bWeights = XMFLOAT4(0, 0, 0, 0);
+	bottomleft.bWeights = XMFLOAT4(0, 0, 0, 0);
+
+
+
+
+
+
+
+
+
+
+	vertices.clear();
+	vertices.push_back(topleft);
+	vertices.push_back(topright);
+	vertices.push_back(bottomleft);
+	vertices.push_back(bottomright);
+
+	//1, 2, 4
+
+	indeces.clear();
+	indeces.push_back(0);
+	indeces.push_back(1);
+	indeces.push_back(2);
+
+	//2, 4, 3
+	indeces.push_back(1);
+	indeces.push_back(3);
+	indeces.push_back(2);
+
+
+
+
+	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 
 
 	{
@@ -28,31 +86,48 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		noerror = FASTFBXLoader::Init();
 		noerror = FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx");
 		noerror = FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
-		Model* model;
+		Model* animmodel;
 		std::vector<FullVertex> vertices;
-		std::vector<unsigned short>* pindeces;
+		//std::vector<unsigned short>* pindeces;
 		std::vector<unsigned short> indeces;
-		unsigned int vertexCount;
-		vertexCount = FASTFBXLoader::GetVertexCount();
-		pindeces = &(FASTFBXLoader::GetIndices());
-		indeces.resize(pindeces->size());
-		indeces = *pindeces;
-		vertices.resize(vertexCount);
-		void * verts = FASTFBXLoader::GetVertices();
-		memcpy(&vertices[0], verts, vertexCount * sizeof(FullVertex));
-		model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-		model->hasAnimation = true;//true;
-		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
-		model->LoadAnimation("../FAST_RTA_SOLUTION/model.bin");
+		
+		animmodel = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+		animmodel->hasAnimation = true;//true;
+		
+		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
+		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, animmodel);
 		FASTFBXLoader::Clean();
+
+		//make spheres for bones
+		unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
+		vertices.clear();
+		indeces.clear();
+		loadOBJ("../FAST_RTA_SOLUTION/Sphere.obj", 0, m_deviceResources->GetDevice(), vertices, indeces);
+		for (unsigned int i = 0; i < numBones; i++)
+		{
+			model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+			animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world;
+			model->Update(XMMatrixMultiply(XMLoadFloat4x4(&animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world), animmodel->GetWorldMat()));
+			
+
+
+			m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
+
+
+
+		}
+
+
+
+
+
+
+
 	}
 
 
 
-	std::vector<Vertex> vertices;
-	std::vector<unsigned short> indeces;
-	
-	Model* model;
+
 	//
 	//char* myFilename = "Cube.obj";
 	//wchar_t*temp = L"cubeskybox.dds";
@@ -73,46 +148,8 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 	//m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 	//
 	//
-	//FullVertex topright, topleft, bottomright, bottomleft;
-	//topright.pos = XMFLOAT3(10, 0, 10, 1);
-	//topleft.pos = XMFLOAT4(-10, 0, 10, 1);
-	//bottomright.pos = XMFLOAT4(10, 0, -10, 1);
-	//bottomleft.pos = XMFLOAT4(-10, 0, -10, 1);
-	//
-	//topright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	//topleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	//bottomright.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	//bottomleft.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	//
-	//topright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//topleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//bottomright.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//bottomleft.norm = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//
-	//vertices.clear();
-	//vertices.push_back(topleft);
-	//vertices.push_back(topright);
-	//vertices.push_back(bottomleft);
-	//vertices.push_back(bottomright);
-	//
-	////1, 2, 4
-	//
-	//indeces.clear();
-	//indeces.push_back(0);
-	//indeces.push_back(1);
-	//indeces.push_back(2);
-	//
-	////2, 4, 3
-	//indeces.push_back(1);
-	//indeces.push_back(3);
-	//indeces.push_back(2);
-	//
-	//
-	//
-	//
-	//model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-	//m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
-	//
+
+	
 	//std::vector<unsigned short> backward;
 	//backward.resize(indeces.size());
 	//for (int i = 0; i < indeces.size(); i++)
@@ -196,12 +233,12 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 }
 
-void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device* device, XMFLOAT3 offset,
-	std::vector<Vertex> &_vertices, std::vector<unsigned short> &_indeces)
+void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device* device,
+	std::vector<FullVertex> &_vertices, std::vector<unsigned short> &_indeces)
 {
 	if (filename)
 	{
-		std::vector<Vertex> Iverts;
+		std::vector<FullVertex> Iverts;
 		std::vector<unsigned int> Iindeces;
 		std::vector<XMFLOAT3> verts, normals;
 		std::vector<XMFLOAT2> uvs;
@@ -276,17 +313,18 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 		}
 
 
-		std::vector<Vertex> vertices;
+		std::vector<FullVertex> vertices;
 		std::vector<unsigned short> indeces;
 
 		for (size_t i = 0; i < vi.size(); i++)
 		{
-			Vertex temp;
-			temp.pos = XMFLOAT4(verts[vi[i]].x, verts[vi[i]].y, verts[vi[i]].z, 1.0f);
-			temp.color = XMFLOAT4(1.0, 1.0, 1.0, 1.0);
-			temp.norm = XMFLOAT4(verts[vi[i]].x, verts[vi[i]].y, verts[vi[i]].z, 1.0f);
+			FullVertex temp;
+			temp.pos = XMFLOAT3(verts[vi[i]].x, verts[vi[i]].y, verts[vi[i]].z);
+			temp.norm = XMFLOAT3(verts[vi[i]].x, verts[vi[i]].y, verts[vi[i]].z);
+			temp.bIndices = XMFLOAT4(0, 0, 0, 0);
+			temp.bWeights = XMFLOAT4(0, 0, 0, 0);
 			Iverts.push_back(temp);
-			Iindeces.push_back(i);
+			Iindeces.push_back((unsigned int)i);
 		}
 		_vertices = Iverts;
 		_indeces.clear();

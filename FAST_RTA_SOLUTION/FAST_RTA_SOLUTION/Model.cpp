@@ -20,16 +20,20 @@ Model::Model(ID3D11Device* device, std::vector<FullVertex> &_vertices, std::vect
 {
 	hasAnimation = false;
 	m_Mesh = new Mesh(device);
-	m_Mesh->CreateMesh(device, _vertices, _indices);
 	m_world = DirectX::XMMatrixIdentity();
 	m_local = DirectX::XMMatrixIdentity();
 	shaderview = nullptr;
+
+	if (!_vertices.empty())
+	{
+		m_Mesh->CreateMesh(device, _vertices, _indices);
+	}
 	
 }
 
 Model::~Model()
 {
-
+	delete m_Mesh;
 }
 
 void Model::Update(float dt)
@@ -47,7 +51,7 @@ unsigned int Model::AddChild(Model &_mod)
 {
 	m_children.push_back(&_mod);
 	unsigned int index;
-	index = m_children.size() - 1;
+	index = (unsigned int)m_children.size() - 1;
 	return index;
 }
 //is passed an index of the children vector correlating to the correct child to remove
@@ -95,13 +99,26 @@ ID3D11Buffer** Model::GetIndexBuffer()
 	return m_Mesh->Mesh::GetIndexBuff();
 }
 
-void Model::LoadAnimation(const char* _filePath)
+void Model::LoadAnimation(const char* _filePath, ID3D11Device* device)
 {
-	unsigned short* tempin = m_Mesh->GetIndeces();
-	FullVertex* tempvert = m_Mesh->GetVertices();
-	unsigned long tempnum = m_Mesh->GetNumIndeces();
-	unsigned long tempnumverts = m_Mesh->GetNumVerts();
+	unsigned short* tempin;
+	FullVertex* tempvert;
+	unsigned long tempnum;
+	unsigned long tempnumverts;
 	m_animSet.LoadAnimationFile(_filePath, &tempin, &tempnum, &tempvert, &tempnumverts);
+	std::vector<FullVertex> _vertices;
+	std::vector<unsigned short> _indeces;
+	for (size_t i = 0; i < tempnumverts; i++)
+	{
+		_vertices.push_back(tempvert[i]);
+	}
+	for (size_t i = 0; i < tempnum; i++)
+	{
+		_indeces.push_back(tempin[i]);
+	}
+	delete[] tempin;
+	delete[] tempvert;
+	m_Mesh->CreateMesh(device, _vertices, _indeces);
 
 }
 

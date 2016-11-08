@@ -84,7 +84,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 	{
 		bool noerror = true;
 		noerror = FASTFBXLoader::Init();
-		noerror = FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx");
+		noerror = FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_Idle.fbx");
 		noerror = FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
 		Model* animmodel;
 		std::vector<FullVertex> vertices;
@@ -95,27 +95,28 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		animmodel->hasAnimation = true;//true;
 		
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
+		animmodel->Update(XMMatrixScaling(.01, .01, .01));
 		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, animmodel);
 		FASTFBXLoader::Clean();
 
 		//make spheres for bones
-		unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
-		vertices.clear();
-		indeces.clear();
-		loadOBJ("../FAST_RTA_SOLUTION/Sphere.obj", 0, m_deviceResources->GetDevice(), vertices, indeces);
-		for (unsigned int i = 0; i < numBones; i++)
-		{
-			model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-			animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world;
-			model->Update(XMMatrixMultiply(XMLoadFloat4x4(&animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world), animmodel->GetWorldMat()));
-			
-
-
-			m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
-
-
-
-		}
+		//unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
+		//vertices.clear();
+		//indeces.clear();
+		//loadOBJ("../FAST_RTA_SOLUTION/Sphere.obj", 0, m_deviceResources->GetDevice(), vertices, indeces);
+		//for (unsigned int i = 0; i < numBones; i++)
+		//{
+		//	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+		//	animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world;
+		//	model->Update(XMMatrixMultiply(XMLoadFloat4x4(&animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world), animmodel->GetWorldMat()));
+		//	
+		//
+		//
+		//	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
+		//
+		//
+		//
+		//}
 
 
 

@@ -17,24 +17,24 @@ struct PSINPUT
     
 
     //
-    // normal, tangent, bitangent to be in world space
+    //  normal, tangent, bitangent to be in world space
     // 
-    //
+    //  
     //  float4 position : SV_POSITION;
     //  float2 uv : UV;
     //  float3 normal : NORMAL;
     //  float3 worldPosition : WORLDPOSITION;
     //  float3 tangent : TANGENT
     //  float3 bitangent : BITANGENT
-    //
-    //
-    //
+    //  
+    //  
+    //  
 };
 
 
 cbuffer cbChangesEveryFrame : register(b0)
 {
-    float4x4 BoneOffset[32];
+    float4x4 BoneOffset[37];
 };
 
 cbuffer MatrixBuffer : register(b1)
@@ -49,10 +49,10 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
     PSINPUT output;
     float4 temp = float4(input.pos, 1.0f);
     float4 VertexOut = temp; 
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
 
     
 
@@ -65,14 +65,14 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
 
     temp = float4(input.normal, 0.0f);
     VertexOut = temp;
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
-    VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
+    //VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
 
 
     output.normal = mul(VertexOut, worldMatrix);
-
+    output.normal = normalize(output.normal);
 
     output.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
 	return output;

@@ -28,4 +28,5 @@ float4 main(PSINPUT input) : SV_TARGET
      finalcolor = finalcolor * baseColor.xyz;
     return float4(finalcolor.xyz, baseColor.w);
    // return float4(1, 0, 0, 1);
+    //return float4(input.normal.xyz, 1.0);
 }

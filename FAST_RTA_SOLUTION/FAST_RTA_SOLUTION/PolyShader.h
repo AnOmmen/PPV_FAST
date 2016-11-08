@@ -26,7 +26,7 @@ private:
 
 	struct ChangeBufferType
 	{
-		XMFLOAT4X4 BoneOffset[32];
+		XMFLOAT4X4 BoneOffset[37];
 	};
 	unsigned int m_modelCount;
 

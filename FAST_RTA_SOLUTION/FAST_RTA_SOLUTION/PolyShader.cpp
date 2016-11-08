@@ -72,7 +72,7 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	XMMATRIX projectionMatrix, Model* key)
 {
 	//HRESULT result;
-	D3D11_MAPPED_SUBRESOURCE mappedResource, mr;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
 	ChangeBufferType* changePtr;
 
@@ -91,12 +91,12 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	dataPtr->world = worldMatrix;
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;
-	deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
 	deviceContext->Unmap(m_matrixBuffer, 0);
+	//deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
 
 	if (key->hasAnimation)
 	{
-		deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mr);
+		deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		changePtr = (ChangeBufferType*)(mappedResource.pData);
 		// Copy the matrices into the constant buffer.
 		AnimationSet* tempanimset = &key->GetAnimationSet();
@@ -106,12 +106,12 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 			XMMATRIX bpi = XMLoadFloat4x4(&tempanimset->GetBindPose()->GetBindPose()[i]);
 			XMMATRIX notworld = XMLoadFloat4x4(&tempanimset->GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world);
 			XMMATRIX mult = XMMatrixMultiply(bpi, notworld);
-			XMStoreFloat4x4(&changePtr->BoneOffset[i], mult);
+			XMStoreFloat4x4(&changePtr->BoneOffset[i], XMMatrixTranspose(mult));
 		}
 
 
-		deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);
 		deviceContext->Unmap(m_changeBuffer, 0);
+		//deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);
 	}
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;

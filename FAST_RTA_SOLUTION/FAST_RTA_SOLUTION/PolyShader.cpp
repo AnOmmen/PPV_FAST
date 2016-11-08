@@ -126,7 +126,7 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	if (key->shaderview)
 		deviceContext->PSSetShaderResources(0, 1, &key->shaderview);
-	
+
 	
 
 	return true;
@@ -195,7 +195,7 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 	pixelShaderBuffer = 0;
 	geoShaderBuffer = 0;
 	//// Compile the vertex shader code.
-
+	HRESULT temp;
 
 	//giving linker errors for D3DCompileFromFile
 
@@ -235,7 +235,7 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 	device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vs);
 	// Create the pixel shader from the buffer.
 	if (!ps && _ps)
-	device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_ps);
+	temp = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_ps);
 	// Create the geometry shader from the buffer.
 	if (!gs && _gs)
 	device->CreateGeometryShader(geoShaderBuffer->GetBufferPointer(), geoShaderBuffer->GetBufferSize(), NULL, &_gs);

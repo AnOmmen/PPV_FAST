@@ -78,8 +78,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 
 
-	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
+
 
 
 	{
@@ -106,7 +105,15 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
 		animmodel->Update(XMMatrixScaling(.01, .01, .01));
+		HRESULT temp = CreateDDSTextureFromFile(m_deviceResources->GetDevice(),
+			L"Brick.dds", NULL,
+			&animmodel->shaderview);
+		CD3D11_SAMPLER_DESC sampledesc = CD3D11_SAMPLER_DESC(CD3D11_DEFAULT());
+
+		m_deviceResources->GetDevice()->CreateSamplerState(&sampledesc, &SampState);
+
 		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, animmodel);
+
 
 		//make spheres for bones
 		//unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
@@ -129,13 +136,10 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 
 
-
-
-
-
 	}
 
-
+	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 
 
 	//

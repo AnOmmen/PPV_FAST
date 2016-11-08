@@ -11,7 +11,7 @@ struct ANIMATED_LIT_INPUT
 struct PSINPUT
 {
     float4 position : SV_POSITION;
-    float4 color : COLOR;
+    float2 uv : UV;
     float4 normal : NORMAL;
     float4 world : WORLDMATRIX;
     
@@ -74,6 +74,6 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
     output.normal = mul(VertexOut, worldMatrix);
     output.normal = normalize(output.normal);
 
-    output.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
+    output.uv = input.uv;
 	return output;
 }

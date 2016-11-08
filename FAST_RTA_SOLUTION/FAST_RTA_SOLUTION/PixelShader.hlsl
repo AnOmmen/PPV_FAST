@@ -6,19 +6,23 @@
 struct PSINPUT
 {
 	float4 position : SV_POSITION;
-	float4 color : COLOR;
+	float2 uv : COLOR;
     float4 normal : NORMAL;
     float4 world : WORLDMATRIX;
 };
 
+//texture2D basetexture;
+
+SamplerState filter;
 cbuffer LightBuffer
 {
     LIGHT light[3];
 }
 
+
 float4 main(PSINPUT input) : SV_TARGET
 {
-    float4 baseColor = input.color; //input.color;
+    float4 baseColor = float4(1, 0, 0, 1); //basetexture.Sample(filter, input.uv);
     float3 color1, color2, color3;
     color1 = DirLight(light[0].pos, input.normal, light[0].color).xyz;
     color2 = PointLight(light[1].pos, input.world, input.normal, light[1].color, light[1].r).xyz;

@@ -36,7 +36,6 @@ namespace FASTFBXLoader
 	FbxManager *m_fbxManager;
 	FbxScene *m_fbxScene;
 	std::vector<DirectX::XMFLOAT4X4> m_skeleton;
-	std::vector<std::string> m_skeletonBoneNames;
 	std::vector<DirectX::XMFLOAT4X4> m_skeletonBindPose;
 	std::vector<FBXLoaderStructs::KeyFrame> m_keyFrames;
 	std::unordered_map<unsigned int, FBXLoaderStructs::ControlPoint*> m_controlPoints;
@@ -57,7 +56,6 @@ namespace FASTFBXLoader
 	void SortBlendingInfoByWeight(FBXLoaderStructs::FullVertex &_vertex);
 	void Optimize();
 	unsigned short FindVertex(const FBXLoaderStructs::FullVertex &_inTargetVertex, const std::vector<FBXLoaderStructs::FullVertex> &_uniqueVertices);
-	unsigned int FindBoneIndexUsingName(const std::string &_inBoneName);
 	fbxsdk::FbxAMatrix GetGeometryTransformation(fbxsdk::FbxNode *_inNode);
 	DirectX::XMFLOAT4X4 FBXAMatrixToDXMatrix(fbxsdk::FbxAMatrix const &_inMatrix);
 
@@ -210,8 +208,6 @@ namespace FASTFBXLoader
 		{
 			DirectX::XMFLOAT4X4 currBone;
 			m_skeleton.push_back(currBone);
-			std::string currName = _inNode->GetName();
-			m_skeletonBoneNames.push_back(currName);
 		}
 		
 		unsigned int i;
@@ -264,7 +260,6 @@ namespace FASTFBXLoader
 			if (!currSkin)
 				continue;
 
-			m_skeletonBindPose.resize(m_skeleton.size());
 			FbxAnimStack *currAnimStack = m_fbxScene->GetSrcObject<FbxAnimStack>(0);
 			FbxString animStackName = currAnimStack->GetName();
 			FbxTakeInfo *takeInfo = m_fbxScene->GetTakeInfo(animStackName.Buffer());
@@ -282,8 +277,6 @@ namespace FASTFBXLoader
 				for (clusterIndex = 0; clusterIndex < numOfClusters; ++clusterIndex)
 				{
 					FbxCluster *currCluster = currSkin->GetCluster(clusterIndex);
-					std::string currBoneName = currCluster->GetLink()->GetName();
-					unsigned int currBoneIndex = FindBoneIndexUsingName(currBoneName);
 					FbxAMatrix transformMatrix;
 					FbxAMatrix transformLinkMatrix;
 					FbxAMatrix globalBindposeInverseMatrix;
@@ -296,13 +289,13 @@ namespace FASTFBXLoader
 					// ONLY DO THIS ONCE
 					if (start.GetFrameCount(FbxTime::eFrames24) == i)
 					{
-						m_skeletonBindPose[currBoneIndex] = FBXAMatrixToDXMatrix(globalBindposeInverseMatrix);
+						m_skeletonBindPose.push_back(FBXAMatrixToDXMatrix(globalBindposeInverseMatrix));
 
 						unsigned int j, numOfIndices = currCluster->GetControlPointIndicesCount();
 						for (j = 0; j < numOfIndices; ++j)
 						{
 							int ctrlPointIndex = currCluster->GetControlPointIndices()[j];
-							m_controlPoints[ctrlPointIndex]->bIndices.push_back((float)currBoneIndex);
+							m_controlPoints[ctrlPointIndex]->bIndices.push_back((float)i);
 							m_controlPoints[ctrlPointIndex]->bWeights.push_back((float)currCluster->GetControlPointWeights()[j]);
 						}
 					}
@@ -634,15 +627,6 @@ namespace FASTFBXLoader
 				_inTargetVertex.bIndices.w == _uniqueVertices[i].bIndices.w)
 				return i;
 		return USHRT_MAX;
-	}
-
-	unsigned int FindBoneIndexUsingName(const std::string & _inBoneName)
-	{
-		unsigned int i;
-		for (i = 0; i < m_skeletonBoneNames.size(); ++i)
-			if (_inBoneName == m_skeletonBoneNames[i])
-				return i;
-		return UINT32_MAX;
 	}
 
 	fbxsdk::FbxAMatrix GetGeometryTransformation(fbxsdk::FbxNode * _inNode)

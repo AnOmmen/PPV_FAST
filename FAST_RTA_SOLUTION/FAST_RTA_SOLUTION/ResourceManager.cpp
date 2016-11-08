@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 #include "DDSTextureLoader.h"
 #include "../FAST_FBX_LOADER/FASTFBXLoader.h"
+#include "../FAST_BINARY_IO/FASTBinaryIO.h"
 #include "BindPose.h"
 ResourceManager::ResourceManager()
 {
@@ -82,10 +83,19 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 
 	{
-		bool noerror = true;
-		noerror = FASTFBXLoader::Init();
-		noerror = FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_Idle.fbx");
-		noerror = FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
+		
+		FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::READ);
+		if (!FASTBinaryIO::Open(fastFile, "../FAST_RTA_SOLUTION/model.bin"))
+		{
+			FASTFBXLoader::Init();
+			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_Idle.fbx");
+			FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
+			FASTFBXLoader::Clean();
+		}
+		else
+			FASTBinaryIO::Close(fastFile);
+		FASTBinaryIO::Destroy(fastFile);
+
 		Model* animmodel;
 		std::vector<FullVertex> vertices;
 		//std::vector<unsigned short>* pindeces;
@@ -97,7 +107,6 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
 		animmodel->Update(XMMatrixScaling(.01, .01, .01));
 		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, animmodel);
-		FASTFBXLoader::Clean();
 
 		//make spheres for bones
 		//unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();

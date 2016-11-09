@@ -69,6 +69,7 @@ XMFLOAT3 Camera::GetRotation()
 
 void Camera::Update(bool* keyarray, float dt)
 {
+	dt *= 10;
 	XMMATRIX identity;
 	identity = XMMatrixIdentity();
 	if (keyarray[12])

@@ -40,7 +40,6 @@ void Interpolator::SetTotalTime(float _time)
 
 KeyFrame Interpolator::Update(float _time)
 {
-	_time *= .1;
 	int currentCheckFrameNext = 0;
 	m_currFrame.m_bones.clear();
 	float frameTime = 0;
@@ -85,6 +84,7 @@ KeyFrame Interpolator::Update(float _time)
 	tweenTime = nextTime - previousTime;
 	frameTime = m_currFrame.m_time - previousTime;
 	float ratio = frameTime / tweenTime;
+
 	//DirectX::XMVectorLerp()
 	//DirectX::XMQuaternionSlerp()
 	for (int i = 0; i < numBones; i++)

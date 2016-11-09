@@ -173,7 +173,7 @@ bool DEMO_APP::Loop()
 	inputCheck();
 
 	//update
-	manager->Update(keys, .1f);
+	manager->Update(keys, .01f);
 
 
 	manager->Render();

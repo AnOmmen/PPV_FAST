@@ -89,7 +89,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		if (!FASTBinaryIO::Open(fastFile, "../FAST_RTA_SOLUTION/model.bin"))
 		{
 			FASTFBXLoader::Init();
-			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_Run.fbx");
+			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_BETTERRun.fbx");
 			FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
 			FASTFBXLoader::Clean();
 		}
@@ -106,7 +106,6 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		animmodel->hasAnimation = true;//true;
 		
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
-		
 		
 		animmodel->Update(XMMatrixScaling(.01, .01, .01));
 		blender = new Blender(animmodel->GetAnimationSet().GetDefaultAnimation());

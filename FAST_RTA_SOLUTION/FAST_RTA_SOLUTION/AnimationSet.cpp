@@ -116,10 +116,16 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 					memcpy_s(&keyFrames[i].m_bones[0], keyFrames[i].m_bones.size() * sizeof(DirectX::XMFLOAT4X4),
 						&block[(i + 1) * sizeof(float) + sizeof(DirectX::XMFLOAT4X4) * header[BONE_COUNT] * i], header[BONE_COUNT] * sizeof(DirectX::XMFLOAT4X4));
 				}
+				//keyFrames.erase(keyFrames.begin());
 				delete[] block;
 				delete[] header;
 
 				Animation temp;
+				float tweenTime = keyFrames[0].m_time;
+				for (unsigned int i = 0; i < keyFrames.size(); ++i)
+				{
+					keyFrames[i].m_time -= tweenTime;
+				}
 				temp.Init(keyFrames, LOOP);
 				m_animations.push_back(temp);
 

@@ -22,5 +22,6 @@ public:
 	void SetCurrTime(float _time);
 	void SetTotalTime(float _time);
 	KeyFrame Update(float _time);
+	KeyFrame Interpolate(KeyFrame _prevFrame, KeyFrame _nextFrame, float _ratio);
 };
 

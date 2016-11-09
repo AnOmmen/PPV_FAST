@@ -40,93 +40,90 @@ void Interpolator::SetTotalTime(float _time)
 
 KeyFrame Interpolator::Update(float _time)
 {
-	int currentCheckFrameNext = 0;
-	m_currFrame.m_bones.clear();
+	KeyFrame nextFrame;
+	KeyFrame prevFrame;
+	prevFrame.m_time = 0;
+
 	float frameTime = 0;
 	float tweenTime = 0;
+	tweenTime = m_animation->GetFrame(1)->m_time - m_animation->GetFrame(0)->m_time;
+
+	m_currFrame.m_bones.clear();
 	SetTotalTime(m_animation->m_totaltime);
 	if (m_currBlendTime + _time > m_totalBlendTime)
 	{
 		m_currBlendTime = (m_currBlendTime + _time) - m_totalBlendTime;
+		prevFrame.m_time = 0;// m_animation->GetFrame(m_animation->GetNumKeyFrames() - 1)->m_time;
+		prevFrame.m_bones = m_animation->GetFrame(m_animation->GetNumKeyFrames()-1)->m_bones;
+
+		nextFrame.m_bones = m_animation->GetFrame(0)->m_bones;
+		nextFrame.m_time = m_animation->GetFrame(0)->m_time;
+		/*prevFrame = *m_animation->GetFrame(0);
+		nextFrame = *m_animation->GetFrame(1);*/
 	}
 	else
 	{
 		SetCurrTime(m_currBlendTime + _time);
-	}
-	float previousTime = 0;
-	float nextTime = 0;
-	std::vector<Bone> prevVec;
-	std::vector<Bone> nextVec;
-	unsigned int numBones = 0;
-	numBones = m_animation->GetNumBones();
-
-	for (unsigned int i = 0; i < m_animation->GetNumKeyFrames(); i++)
-	{
-		if (m_animation->GetFrame(i)->m_time > m_currBlendTime)
+		for (unsigned int i = 0; i < m_animation->GetNumKeyFrames(); i++)
 		{
-			nextTime = m_animation->GetFrame(i)->m_time;
-			nextVec = m_animation->GetFrame(i)->m_bones;
-			currentCheckFrameNext = i;
-			break;
-		}
-		else if (m_animation->GetFrame(i)->m_time == m_currBlendTime)
-		{
-			m_currFrame.m_bones = m_animation->GetFrame(i)->m_bones;
-			m_currFrame.m_time = m_animation->GetFrame(i)->m_time;
-			currentCheckFrameNext = i;
-			return m_currFrame;
-		}
+			if (m_animation->GetFrame(i)->m_time > m_currBlendTime)
+			{
+				nextFrame.m_time = m_animation->GetFrame(i)->m_time;
+				nextFrame.m_bones = m_animation->GetFrame(i)->m_bones;
+				break;
+			}
+			else if (m_animation->GetFrame(i)->m_time == m_currBlendTime)
+			{
+				m_currFrame.m_bones = m_animation->GetFrame(i)->m_bones;
+				m_currFrame.m_time = m_animation->GetFrame(i)->m_time;
 
-		previousTime = m_animation->GetFrame(i)->m_time;
-		prevVec = m_animation->GetFrame(i)->m_bones;
+				return m_currFrame;
+			}
+
+			prevFrame.m_time = m_animation->GetFrame(i)->m_time;
+			prevFrame.m_bones = m_animation->GetFrame(i)->m_bones;
+
+		}
 	}
+
 	//DO THE MATHS
-	tweenTime = nextTime - previousTime;
-	frameTime = m_currFrame.m_time - previousTime;
+	frameTime = m_currBlendTime - prevFrame.m_time;
 	float ratio = frameTime / tweenTime;
+	m_currFrame = Interpolate(prevFrame, nextFrame, ratio);
 
-	//DirectX::XMVectorLerp()
-	//DirectX::XMQuaternionSlerp()
+	m_currFrame.m_time = GetTime();
+	return m_currFrame;
+}
+
+KeyFrame Interpolator::Interpolate(KeyFrame _prevFrame, KeyFrame _nextFrame, float _ratio)
+{
+	KeyFrame set;
+	int numBones = _prevFrame.m_bones.size();
 	for (int i = 0; i < numBones; i++)
 	{
-		DirectX::XMVECTORF32 prevPos;
-		DirectX::XMVECTORF32 nextPos;
+		DirectX::XMVECTOR scaleCur;
+		DirectX::XMVECTOR rotationCur;
+		DirectX::XMVECTOR positionCur;
 
-		prevPos.f[0] = prevVec[i].m_world._41;
-		prevPos.f[1] = prevVec[i].m_world._42;
-		prevPos.f[2] = prevVec[i].m_world._43;
-		prevPos.f[3] = prevVec[i].m_world._44;
-
-		nextPos.f[0] = nextVec[i].m_world._41;
-		nextPos.f[1] = nextVec[i].m_world._42;
-		nextPos.f[2] = nextVec[i].m_world._43;
-		nextPos.f[3] = nextVec[i].m_world._44;
-
-		DirectX::XMVECTOR prevScale;
-		DirectX::XMVECTOR prevQuat;
-		DirectX::XMVECTOR prevTrans;
 		DirectX::XMVECTOR nextScale;
 		DirectX::XMVECTOR nextQuat;
 		DirectX::XMVECTOR nextTrans;
+
 		DirectX::XMMATRIX prevMat;
 		DirectX::XMMATRIX nextMat;
-		ratio = 1;
-		prevMat = DirectX::XMLoadFloat4x4(&prevVec[i].m_world);
-		nextMat = DirectX::XMLoadFloat4x4(&nextVec[i].m_world);
-		DirectX::XMMatrixDecompose(&prevScale, &prevQuat, &prevTrans, prevMat);
+
+		prevMat = DirectX::XMLoadFloat4x4(&_prevFrame.m_bones[i].m_world);
+		nextMat = DirectX::XMLoadFloat4x4(&_nextFrame.m_bones[i].m_world);
+		DirectX::XMMatrixDecompose(&scaleCur, &rotationCur, &positionCur, prevMat);
 		DirectX::XMMatrixDecompose(&nextScale, &nextQuat, &nextTrans, nextMat);
-		DirectX::XMVECTOR currRot = DirectX::XMQuaternionSlerp(prevQuat, nextQuat, ratio);
-		DirectX::XMVECTOR currScale = DirectX::XMVectorLerp(prevPos, nextPos, ratio);
-		DirectX::XMVECTOR currPos = DirectX::XMVectorLerp(prevPos.v, nextPos.v, ratio);
-		currScale = prevScale;
-		currRot = prevQuat;
-		currPos = prevTrans;
+		DirectX::XMVECTOR currRot = DirectX::XMQuaternionSlerp(rotationCur, nextQuat, _ratio);
+		DirectX::XMVECTOR currScale = DirectX::XMVectorLerp(scaleCur, nextScale, _ratio);
+		DirectX::XMVECTOR currPos = DirectX::XMVectorLerp(positionCur, nextTrans, _ratio);
 
 		DirectX::XMMATRIX tempCatch = DirectX::XMMatrixAffineTransformation(currScale, DirectX::XMVectorZero(), currRot, currPos);
 		Bone newBone;
 		DirectX::XMStoreFloat4x4(&newBone.m_world, tempCatch);
-		m_currFrame.m_bones.push_back(newBone);
+		set.m_bones.push_back(newBone);
 	}
-	m_currFrame.m_time = GetTime();
-	return m_currFrame;
+	return set;
 }

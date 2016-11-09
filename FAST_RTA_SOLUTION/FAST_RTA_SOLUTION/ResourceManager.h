@@ -11,6 +11,10 @@ private:
 	ID3D11SamplerState* SampState;
 	ID3D11Texture2D* texture;
 	Blender* blender;
+	float currentTime;
+	int currentFrame;
+	bool pressed;
+	bool loop;
 public:
 	void Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
 		float screenDepth, float screenNear);

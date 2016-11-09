@@ -94,11 +94,11 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	dataPtr->projection = projectionMatrix;
 	deviceContext->Unmap(m_matrixBuffer, 0);
 	//deviceContext->UpdateSubresource(m_matrixBuffer, 0, 0, dataPtr, 0, 0);
-
+	deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (key->hasAnimation)
 	{
 		size_t numbones = blender->m_currAnim->m_currFrame.m_bones.size();
-		deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
 		changePtr = (ChangeBufferType*)(mappedResource.pData);
 		// Copy the matrices into the constant buffer.
 		AnimationSet* tempanimset = &key->GetAnimationSet();
@@ -115,9 +115,22 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 			tempcounter = 0;
 		}
 
-		deviceContext->Unmap(m_changeBuffer, 0);
 		//deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);
 	}
+	else
+	{
+		//size_t numbones = blender->m_currAnim->m_currFrame.m_bones.size();
+		//
+		//changePtr = (ChangeBufferType*)(mappedResource.pData);
+		//// Copy the matrices into the constant buffer.
+		//for (size_t i = 0; i <numbones; i++)
+		//{
+		//	XMStoreFloat4x4(&changePtr->BoneOffset[i], XMMatrixIdentity());
+		//}
+
+	}
+
+	deviceContext->Unmap(m_changeBuffer, 0);
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
 
@@ -173,6 +186,24 @@ void PolyShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount
 	return;
 }
 
+bool LoadShader(std::vector<uint8_t> &_data, const char* _fileName)
+{
+	FILE * file = nullptr;
+	fopen_s(&file, _fileName, "rb");
+	if (!file) return false; //Normally Log that there was a bad file name sent in
+	fseek(file, 0, SEEK_END);
+	long size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+	_data.resize(size);
+	fread(&_data[0], sizeof(uint8_t), size, file);
+	fclose(file);
+	return true;
+
+}
+
+
+
+
 void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 	ID3D11PixelShader* _ps, ID3D11GeometryShader* _gs, 
 	ID3D11Device* device, HWND hwnd, 
@@ -203,14 +234,14 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 	HRESULT temp;
 
 	//giving linker errors for D3DCompileFromFile
+	std::vector<uint8_t> data;
 
 	if(_vs)
 	D3DCompileFromFile(vsFilename, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", D3DCOMPILE_ENABLE_STRICTNESS, 0,
 		&vertexShaderBuffer, &errorMessage);
 	// Compile the pixel shader code.
 	if (_ps)
-	D3DCompileFromFile(psFilename, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_ENABLE_STRICTNESS, 0,
-		&pixelShaderBuffer, &errorMessage);
+		LoadShader(data, "../x64/Debug/PixelShader.cso");
 	// Compile the geometry shader code.
 	if (_gs)
 	D3DCompileFromFile(gsFilename, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "gs_5_0", D3DCOMPILE_ENABLE_STRICTNESS, 0,
@@ -240,7 +271,7 @@ void PolyShader::AddModel(Model* key, ID3D11VertexShader* _vs,
 	device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vs);
 	// Create the pixel shader from the buffer.
 	if (!ps && _ps)
-	temp = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_ps);
+	temp = device->CreatePixelShader(&data[0], data.size(), NULL, &_ps);
 	// Create the geometry shader from the buffer.
 	if (!gs && _gs)
 	device->CreateGeometryShader(geoShaderBuffer->GetBufferPointer(), geoShaderBuffer->GetBufferSize(), NULL, &_gs);

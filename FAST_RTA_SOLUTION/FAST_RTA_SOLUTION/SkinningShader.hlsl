@@ -55,8 +55,11 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
     VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
 
     
-
     // Calculate the position of the vertex against the world, view, and projection matrices.
+  
+    if(VertexOut.x == 0 && VertexOut.y == 0 && VertexOut.z == 0 && VertexOut.w == 0)
+        VertexOut = float4(input.pos, 1.0f);
+
     output.position = mul(VertexOut, worldMatrix);
     output.world = float4(output.position.xyz, 1.0f);
     output.position = mul(output.position, viewMatrix);
@@ -69,7 +72,8 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
     VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
     VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
 
-
+    if (VertexOut.x == 0 && VertexOut.y == 0 && VertexOut.z == 0 && VertexOut.w == 0)
+        VertexOut = float4(input.normal, 0.0f);
     output.normal = mul(VertexOut, worldMatrix);
     output.normal = normalize(output.normal);
 

@@ -69,7 +69,6 @@ void Renderer::Update(bool* keys, float dt)
 {
 	m_light->Update(keys, dt);
 	m_camera->Update(keys, dt);
-	
 	for (size_t i = 0; i < m_objects.size(); i++)
 	{
 		m_objects[i]->Update(dt);

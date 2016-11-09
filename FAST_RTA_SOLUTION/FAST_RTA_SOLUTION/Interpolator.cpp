@@ -40,7 +40,7 @@ void Interpolator::SetTotalTime(float _time)
 
 KeyFrame Interpolator::Update(float _time)
 {
-	//_time *= .01;
+	_time *= .1;
 	int currentCheckFrameNext = 0;
 	m_currFrame.m_bones.clear();
 	float frameTime = 0;

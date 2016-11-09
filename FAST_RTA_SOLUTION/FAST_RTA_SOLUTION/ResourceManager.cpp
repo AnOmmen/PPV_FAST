@@ -6,6 +6,8 @@
 ResourceManager::ResourceManager()
 {
 	m_deviceResources = new DeviceResources();
+	currentTime = 0;
+	currentFrame = 0;
 }
 
 ResourceManager::~ResourceManager()
@@ -87,7 +89,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		if (!FASTBinaryIO::Open(fastFile, "../FAST_RTA_SOLUTION/model.bin"))
 		{
 			FASTFBXLoader::Init();
-			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx");
+			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_Run.fbx");
 			FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
 			FASTFBXLoader::Clean();
 		}
@@ -106,12 +108,12 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
 		
 		
-		//animmodel->Update(XMMatrixScaling(.01, .01, .01));
+		animmodel->Update(XMMatrixScaling(.01, .01, .01));
 		blender = new Blender(animmodel->GetAnimationSet().GetDefaultAnimation());
 
 		
 		HRESULT temp = CreateDDSTextureFromFile(m_deviceResources->GetDevice(),
-			L"Brick.dds", NULL,
+			L"Teddy_D.dds", NULL,
 			&animmodel->shaderview);
 		CD3D11_SAMPLER_DESC sampledesc = CD3D11_SAMPLER_DESC(CD3D11_DEFAULT());
 
@@ -250,7 +252,8 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 
 
-
+	pressed = false;
+	loop = true;
 }
 
 void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device* device,
@@ -361,7 +364,32 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 
 void ResourceManager::Update(bool* keys, float dt)
 {
-	blender->Update(dt);
+	if (keys[11] && !pressed)
+	{
+		blender->m_currAnim->SetCurrTime(blender->m_currAnim->m_animation->GetFrame(currentFrame)->m_time);
+		currentFrame++;
+		if (currentFrame >= blender->m_currAnim->m_animation->GetNumKeyFrames())
+			currentFrame = 0;
+		pressed = true;
+		loop = false;
+	}
+	else if(pressed && !keys[11])
+	{
+		pressed = false;
+	}
+	if (keys[10])
+	{
+		
+		loop = !loop;
+	}
+	if (loop)
+	{
+		blender->Update(dt);
+	}
+	else
+	{
+		blender->Update(0);
+	}
 	m_renderer->Update(keys, dt);
 
 }

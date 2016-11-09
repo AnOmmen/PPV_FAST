@@ -47,12 +47,19 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender
 {
 	//TODO: indexCount??
 	//setup temp camera
-
+	m_light->UpdateBuffer(deviceContext);
 	for (int i = 0; i < m_objects.size(); i++)
 	{
-		m_light->UpdateBuffer(deviceContext);
+	
+		std::vector<XMMATRIX> temp;
+	
+		
+		for (int j = 0; j < m_objects[i]->timesToDraw; j++)
+		{
+			temp.push_back(XMMatrixTranslation(100 * j, 0, 0) * (m_objects[i]->GetWorldMat()));
+		}
 		m_polyShader->Render(deviceContext, m_objects[i]->GetNumIndeces(), 
-			(m_objects[i]->GetWorldMat()), m_camera->GetViewMatrix(), proj, m_objects[i], blender);
+			temp, m_camera->GetViewMatrix(), proj, m_objects[i], blender);
 	}
 }
 

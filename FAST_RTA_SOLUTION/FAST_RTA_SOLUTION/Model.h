@@ -32,6 +32,7 @@ public:
 	void LoadAnimation(const char* _filePath, ID3D11Device* device);
 
 	AnimationSet &GetAnimationSet();
+	int timesToDraw;
 
 
 };

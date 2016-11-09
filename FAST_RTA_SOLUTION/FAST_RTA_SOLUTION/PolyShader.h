@@ -20,7 +20,7 @@ private:
 
 	struct MatrixBufferType
 	{
-		XMMATRIX world;
+		XMMATRIX world[5];
 		XMMATRIX view;
 		XMMATRIX projection;
 	};
@@ -33,7 +33,7 @@ private:
 	unsigned int tempcounter;
 
 	void ShutdownShader(Model* key);
-	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, Model* key, Blender*);
+	bool SetShaderParameters(ID3D11DeviceContext*, std::vector<XMMATRIX>&, XMMATRIX, XMMATRIX, Model* key, Blender*);
 	void RenderShader(ID3D11DeviceContext*, int, Model* key);
 
 public:
@@ -50,7 +50,7 @@ public:
 	ID3D11VertexShader const* GetVS(Model*) const;
 	ID3D11PixelShader const* GetPS(Model*) const;
 	ID3D11GeometryShader const* GetGS(Model*) const;
-	void Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	void Render(ID3D11DeviceContext* deviceContext, int indexCount, std::vector<XMMATRIX> &worldMatrix, XMMATRIX viewMatrix,
 		XMMATRIX projectionMatrix, Model* key, Blender* blender);
 
 

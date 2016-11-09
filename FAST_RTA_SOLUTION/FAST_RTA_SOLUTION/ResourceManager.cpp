@@ -83,6 +83,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 
 	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+	model->timesToDraw = 1;
 	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 	unsigned int numBones;
 	{
@@ -106,7 +107,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		
 		animmodel = new Model(m_deviceResources->GetDevice(), vertices, indeces);
 		animmodel->hasAnimation = true;//true;
-		
+		animmodel->timesToDraw = 5;
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
 		
 		animmodel->Update(XMMatrixScaling(.01, .01, .01));
@@ -133,6 +134,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		for (unsigned int i = 0; i < numBones; i++)
 		{
 			model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+			model->timesToDraw = 1;
 			model->hasAnimation = false;
 			m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 		}

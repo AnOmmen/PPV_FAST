@@ -18,7 +18,7 @@ PolyShader::~PolyShader()
 }
 
 void PolyShader::Render(ID3D11DeviceContext* deviceContext, 
-	int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	int indexCount, std::vector<XMMATRIX> &worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, Model* key, Blender* blender)
 {
 	SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, key, blender);
@@ -69,7 +69,7 @@ void PolyShader::ShutdownShader(Model* key)
 }
 
 bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
-	XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	std::vector<XMMATRIX> &worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, Model* key, Blender* blender)
 {
 	//HRESULT result;
@@ -80,7 +80,10 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	unsigned int bufferNumber;
 
 	// Transpose the matrices to prepare them for the shader.
-	worldMatrix = XMMatrixTranspose(worldMatrix);
+	for (int i = 0; i < worldMatrix.size(); i++)
+	{
+		worldMatrix[i] = XMMatrixTranspose(worldMatrix[i]);
+	}
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
@@ -89,7 +92,10 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	dataPtr = (MatrixBufferType*)(mappedResource.pData);
 	// Copy the matrices into the constant buffer.
-	dataPtr->world = worldMatrix;
+	for (int i = 0; i < worldMatrix.size(); i++)
+	{
+		dataPtr->world[i] = worldMatrix[i];
+	}
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;
 	deviceContext->Unmap(m_matrixBuffer, 0);
@@ -158,7 +164,7 @@ void PolyShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount
 	deviceContext->PSSetShader(m_ps[key], NULL, 0);
 	// Render the triangle.
 	
-	deviceContext->DrawIndexed(indexCount, 0, 0);
+	deviceContext->DrawIndexedInstanced(indexCount, key->timesToDraw, 0, 0, 0);
 
 	return;
 }

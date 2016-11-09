@@ -39,12 +39,12 @@ cbuffer cbChangesEveryFrame : register(b0)
 
 cbuffer MatrixBuffer : register(b1)
 {
-    matrix worldMatrix;
+    matrix worldMatrix[5];
     matrix viewMatrix;
     matrix projectionMatrix;
 };
 
-PSINPUT main(ANIMATED_LIT_INPUT input)
+PSINPUT main(ANIMATED_LIT_INPUT input, uint instanceIndex:SV_InstanceID)
 {
     PSINPUT output;
     float4 temp = float4(input.pos, 1.0f);
@@ -60,7 +60,7 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
     if(VertexOut.x == 0 && VertexOut.y == 0 && VertexOut.z == 0 && VertexOut.w == 0)
         VertexOut = float4(input.pos, 1.0f);
 
-    output.position = mul(VertexOut, worldMatrix);
+    output.position = mul(VertexOut, worldMatrix[instanceIndex]);
     output.world = float4(output.position.xyz, 1.0f);
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
@@ -74,7 +74,7 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
 
     if (VertexOut.x == 0 && VertexOut.y == 0 && VertexOut.z == 0 && VertexOut.w == 0)
         VertexOut = float4(input.normal, 0.0f);
-    output.normal = mul(VertexOut, worldMatrix);
+    output.normal = mul(VertexOut, worldMatrix[instanceIndex]);
     output.normal = normalize(output.normal);
 
     output.uv = input.uv;

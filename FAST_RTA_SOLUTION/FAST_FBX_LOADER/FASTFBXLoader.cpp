@@ -295,7 +295,7 @@ namespace FASTFBXLoader
 						for (j = 0; j < numOfIndices; ++j)
 						{
 							int ctrlPointIndex = currCluster->GetControlPointIndices()[j];
-							m_controlPoints[ctrlPointIndex]->bIndices.push_back((float)i);
+							m_controlPoints[ctrlPointIndex]->bIndices.push_back((float)clusterIndex);
 							m_controlPoints[ctrlPointIndex]->bWeights.push_back((float)currCluster->GetControlPointWeights()[j]);
 						}
 					}

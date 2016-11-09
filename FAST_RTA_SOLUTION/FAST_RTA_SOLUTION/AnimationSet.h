@@ -24,7 +24,7 @@ public:
 	unsigned int GetAnimationCount() const;
 	const Animation* GetAnimation(int _key) const;
 	const BlendInfo* GetBlendInfo(int _animationFrom, int _animationTo) const;
-	const BindPose* GetBindPose() const;
+	BindPose* GetBindPose() const;
 	const Animation* GetDefaultAnimation() const;
 	void SetBlendTimes(std::vector<std::vector<BlendInfo>> &_blendTimes);
 	void SetBlendTime(int _animationFrom, int _animationTo, BlendInfo &_blendInfo);

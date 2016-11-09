@@ -136,7 +136,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		
 		
 			m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
-		
+			
 		
 		
 		}
@@ -389,7 +389,8 @@ void ResourceManager::Update(bool* keys, float dt)
 	{
 		blender->Update(0);
 	}
-	m_renderer->Update(keys, dt);
+	m_renderer->Update(keys, dt, blender);
+
 
 }
 

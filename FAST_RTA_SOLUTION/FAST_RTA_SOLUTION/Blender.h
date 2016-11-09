@@ -1,6 +1,7 @@
 #pragma once
 #include "Interpolator.h"
 #include "AnimationSet.h"
+using namespace DirectX;
 class Blender
 {
 public:
@@ -13,7 +14,7 @@ public:
 	Blender(const Animation* anim);
 	~Blender();
 	KeyFrame GetUpdatedKeyFrame() const;
-	const DirectX::XMMATRIX* GetSkinningMatrix();
+	 DirectX::XMMATRIX* GetSkinningMatrix();
 	void SetAnimSet(std::string _key);
 	bool SetNextAnim(BLEND_TYPE _type, int _animKey);
 	void Update(float _time);

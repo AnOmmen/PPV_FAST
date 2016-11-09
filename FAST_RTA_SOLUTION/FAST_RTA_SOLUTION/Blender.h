@@ -9,8 +9,10 @@ public:
 	std::vector<DirectX::XMMATRIX> m_boneOffsetArray;
 	Interpolator* m_currAnim;
 	Interpolator* m_nextAnim;
-	Blender();
+	KeyFrame m_updatedKeyFrame;
+	Blender(const Animation* anim);
 	~Blender();
+	KeyFrame GetUpdatedKeyFrame() const;
 	const DirectX::XMMATRIX* GetSkinningMatrix();
 	void SetAnimSet(std::string _key);
 	bool SetNextAnim(BLEND_TYPE _type, int _animKey);

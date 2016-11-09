@@ -9,7 +9,6 @@ class Animation
 	ANIM_TYPE m_animType;
 	std::vector<KeyFrame> m_keyFrames;
 	unsigned int m_numBones;
-	float m_totaltime;
 public:
 	Animation();
 	~Animation();
@@ -18,5 +17,7 @@ public:
 	unsigned int GetNumBones() const;
 	// COPIES INFORMATION DOES NOT STORE IT DYNAMICALLY //
 	void Init(std::vector<KeyFrame> &_keyFrames, ANIM_TYPE _animType);
+	float m_totaltime;
+
 };
 

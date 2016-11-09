@@ -6,7 +6,6 @@
 ResourceManager::ResourceManager()
 {
 	m_deviceResources = new DeviceResources();
-	
 }
 
 ResourceManager::~ResourceManager()
@@ -14,6 +13,7 @@ ResourceManager::~ResourceManager()
 	m_deviceResources->Shutdown();
 	delete m_deviceResources;
 	delete m_renderer;
+	delete blender;
 }
 
 void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
@@ -87,7 +87,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		if (!FASTBinaryIO::Open(fastFile, "../FAST_RTA_SOLUTION/model.bin"))
 		{
 			FASTFBXLoader::Init();
-			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_Idle.fbx");
+			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Box_Idle.fbx");
 			FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
 			FASTFBXLoader::Clean();
 		}
@@ -104,7 +104,12 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		animmodel->hasAnimation = true;//true;
 		
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
-		animmodel->Update(XMMatrixScaling(.01, .01, .01));
+		
+		
+		//animmodel->Update(XMMatrixScaling(.01, .01, .01));
+		blender = new Blender(animmodel->GetAnimationSet().GetDefaultAnimation());
+
+		
 		HRESULT temp = CreateDDSTextureFromFile(m_deviceResources->GetDevice(),
 			L"Brick.dds", NULL,
 			&animmodel->shaderview);
@@ -114,25 +119,26 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 		m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, animmodel);
 
+		
 
-		//make spheres for bones
-		//unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
-		//vertices.clear();
-		//indeces.clear();
-		//loadOBJ("../FAST_RTA_SOLUTION/Sphere.obj", 0, m_deviceResources->GetDevice(), vertices, indeces);
-		//for (unsigned int i = 0; i < numBones; i++)
-		//{
-		//	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-		//	animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world;
-		//	model->Update(XMMatrixMultiply(XMLoadFloat4x4(&animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world), animmodel->GetWorldMat()));
-		//	
-		//
-		//
-		//	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
-		//
-		//
-		//
-		//}
+		
+		unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
+		vertices.clear();
+		indeces.clear();
+		loadOBJ("../FAST_RTA_SOLUTION/Sphere.obj", 0, m_deviceResources->GetDevice(), vertices, indeces);
+		for (unsigned int i = 0; i < numBones; i++)
+		{
+			model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+			animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world;
+			model->Update(XMMatrixMultiply(XMLoadFloat4x4(&animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world), animmodel->GetWorldMat()));
+			
+		
+		
+			m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
+		
+		
+		
+		}
 
 
 
@@ -355,13 +361,15 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 
 void ResourceManager::Update(bool* keys, float dt)
 {
+	blender->Update(dt);
 	m_renderer->Update(keys, dt);
+
 }
 
 void ResourceManager::Render()
 {
 	m_deviceResources->GetProjectionMatrix(m_proj);
 	m_deviceResources->BeginScene(.5, .5, .5, 1);
-	m_renderer->Render(m_deviceResources->GetDeviceContext(), m_proj);
+	m_renderer->Render(m_deviceResources->GetDeviceContext(), m_proj, blender);
 	m_deviceResources->EndScene();
 }

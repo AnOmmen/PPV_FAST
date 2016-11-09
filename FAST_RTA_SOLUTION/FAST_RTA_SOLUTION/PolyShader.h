@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <d3dcompiler.h>
 #include "BindPose.h"
+#include "Blender.h"
 #pragma comment(lib, "d3dcompiler.lib")
 #include <fstream>
 using namespace DirectX;
@@ -29,10 +30,10 @@ private:
 		XMFLOAT4X4 BoneOffset[37];
 	};
 	unsigned int m_modelCount;
-
+	unsigned int tempcounter;
 
 	void ShutdownShader(Model* key);
-	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, Model* key);
+	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, Model* key, Blender*);
 	void RenderShader(ID3D11DeviceContext*, int, Model* key);
 
 public:
@@ -50,7 +51,7 @@ public:
 	ID3D11PixelShader const* GetPS(Model*) const;
 	ID3D11GeometryShader const* GetGS(Model*) const;
 	void Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-		XMMATRIX projectionMatrix, Model* key);
+		XMMATRIX projectionMatrix, Model* key, Blender* blender);
 
 
 };

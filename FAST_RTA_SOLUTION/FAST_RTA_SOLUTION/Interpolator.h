@@ -1,8 +1,11 @@
+
+//.h
 #pragma once
 #include "Animation.h"
 class Interpolator
 {
 public:
+
 	//Members
 	const Animation* m_animation;
 	float m_currBlendTime;
@@ -16,7 +19,8 @@ public:
 	Bone* GetCurrentWorld(int &_num);
 	float GetTime();
 	void SetAnimation(const Animation* _anim);
-	void SetTime(float _time);
-	ANIM_TYPE Update(float _time);
+	void SetCurrTime(float _time);
+	void SetTotalTime(float _time);
+	KeyFrame Update(float _time);
 };
 

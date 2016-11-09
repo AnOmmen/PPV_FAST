@@ -1,7 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "DeviceResources.h"
-
+#include "Blender.h"
 class ResourceManager
 {
 private:
@@ -10,6 +10,7 @@ private:
 	XMMATRIX m_proj;
 	ID3D11SamplerState* SampState;
 	ID3D11Texture2D* texture;
+	Blender* blender;
 public:
 	void Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
 		float screenDepth, float screenNear);

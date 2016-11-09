@@ -48,11 +48,11 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
 {
     PSINPUT output;
     float4 temp = float4(input.pos, 1.0f);
-    float4 VertexOut = temp; 
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
+    float4 VertexOut = 0; 
+    VertexOut = mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
 
     
 
@@ -64,11 +64,10 @@ PSINPUT main(ANIMATED_LIT_INPUT input)
     // Store the input color for the pixel shader to use.
 
     temp = float4(input.normal, 0.0f);
-    VertexOut = temp;
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
-    //VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
+    VertexOut = mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
 
 
     output.normal = mul(VertexOut, worldMatrix);

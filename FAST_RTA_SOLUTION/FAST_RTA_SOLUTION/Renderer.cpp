@@ -1,5 +1,5 @@
 #include "Renderer.h"
-
+#include "Blender.h"
 void CreateLights(Light* lights, ID3D11DeviceContext* context)
 {
 	XMFLOAT4 temp1 = XMFLOAT4(0, 1, 0, 1.0f);
@@ -43,7 +43,7 @@ Renderer::~Renderer()
 	delete m_camera;
 }
 
-void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj)
+void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender* blender)
 {
 	//TODO: indexCount??
 	//setup temp camera
@@ -52,7 +52,7 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj)
 	{
 		m_light->UpdateBuffer(deviceContext);
 		m_polyShader->Render(deviceContext, m_objects[i]->GetNumIndeces(), 
-			(m_objects[i]->GetWorldMat()), m_camera->GetViewMatrix(), proj, m_objects[i]);
+			(m_objects[i]->GetWorldMat()), m_camera->GetViewMatrix(), proj, m_objects[i], blender);
 	}
 }
 

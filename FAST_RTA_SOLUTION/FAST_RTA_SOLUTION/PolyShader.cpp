@@ -8,6 +8,7 @@ PolyShader::PolyShader()
 	// Create the vertex input layout description.
 	// This setup needs to match the VertexType stucture in the Model Class and in the shader.
 	ZeroMemory(offsets, 32 * sizeof(XMFLOAT4X4));
+	tempcounter = 0;
 }
 
 
@@ -18,9 +19,9 @@ PolyShader::~PolyShader()
 
 void PolyShader::Render(ID3D11DeviceContext* deviceContext, 
 	int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, Model* key)
+	XMMATRIX projectionMatrix, Model* key, Blender* blender)
 {
-	SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, key);
+	SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, key, blender);
 	RenderShader(deviceContext, indexCount, key);
 }
 
@@ -69,7 +70,7 @@ void PolyShader::ShutdownShader(Model* key)
 
 bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, Model* key)
+	XMMATRIX projectionMatrix, Model* key, Blender* blender)
 {
 	//HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -96,19 +97,23 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	if (key->hasAnimation)
 	{
+		size_t numbones = blender->m_currAnim->m_currFrame.m_bones.size();
 		deviceContext->Map(m_changeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		changePtr = (ChangeBufferType*)(mappedResource.pData);
 		// Copy the matrices into the constant buffer.
 		AnimationSet* tempanimset = &key->GetAnimationSet();
-		for (size_t i = 0; i < key->GetAnimationSet().GetDefaultAnimation()->GetNumBones(); i++)
+		for (size_t i = 0; i <numbones; i++)
 		{
-
 			XMMATRIX bpi = XMLoadFloat4x4(&tempanimset->GetBindPose()->GetBindPose()[i]);
-			XMMATRIX notworld = XMLoadFloat4x4(&tempanimset->GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world);
+			XMMATRIX notworld = XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i].m_world);
 			XMMATRIX mult = XMMatrixMultiply(bpi, notworld);
 			XMStoreFloat4x4(&changePtr->BoneOffset[i], XMMatrixTranspose(mult));
 		}
-
+		tempcounter++;
+		if (tempcounter >= tempanimset->GetDefaultAnimation()->GetNumKeyFrames())
+		{
+			tempcounter = 0;
+		}
 
 		deviceContext->Unmap(m_changeBuffer, 0);
 		//deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);

@@ -22,7 +22,7 @@ public:
 	~Renderer();
 
 	void Update(bool* keys, float dt);
-	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj);
+	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender* blender);
 	void AddModel(ID3D11Device* device, HWND hwnd, Model* key);
 };
 

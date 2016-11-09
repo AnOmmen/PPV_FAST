@@ -21,7 +21,7 @@ public:
 	Renderer(ID3D11Device* device, ID3D11DeviceContext* context);
 	~Renderer();
 
-	void Update(bool* keys, float dt);
+	void Update(bool* keys, float dt, Blender* blender);
 	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender* blender);
 	void AddModel(ID3D11Device* device, HWND hwnd, Model* key);
 };

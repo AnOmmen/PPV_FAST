@@ -156,7 +156,7 @@ const BlendInfo * AnimationSet::GetBlendInfo(int _animationFrom, int _animationT
 	return nullptr;
 }
 
-const BindPose * AnimationSet::GetBindPose() const
+ BindPose * AnimationSet::GetBindPose() const
 {
 	return m_bindPose;
 }

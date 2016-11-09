@@ -65,12 +65,14 @@ void Renderer::AddModel(ID3D11Device* device, HWND hwnd, Model* key)
 	
 }
 
-void Renderer::Update(bool* keys, float dt)
+void Renderer::Update(bool* keys, float dt, Blender* blender)
 {
 	m_light->Update(keys, dt);
 	m_camera->Update(keys, dt);
 	for (size_t i = 0; i < m_objects.size(); i++)
 	{
 		m_objects[i]->Update(dt);
+		if (i >= 2)
+			m_objects[i]->Update(blender->GetSkinningMatrix()[i - 2]);
 	}
 }

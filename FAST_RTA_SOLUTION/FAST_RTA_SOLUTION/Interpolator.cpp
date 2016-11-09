@@ -110,7 +110,7 @@ KeyFrame Interpolator::Update(float _time)
 		DirectX::XMVECTOR nextTrans;
 		DirectX::XMMATRIX prevMat;
 		DirectX::XMMATRIX nextMat;
-		ratio = 1;
+		
 		prevMat = DirectX::XMLoadFloat4x4(&prevVec[i].m_world);
 		nextMat = DirectX::XMLoadFloat4x4(&nextVec[i].m_world);
 		DirectX::XMMatrixDecompose(&prevScale, &prevQuat, &prevTrans, prevMat);
@@ -118,9 +118,7 @@ KeyFrame Interpolator::Update(float _time)
 		DirectX::XMVECTOR currRot = DirectX::XMQuaternionSlerp(prevQuat, nextQuat, ratio);
 		DirectX::XMVECTOR currScale = DirectX::XMVectorLerp(prevPos, nextPos, ratio);
 		DirectX::XMVECTOR currPos = DirectX::XMVectorLerp(prevPos.v, nextPos.v, ratio);
-		currScale = prevScale;
-		currRot = prevQuat;
-		currPos = prevTrans;
+		
 
 		DirectX::XMMATRIX tempCatch = DirectX::XMMatrixAffineTransformation(currScale, DirectX::XMVectorZero(), currRot, currPos);
 		Bone newBone;

@@ -101,33 +101,10 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 		changePtr = (ChangeBufferType*)(mappedResource.pData);
 		// Copy the matrices into the constant buffer.
-		AnimationSet* tempanimset = &key->GetAnimationSet();
-		for (size_t i = 0; i <numbones; i++)
+		for (size_t i = 0; i < numbones; i++)
 		{
-			XMMATRIX bpi = XMLoadFloat4x4(&tempanimset->GetBindPose()->GetBindPose()[i]);
-			XMMATRIX notworld = XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i].m_world);
-			XMMATRIX mult = XMMatrixMultiply(bpi, notworld);
-			XMStoreFloat4x4(&changePtr->BoneOffset[i], XMMatrixTranspose(mult));
+			XMStoreFloat4x4(&changePtr->BoneOffset[i], blender->GetSkinningMatrix()[i]);
 		}
-		tempcounter++;
-		if (tempcounter >= tempanimset->GetDefaultAnimation()->GetNumKeyFrames())
-		{
-			tempcounter = 0;
-		}
-
-		//deviceContext->UpdateSubresource(m_changeBuffer, 0, 0, changePtr, 0, 0);
-	}
-	else
-	{
-		//size_t numbones = blender->m_currAnim->m_currFrame.m_bones.size();
-		//
-		//changePtr = (ChangeBufferType*)(mappedResource.pData);
-		//// Copy the matrices into the constant buffer.
-		//for (size_t i = 0; i <numbones; i++)
-		//{
-		//	XMStoreFloat4x4(&changePtr->BoneOffset[i], XMMatrixIdentity());
-		//}
-
 	}
 
 	deviceContext->Unmap(m_changeBuffer, 0);

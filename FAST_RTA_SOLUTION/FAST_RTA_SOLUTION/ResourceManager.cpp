@@ -82,7 +82,9 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 
 
-
+	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
+	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
+	unsigned int numBones;
 	{
 		
 		FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::READ);
@@ -109,7 +111,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		
 		animmodel->Update(XMMatrixScaling(.01, .01, .01));
 		blender = new Blender(animmodel->GetAnimationSet().GetDefaultAnimation());
-
+		blender->SetAnimSet(&animmodel->GetAnimationSet());
 		
 		HRESULT temp = CreateDDSTextureFromFile(m_deviceResources->GetDevice(),
 			L"Teddy_D.dds", NULL,
@@ -122,31 +124,22 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 
 		
 
-		
-		unsigned int numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
+		numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
+
+
 		vertices.clear();
 		indeces.clear();
 		loadOBJ("../FAST_RTA_SOLUTION/Sphere.obj", 0, m_deviceResources->GetDevice(), vertices, indeces);
 		for (unsigned int i = 0; i < numBones; i++)
 		{
 			model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-			animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world;
-			model->Update(XMMatrixMultiply(XMLoadFloat4x4(&animmodel->GetAnimationSet().GetDefaultAnimation()->GetFrame(0)->m_bones[i].m_world), animmodel->GetWorldMat()));
-			
-		
-		
+			model->hasAnimation = false;
 			m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
-			
-		
-		
 		}
-
 
 
 	}
 
-	model = new Model(m_deviceResources->GetDevice(), vertices, indeces);
-	m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 
 
 	//

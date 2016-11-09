@@ -73,6 +73,6 @@ void Renderer::Update(bool* keys, float dt, Blender* blender)
 	{
 		m_objects[i]->Update(dt);
 		if (i >= 2)
-			m_objects[i]->Update(blender->GetSkinningMatrix()[i - 2]);
+			m_objects[i]->Update(XMMatrixMultiply(XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i - 2].m_world), XMMatrixScaling(.01, .01, .01)));
 	}
 }

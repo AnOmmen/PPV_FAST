@@ -7,7 +7,7 @@ void Model::Update(DirectX::XMMATRIX & _matrix)
 	//the parent passes their updated matrix to each child
 	//child must update their world matrix according to the parent's matrix
 	//child must also change their local matrix based on the changes
-	m_world = XMMatrixMultiply(m_world, _matrix);
+	m_world = XMMatrixMultiply(m_local, _matrix);
 
 }
 

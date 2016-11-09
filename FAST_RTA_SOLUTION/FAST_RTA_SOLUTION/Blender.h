@@ -15,7 +15,7 @@ public:
 	~Blender();
 	KeyFrame GetUpdatedKeyFrame() const;
 	 DirectX::XMMATRIX* GetSkinningMatrix();
-	void SetAnimSet(std::string _key);
+	void SetAnimSet(AnimationSet*);
 	bool SetNextAnim(BLEND_TYPE _type, int _animKey);
 	void Update(float _time);
 };

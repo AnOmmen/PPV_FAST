@@ -103,7 +103,7 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 		// Copy the matrices into the constant buffer.
 		for (size_t i = 0; i < numbones; i++)
 		{
-			XMStoreFloat4x4(&changePtr->BoneOffset[i], blender->GetSkinningMatrix()[i]);
+			XMStoreFloat4x4(&changePtr->BoneOffset[i], XMMatrixTranspose(blender->GetSkinningMatrix()[i]));
 		}
 	}
 

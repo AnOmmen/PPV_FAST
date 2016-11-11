@@ -55,3 +55,36 @@ void Blender::Update(float _time)
 
 	//set buffers, dave already does this somewhere else
 }
+
+KeyFrame Blender::Interpolate(KeyFrame _prevFrame, KeyFrame _nextFrame, float _ratio)
+{
+	KeyFrame set;
+	int numBones = _prevFrame.m_bones.size();
+	for (int i = 0; i < numBones; i++)
+	{
+		DirectX::XMVECTOR scaleCur;
+		DirectX::XMVECTOR rotationCur;
+		DirectX::XMVECTOR positionCur;
+
+		DirectX::XMVECTOR nextScale;
+		DirectX::XMVECTOR nextQuat;
+		DirectX::XMVECTOR nextTrans;
+
+		DirectX::XMMATRIX prevMat;
+		DirectX::XMMATRIX nextMat;
+
+		prevMat = DirectX::XMLoadFloat4x4(&_prevFrame.m_bones[i].m_world);
+		nextMat = DirectX::XMLoadFloat4x4(&_nextFrame.m_bones[i].m_world);
+		DirectX::XMMatrixDecompose(&scaleCur, &rotationCur, &positionCur, prevMat);
+		DirectX::XMMatrixDecompose(&nextScale, &nextQuat, &nextTrans, nextMat);
+		DirectX::XMVECTOR currRot = DirectX::XMQuaternionSlerp(rotationCur, nextQuat, _ratio);
+		DirectX::XMVECTOR currScale = DirectX::XMVectorLerp(scaleCur, nextScale, _ratio);
+		DirectX::XMVECTOR currPos = DirectX::XMVectorLerp(positionCur, nextTrans, _ratio);
+
+		DirectX::XMMATRIX tempCatch = DirectX::XMMatrixAffineTransformation(currScale, DirectX::XMVectorZero(), currRot, currPos);
+		Bone newBone;
+		DirectX::XMStoreFloat4x4(&newBone.m_world, tempCatch);
+		set.m_bones.push_back(newBone);
+	}
+	return set;
+}

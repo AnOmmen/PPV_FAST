@@ -3,12 +3,9 @@
 
 Mesh::Mesh(ID3D11Device* device)
 {
-
-
 	//TEST CASE TO MAKE A PLANE
 
 }
-
 
 Mesh::~Mesh()
 {

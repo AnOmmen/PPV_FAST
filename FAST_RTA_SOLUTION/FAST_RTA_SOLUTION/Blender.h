@@ -18,5 +18,6 @@ public:
 	void SetAnimSet(AnimationSet*);
 	bool SetNextAnim(BLEND_TYPE _type, int _animKey);
 	void Update(float _time);
+	KeyFrame Interpolate(KeyFrame, KeyFrame, float);
 };
 

@@ -29,7 +29,7 @@ public:
 	void SetPosition(float, float, float);
 	void SetRotation(float, float, float);
 
-	XMFLOAT3 GetPosition();
+	XMFLOAT4 GetPosition();
 	XMFLOAT3 GetRotation();
 
 	void Update(bool* keyarray, float dt);

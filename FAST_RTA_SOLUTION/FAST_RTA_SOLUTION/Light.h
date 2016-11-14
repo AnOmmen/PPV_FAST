@@ -16,6 +16,9 @@ private:
 	};
 	LIGHT m_lights[3];
 	ID3D11Buffer* m_LightBuffer;
+	ID3D11Buffer* m_cameraPosBuffer;
+	XMFLOAT4 m_cameraPos;
+
 public:
 	Light();
 	Light(ID3D11Device* device);
@@ -24,6 +27,8 @@ public:
 	void AddDirLight(XMFLOAT4& _pos, XMFLOAT4& _color, XMFLOAT4& _normal, XMFLOAT4& _r, ID3D11DeviceContext* context);
 	void AddSpotLight(XMFLOAT4& _pos, XMFLOAT4& _color, XMFLOAT4& _normal, XMFLOAT4& _r, ID3D11DeviceContext* context);
 	void AddPointLight(XMFLOAT4& _pos, XMFLOAT4& _color, XMFLOAT4& _normal, XMFLOAT4& _r, ID3D11DeviceContext* context);
+	void UpdateBuffer(ID3D11DeviceContext* context, XMFLOAT4 &camerapos);
 	void UpdateBuffer(ID3D11DeviceContext* context);
+
 };
 

@@ -13,7 +13,7 @@ private:
 	Model();
 	AnimationSet m_animSet;
 public:
-	ID3D11ShaderResourceView* shaderview;
+	ID3D11ShaderResourceView* shaderview[3];
 	Model(ID3D11Device* device, std::vector<FullVertex> &_vertices, std::vector<unsigned short> &_indices);
 	~Model();
 	void Update(float dt);

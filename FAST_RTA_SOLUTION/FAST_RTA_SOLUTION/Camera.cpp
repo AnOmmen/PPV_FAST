@@ -49,9 +49,12 @@ void Camera::SetRotation(float x, float y, float z)
 
 //The GetPosition and GetRotation functions return the location and rotation of the camera to calling functions.
 
-XMFLOAT3 Camera::GetPosition()
+XMFLOAT4 Camera::GetPosition()
 {
-	return XMFLOAT3();
+	XMFLOAT4 temp;
+	XMMATRIX nonInvView = XMMatrixInverse(0, m_viewMatrix);
+	XMStoreFloat4(&temp, nonInvView.r[3]);
+	return temp;
 }
 
 

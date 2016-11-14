@@ -14,7 +14,8 @@ struct PSINPUT
     float2 uv : UV;
     float4 normal : NORMAL;
     float4 world : WORLDMATRIX;
-    
+    float3 bitan : BITAN;
+    float3 tan : TAN;
 
     //
     //  normal, tangent, bitangent to be in world space
@@ -76,6 +77,35 @@ PSINPUT main(ANIMATED_LIT_INPUT input, uint instanceIndex:SV_InstanceID)
         VertexOut = float4(input.normal, 0.0f);
     output.normal = mul(VertexOut, worldMatrix[instanceIndex]);
     output.normal = normalize(output.normal);
+
+    
+    temp = float4(input.tangent, 0.0f);
+    VertexOut = mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
+
+    if (VertexOut.x == 0 && VertexOut.y == 0 && VertexOut.z == 0 && VertexOut.w == 0)
+        VertexOut = float4(input.tangent, 0.0f);
+    output.tan = mul(VertexOut, worldMatrix[instanceIndex]);
+    output.tan = normalize(output.tan);
+
+    temp = float4(cross(input.normal, input.tangent), 0);
+    VertexOut = mul(temp, BoneOffset[input.boneIndices.x]) * input.blendWeights.x;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.y]) * input.blendWeights.y;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.z]) * input.blendWeights.z;
+    VertexOut += mul(temp, BoneOffset[input.boneIndices.w]) * input.blendWeights.w;
+    if (VertexOut.x == 0 && VertexOut.y == 0 && VertexOut.z == 0 && VertexOut.w == 0)
+        VertexOut = temp;
+    output.bitan = mul(VertexOut, worldMatrix[instanceIndex]);
+    output.bitan = normalize(output.bitan);
+
+
+
+
+
+
+
 
     output.uv = input.uv;
 	return output;

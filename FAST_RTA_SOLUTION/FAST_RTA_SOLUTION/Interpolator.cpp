@@ -86,7 +86,7 @@ KeyFrame Interpolator::Update(float _time)
 		}
 	}
 
-	//DO THE MATHS
+	
 	frameTime = m_currBlendTime - prevFrame.m_time;
 	float ratio = frameTime / tweenTime;
 	m_currFrame = Interpolate(prevFrame, nextFrame, ratio);

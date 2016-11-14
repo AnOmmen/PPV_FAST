@@ -7,15 +7,17 @@ Blender::Blender(const Animation* anim)
 	//Set interpolators
 	// animation
 	m_currAnim = new Interpolator();
+	m_nextAnim = new Interpolator();
 	m_currAnim->SetAnimation(anim);
-
-
+	m_totalBlendTime = 0.2;
+	m_currBlendTime = 0;
 }
 
 
 Blender::~Blender()
 {
 	delete m_currAnim;
+	delete m_nextAnim;
 }
 
 KeyFrame Blender::GetUpdatedKeyFrame() const
@@ -41,8 +43,26 @@ bool Blender::SetNextAnim(BLEND_TYPE _type, int _animKey)
 void Blender::Update(float _time)
 {
 	//call update on interpolator(s)
-
-	m_currAnim->Update(_time);
+	if (m_nextAnim == nullptr)
+	{
+		m_currAnim->Update(_time);
+	}
+	else
+	{
+		if (m_currBlendTime + _time > 0.2)
+		{
+			m_currAnim = m_nextAnim;
+			m_nextAnim = nullptr;
+		}
+		else
+		{
+			m_currBlendTime += _time;
+			m_currAnim->Update(_time);
+			m_nextAnim->Update(_time);
+			float ratio = m_currBlendTime / m_totalBlendTime;
+			Interpolate(m_currAnim->m_currFrame, m_nextAnim->m_currFrame, ratio);
+		}
+	}
 	m_boneOffsetArray.clear();
 	for (size_t i = 0; i < m_currAnim->m_currFrame.m_bones.size(); i++)
 	{
@@ -53,7 +73,7 @@ void Blender::Update(float _time)
 	}
 	
 
-	//set buffers, dave already does this somewhere else
+	
 }
 
 KeyFrame Blender::Interpolate(KeyFrame _prevFrame, KeyFrame _nextFrame, float _ratio)

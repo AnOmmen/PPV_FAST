@@ -11,6 +11,8 @@ public:
 	Interpolator* m_currAnim;
 	Interpolator* m_nextAnim;
 	KeyFrame m_updatedKeyFrame;
+	float m_totalBlendTime;
+	float m_currBlendTime;
 	Blender(const Animation* anim);
 	~Blender();
 	KeyFrame GetUpdatedKeyFrame() const;

@@ -34,3 +34,16 @@ float3 SpotLight(float3 surfacepos, float3 conedir,
     return (spotfactor * lightratio * light.color).xyz;
    // return float3(0, 0, 1);
 }
+
+float3 SpecularCalc(float3 CamWorldPos, float3 SurfacePos, 
+float3 normal, float3 lightcolor, float specularIntensity, float3 lightpos)
+{
+    float3 toCamera = normalize(CamWorldPos - SurfacePos);
+    float3 toLight = normalize(lightpos - SurfacePos);
+    float3 reflection = reflect(normalize(toLight * -1), normalize(normal.xyz));
+    float ratio = dot(normalize(reflection), normalize(toCamera));
+    ratio = saturate(ratio);
+    ratio = pow(ratio, 32);
+    float3 returnval = ratio * lightcolor;
+    return returnval * specularIntensity;
+}

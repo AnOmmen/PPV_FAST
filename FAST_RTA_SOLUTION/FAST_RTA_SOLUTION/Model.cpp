@@ -22,7 +22,10 @@ Model::Model(ID3D11Device* device, std::vector<FullVertex> &_vertices, std::vect
 	m_Mesh = new Mesh(device);
 	m_world = DirectX::XMMatrixIdentity();
 	m_local = DirectX::XMMatrixIdentity();
-	shaderview = nullptr;
+	shaderview[0] = nullptr;
+	shaderview[1] = nullptr;
+	shaderview[2] = nullptr;
+
 	timesToDraw = 0;
 	if (!_vertices.empty())
 	{

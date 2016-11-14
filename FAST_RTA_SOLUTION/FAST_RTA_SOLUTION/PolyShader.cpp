@@ -125,10 +125,12 @@ bool PolyShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	}
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-	if (key->shaderview)
-		deviceContext->PSSetShaderResources(0, 1, &key->shaderview);
-
-	
+	if (key->shaderview[0])
+		deviceContext->PSSetShaderResources(0, 1, &key->shaderview[0]);
+	if (key->shaderview[1])
+		deviceContext->PSSetShaderResources(1, 1, &key->shaderview[1]);
+	if (key->shaderview[2])
+		deviceContext->PSSetShaderResources(2, 1, &key->shaderview[2]);
 
 	return true;
 

@@ -92,7 +92,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		if (!FASTBinaryIO::Open(fastFile, "../FAST_RTA_SOLUTION/model.bin"))
 		{
 			FASTFBXLoader::Init();
-			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Teddy_BETTERRun.fbx");
+			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Mage_Idle.fbx");
 			FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model.bin");
 			FASTFBXLoader::Clean();
 		}
@@ -110,13 +110,19 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		animmodel->timesToDraw = 5;
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
 		
-		animmodel->Update(XMMatrixScaling(.01, .01, .01));
+		//animmodel->Update(XMMatrixScaling(.01, .01, .01));
 		blender = new Blender(animmodel->GetAnimationSet().GetDefaultAnimation());
 		blender->SetAnimSet(&animmodel->GetAnimationSet());
 		
 		HRESULT temp = CreateDDSTextureFromFile(m_deviceResources->GetDevice(),
-			L"Teddy_D.dds", NULL,
-			&animmodel->shaderview);
+			L"MageTexture.dds", NULL,
+			&animmodel->shaderview[0]);
+		temp = CreateDDSTextureFromFile(m_deviceResources->GetDevice(),
+			L"MageNormals.dds", NULL,
+			&animmodel->shaderview[1]);
+		temp = CreateDDSTextureFromFile(m_deviceResources->GetDevice(),
+			L"MageSpecular.dds", NULL,
+			&animmodel->shaderview[2]);
 		CD3D11_SAMPLER_DESC sampledesc = CD3D11_SAMPLER_DESC(CD3D11_DEFAULT());
 
 		m_deviceResources->GetDevice()->CreateSamplerState(&sampledesc, &SampState);

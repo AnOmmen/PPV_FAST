@@ -12,7 +12,7 @@ private:
 	//temp shaders
 	ID3D11VertexShader* vs;
 	ID3D11PixelShader* ps;
-
+	ID3D11Buffer* cameraPos;
 	Camera* m_camera;
 	Renderer();
 public:

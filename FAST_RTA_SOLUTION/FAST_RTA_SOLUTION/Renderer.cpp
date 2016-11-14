@@ -3,9 +3,9 @@
 void CreateLights(Light* lights, ID3D11DeviceContext* context)
 {
 	XMFLOAT4 temp1 = XMFLOAT4(0, 1, 0, 1.0f);
-	XMFLOAT4 temp2 = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4 temp2 = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 	XMFLOAT4 temp3 = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	XMFLOAT4 temp4 = XMFLOAT4(100.0f, 0.0f, 0.0f, 0.0f);
+	XMFLOAT4 temp4 = XMFLOAT4(500.0f, 0.0f, 0.0f, 0.0f);
 
 
 	lights->AddPointLight(temp1,temp2 ,temp3
@@ -47,7 +47,7 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender
 {
 	//TODO: indexCount??
 	//setup temp camera
-	m_light->UpdateBuffer(deviceContext);
+	m_light->UpdateBuffer(deviceContext, m_camera->GetPosition());
 	for (int i = 0; i < m_objects.size(); i++)
 	{
 	

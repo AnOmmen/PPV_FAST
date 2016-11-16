@@ -362,7 +362,7 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 	}
 }
 
-void ResourceManager::Update(bool* keys, float dt)
+void ResourceManager::Update(bool* keys, float dt, HWND hwnd)
 {
 	if (keys[11] && !pressed)
 	{
@@ -390,7 +390,7 @@ void ResourceManager::Update(bool* keys, float dt)
 	{
 		blender->Update(0);
 	}
-	m_renderer->Update(keys, dt, blender);
+	m_renderer->Update(keys, dt, blender, hwnd);
 
 
 }

@@ -177,7 +177,7 @@ bool DEMO_APP::Loop()
 	inputCheck();
 
 	//update
-	manager->Update(keys, .01f);
+	manager->Update(keys, .01f, HWindow);
 
 
 	manager->Render();
@@ -255,6 +255,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		uint32_t numFiles = DragQueryFile(hDrop, -1, NULL, NULL);
 		if (numFiles == 1)
 		{
+			delete[] binFilePath;
+			binFilePath = nullptr;
+
 			uint32_t filePathSize = DragQueryFile(hDrop, 0, NULL, NULL) + 1;
 			filePath = new TCHAR[filePathSize];
 			DragQueryFile(hDrop, 0, filePath, filePathSize);
@@ -269,15 +272,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					if (extCount > 0 && filePath[i] != searchExt[extCount--])
 						break;
 					if (filePath[i] == '.')
-					{
 						extSearchOn = false;
-						loadBinFile = true;
-					}
 				}
 
 				if (filePath[i] == '\\')
 				{
-					delete[] binFilePath;
 					uint32_t binFilePathSize = filePathSize - i - 6;
 					binFilePath = new char[binFilePathSize + 5];
 
@@ -295,7 +294,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 
-			if (loadBinFile)
+			if (binFilePath)
 			{
 				FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::READ);
 				if (!FASTBinaryIO::Open(fastFile, binFilePath))
@@ -313,6 +312,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else
 					FASTBinaryIO::Close(fastFile);
 				FASTBinaryIO::Destroy(fastFile);
+
+				loadBinFile = true;
 			}
 
 			delete filePath;

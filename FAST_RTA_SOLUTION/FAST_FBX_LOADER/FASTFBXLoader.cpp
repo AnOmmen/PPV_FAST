@@ -343,8 +343,11 @@ namespace FASTFBXLoader
 				FBXLoaderStructs::FullVertex temp;
 				temp.pos = currCtrlPoint->position;
 				temp.norm = normal[j];
+				temp.norm.z *= -1;
 				temp.uv = UV[j];
+				temp.uv.y = 1 - temp.uv.y;
 				temp.tan = tangent[j];
+				temp.tan.z *= -1;
 
 				temp.bIndices.x = currCtrlPoint->bIndices[0];
 				temp.bIndices.y = currCtrlPoint->bIndices[1];

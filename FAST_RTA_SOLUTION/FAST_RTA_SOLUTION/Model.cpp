@@ -125,6 +125,10 @@ void Model::LoadAnimation(const char* _filePath, ID3D11Device* device)
 
 }
 
+void Model::LoadSecondAnimation(const char* _filePath)
+{
+	m_animSet.LoadAnimationFile(_filePath);
+}
 
 AnimationSet &Model::GetAnimationSet()
 {

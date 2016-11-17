@@ -98,8 +98,16 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		}
 		else
 			FASTBinaryIO::Close(fastFile);
+		 if (!FASTBinaryIO::Open(fastFile, "../FAST_RTA_SOLUTION/model2.bin"))
+		{
+			FASTFBXLoader::Init();
+			FASTFBXLoader::Load("../FAST_RTA_SOLUTION/Mage_Walk.fbx");
+			FASTFBXLoader::Export("../FAST_RTA_SOLUTION/model2.bin");
+			FASTFBXLoader::Clean();
+		}
+		else
+			FASTBinaryIO::Close(fastFile);
 		FASTBinaryIO::Destroy(fastFile);
-
 		Model* animmodel;
 		std::vector<FullVertex> vertices;
 		//std::vector<unsigned short>* pindeces;
@@ -109,6 +117,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		animmodel->hasAnimation = true;//true;
 		animmodel->timesToDraw = 5;
 		animmodel->LoadAnimation("../FAST_RTA_SOLUTION/model.bin", m_deviceResources->GetDevice());
+		animmodel->LoadSecondAnimation("../FAST_RTA_SOLUTION/model2.bin");
 		
 		//animmodel->Update(XMMatrixScaling(.01, .01, .01));
 		blender = new Blender(animmodel->GetAnimationSet().GetDefaultAnimation());
@@ -364,6 +373,7 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 
 void ResourceManager::Update(bool* keys, float dt)
 {
+	
 	if (keys[11] && !pressed)
 	{
 		blender->m_currAnim->SetCurrTime(blender->m_currAnim->m_animation->GetFrame(currentFrame)->m_time);

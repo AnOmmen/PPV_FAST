@@ -76,6 +76,20 @@ void Renderer::Update(bool* keys, float dt, Blender* blender)
 {
 	m_light->Update(keys, dt);
 	m_camera->Update(keys, dt);
+	if (keys[16])
+	{
+		
+		if (blender->m_currAnim->m_animation == m_objects[1]->GetAnimationSet().GetAnimation(0))
+		{
+			blender->SetNextAnim(m_objects[1]->GetAnimationSet().GetAnimation(1));
+		}
+		else if (blender->m_currAnim->m_animation == m_objects[1]->GetAnimationSet().GetAnimation(1))
+		{
+			blender->SetNextAnim(m_objects[1]->GetAnimationSet().GetDefaultAnimation());
+
+		}
+	}
+	
 	for (size_t i = 0; i < m_objects.size(); i++)
 	{
 		m_objects[i]->Update(dt);

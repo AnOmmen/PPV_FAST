@@ -13,12 +13,14 @@ public:
 	KeyFrame m_updatedKeyFrame;
 	float m_totalBlendTime;
 	float m_currBlendTime;
+
+
 	Blender(const Animation* anim);
 	~Blender();
 	KeyFrame GetUpdatedKeyFrame() const;
 	 DirectX::XMMATRIX* GetSkinningMatrix();
 	void SetAnimSet(AnimationSet*);
-	bool SetNextAnim(BLEND_TYPE _type, int _animKey);
+	bool SetNextAnim(const Animation* _anim);
 	void Update(float _time);
 	KeyFrame Interpolate(KeyFrame, KeyFrame, float);
 };

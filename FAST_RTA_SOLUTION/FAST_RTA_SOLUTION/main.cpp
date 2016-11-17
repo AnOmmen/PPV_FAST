@@ -40,7 +40,7 @@ class DEMO_APP
 	HWND HWindow;
 	ResourceManager* manager;
 	Input* m_Input;
-	bool keys[16];
+	bool keys[17];
 public:
 	
 	DEMO_APP(HINSTANCE h, WNDPROC wp);
@@ -158,6 +158,10 @@ void DEMO_APP::inputCheck()
 		keys[15] = true;
 	else
 		keys[15] = false;
+	if (GetAsyncKeyState('7'))
+		keys[16] = true;
+	else
+		keys[16] = false;
 }
 
 
@@ -173,7 +177,7 @@ bool DEMO_APP::Loop()
 	inputCheck();
 
 	//update
-	manager->Update(keys, .01f);
+	manager->Update(keys, .0025f);
 
 
 	manager->Render();

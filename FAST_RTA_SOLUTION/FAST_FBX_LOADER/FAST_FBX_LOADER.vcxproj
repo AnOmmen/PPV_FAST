@@ -77,26 +77,26 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\FBX SDK\2017.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\FBX SDK\2017.0.1\lib\vs2015\x64\debug;$(LibraryPath)</LibraryPath>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\lib\vs2015\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\lib\vs2015\x64\debug;E:\FBXSDK\2017.0.1\lib\vs2015\x64\debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\FBX SDK\2017.0.1\include;D:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\FBX SDK\2017.0.1\lib\vs2015\x64\debug;D:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\lib\vs2015\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\lib\vs2015\x64\debug;E:\FBXSDK\2017.0.1\lib\vs2015\x64\debug;$(LibraryPath)</LibraryPath>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\FBX SDK\2017.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\FBX SDK\2017.0.1\lib\vs2015\x64\debug;$(LibraryPath)</LibraryPath>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\FBX SDK\2017.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\include;E:\FBXSDK\2017.0.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\FBX SDK\2017.0.1\lib\vs2015\x64\debug;$(LibraryPath)</LibraryPath>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

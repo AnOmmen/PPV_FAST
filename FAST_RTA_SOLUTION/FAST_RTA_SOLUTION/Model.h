@@ -30,6 +30,7 @@ public:
 	ID3D11Buffer** GetIndexBuffer();
 	bool hasAnimation;
 	void LoadAnimation(const char* _filePath, ID3D11Device* device);
+	void LoadSecondAnimation(const char* _filePath);
 
 	AnimationSet &GetAnimationSet();
 	int timesToDraw;

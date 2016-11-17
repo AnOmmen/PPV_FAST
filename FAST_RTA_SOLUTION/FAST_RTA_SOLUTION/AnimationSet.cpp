@@ -121,11 +121,14 @@ bool AnimationSet::LoadAnimationFile(const char *_filePath, unsigned short **_in
 				delete[] header;
 
 				Animation temp;
-				float tweenTime = keyFrames[0].m_time;
+				float tweentime = keyFrames[1].m_time;
 				for (unsigned int i = 0; i < keyFrames.size(); ++i)
 				{
-					keyFrames[i].m_time -= tweenTime;
+					keyFrames[i].m_time -= tweentime;
 				}
+				keyFrames.erase(keyFrames.begin());
+				
+
 				temp.Init(keyFrames, LOOP);
 				m_animations.push_back(temp);
 

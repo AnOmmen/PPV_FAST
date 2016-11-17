@@ -35,9 +35,10 @@ cbuffer CameraPos
 float4 main(PSINPUT input) : SV_TARGET
 {
 
-    float3 newNormal = (normaltexture.Sample(filter, input.uv)* 2.0f) - 1.0f;
-    float3x3 TBN = { input.tan, input.bitan, input.normal.xyz };
-    newNormal = mul(newNormal, TBN);
+	float3 newNormal = (normaltexture.Sample(filter, input.uv)* 2.0f) - 1.0f;
+    float3x3 tbn = { normalize(input.tan), normalize(input.bitan), normalize(input.normal.xyz) };
+    newNormal = mul(newNormal, tbn);
+	normalize(newNormal);
     
 
     float4 baseColor = basetexture.Sample(filter, input.uv);

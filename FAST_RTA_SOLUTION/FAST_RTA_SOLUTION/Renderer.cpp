@@ -98,6 +98,8 @@ void Renderer::Update(bool* keys, float dt, Blender* blender, HWND hwnd)
 		std::vector<FullVertex> vertices;
 		std::vector<unsigned short> indices;
 		m_dragDrop = new Model(m_device, vertices, indices);
+		m_dragDrop->hasAnimation = true;
+		m_dragDrop->timesToDraw = 1;
 		m_dragDrop->LoadAnimation(binFilePath, m_device);
 		m_polyShader->AddModel(m_dragDrop, vs, ps, nullptr, m_device, hwnd, L"SkinningShader.hlsl", L"PixelShader.hlsl", NULL);
 		

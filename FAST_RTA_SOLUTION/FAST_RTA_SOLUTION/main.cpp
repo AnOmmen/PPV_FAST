@@ -25,7 +25,6 @@
 #include "../FAST_FBX_LOADER/FASTFBXLoader.h"
 #include "../FAST_BINARY_IO/FASTBinaryIO.h"
 
-
 #define _WIDTH	1000
 #define _HEIGHT	750
 

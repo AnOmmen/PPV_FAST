@@ -125,8 +125,8 @@ void Renderer::Update(bool* keys, float dt, Blender* blender, HWND hwnd)
 	for (size_t i = 0; i < m_objects.size(); i++)
 	{
 		m_objects[i]->Update(dt);
-		if (i >= 2)
-			m_objects[i]->Update(XMMatrixMultiply(XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i - 2].m_world), XMMatrixScaling(.01f, .01f, .01f)));
+		//if (i >= 2)
+			//m_objects[i]->Update(XMMatrixMultiply(XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i - 2].m_world), XMMatrixScaling(.01f, .01f, .01f)));
 	}
 	if (m_dragDrop)
 	{

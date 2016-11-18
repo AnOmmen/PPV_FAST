@@ -143,7 +143,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 		numBones = animmodel->GetAnimationSet().GetDefaultAnimation()->GetNumBones();
 
 
-		vertices.clear();
+		/*vertices.clear();
 		indeces.clear();
 		loadOBJ("../FAST_RTA_SOLUTION/Sphere.obj", 0, m_deviceResources->GetDevice(), vertices, indeces);
 		for (unsigned int i = 0; i < numBones; i++)
@@ -153,7 +153,7 @@ void ResourceManager::Init(int screenWidth, int screenHeight, bool vsync, HWND h
 			model->hasAnimation = false;
 			m_renderer->AddModel(m_deviceResources->GetDevice(), hwnd, model);
 		}
-
+*/
 
 	}
 

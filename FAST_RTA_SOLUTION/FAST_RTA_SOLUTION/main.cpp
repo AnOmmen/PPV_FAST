@@ -180,7 +180,7 @@ bool DEMO_APP::Loop()
 	inputCheck();
 
 	//update
-	manager->Update(keys, .0025f, HWindow);
+	manager->Update(keys, .01f, HWindow);
 
 
 	manager->Render();

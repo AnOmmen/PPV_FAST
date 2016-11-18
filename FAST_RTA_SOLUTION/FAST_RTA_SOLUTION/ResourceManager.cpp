@@ -378,7 +378,7 @@ void ResourceManager::Update(bool* keys, float dt, HWND hwnd)
 	{
 		blender->m_currAnim->SetCurrTime(blender->m_currAnim->m_animation->GetFrame(currentFrame)->m_time);
 		currentFrame++;
-		if (currentFrame >= blender->m_currAnim->m_animation->GetNumKeyFrames())
+		if ((unsigned int)currentFrame >= blender->m_currAnim->m_animation->GetNumKeyFrames())
 			currentFrame = 0;
 		pressed = true;
 		loop = false;

@@ -64,7 +64,7 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender
 		
 		for (int j = 0; j < m_objects[i]->timesToDraw; j++)
 		{
-			temp.push_back(XMMatrixTranslation(100 * j, 0, 0) * (m_objects[i]->GetWorldMat()));
+			temp.push_back(XMMatrixTranslation(100.0f * (float)j, 0.0f, 0.0f) * (m_objects[i]->GetWorldMat()));
 		}
 		m_polyShader->Render(deviceContext, m_objects[i]->GetNumIndeces(), 
 			temp, m_camera->GetViewMatrix(), proj, m_objects[i], blender);
@@ -126,7 +126,7 @@ void Renderer::Update(bool* keys, float dt, Blender* blender, HWND hwnd)
 	{
 		m_objects[i]->Update(dt);
 		if (i >= 2)
-			m_objects[i]->Update(XMMatrixMultiply(XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i - 2].m_world), XMMatrixScaling(.01, .01, .01)));
+			m_objects[i]->Update(XMMatrixMultiply(XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i - 2].m_world), XMMatrixScaling(.01f, .01f, .01f)));
 	}
 	if (m_dragDrop)
 	{

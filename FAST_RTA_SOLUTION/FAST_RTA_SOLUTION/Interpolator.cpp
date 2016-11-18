@@ -98,7 +98,7 @@ KeyFrame Interpolator::Update(float _time)
 KeyFrame Interpolator::Interpolate(KeyFrame _prevFrame, KeyFrame _nextFrame, float _ratio)
 {
 	KeyFrame set;
-	int numBones = _prevFrame.m_bones.size();
+	int numBones = (int)_prevFrame.m_bones.size();
 	for (int i = 0; i < numBones; i++)
 	{
 		DirectX::XMVECTOR scaleCur;

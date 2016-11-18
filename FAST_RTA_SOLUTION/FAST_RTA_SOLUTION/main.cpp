@@ -286,7 +286,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					binFilePath = new char[binFilePathSize + 5];
 					uint32_t j;
 					for (j = 0; j < binFilePathSize; ++j)
-						binFilePath[j] = filePath[i + j + 1];
+						binFilePath[j] = (char)filePath[i + j + 1];
 					binFilePath[j + 0] = '.';
 					binFilePath[j + 1] = 'b';
 					binFilePath[j + 2] = 'i';
@@ -302,7 +302,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					char *tempPath = new char[filePathSize];
 					for (uint32_t i = 0; i < filePathSize; ++i)
-						tempPath[i] = filePath[i];
+						tempPath[i] = (char)filePath[i];
 					FASTFBXLoader::Init();
 					FASTFBXLoader::Load(tempPath);
 					FASTFBXLoader::Export(binFilePath);

@@ -3,7 +3,7 @@
 void CreateLights(Light* lights, ID3D11DeviceContext* context)
 {
 	XMFLOAT4 temp1 = XMFLOAT4(0, 1, 0, 1.0f);
-	XMFLOAT4 temp2 = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	XMFLOAT4 temp2 = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	XMFLOAT4 temp3 = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	XMFLOAT4 temp4 = XMFLOAT4(500.0f, 0.0f, 0.0f, 0.0f);
 

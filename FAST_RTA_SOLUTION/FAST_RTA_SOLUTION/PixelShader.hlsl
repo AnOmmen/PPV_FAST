@@ -39,7 +39,7 @@ float4 main(PSINPUT input) : SV_TARGET
     float3x3 tbn = { normalize(input.tan), normalize(input.bitan), normalize(input.normal.xyz) };
     newNormal = mul(newNormal, tbn);
 	normalize(newNormal);
-    
+    //float3 newNormal = input.normal;
 
     float4 baseColor = basetexture.Sample(filter, input.uv);
     float3 color1, color2, color3;
@@ -49,6 +49,7 @@ float4 main(PSINPUT input) : SV_TARGET
      
     float3 finalcolor = color1 + color2 + color3;
     float3 color4 = SpecularCalc(cameraPos, input.world, newNormal, finalcolor, speculartexture.Sample(filter, input.uv), light[1].pos);
+    
     finalcolor += color4;
 
 

@@ -87,10 +87,10 @@ PSINPUT main(ANIMATED_LIT_INPUT input, uint instanceIndex:SV_InstanceID)
 
     if (VertexOut.x == 0 && VertexOut.y == 0 && VertexOut.z == 0 && VertexOut.w == 0)
         VertexOut = float4(input.tangent, 0.0f);
-    output.tan = mul(VertexOut, worldMatrix[instanceIndex]);
+    output.tan = mul(VertexOut.xyzw, worldMatrix[instanceIndex]).xyz;
     output.tan = normalize(output.tan);
 
-    output.bitan = cross(output.normal, output.tan);
+    output.bitan = cross(output.normal.xyz, output.tan);
 
 
 

@@ -1,5 +1,7 @@
 #include "Renderer.h"
 #include "Blender.h"
+extern char *binFilePath;
+extern bool loadBinFile;
 void CreateLights(Light* lights, ID3D11DeviceContext* context)
 {
 	XMFLOAT4 temp1 = XMFLOAT4(0, 1, 0, 1.0f);
@@ -28,6 +30,9 @@ Renderer::Renderer(ID3D11Device* device, ID3D11DeviceContext* context)
 	m_light = new Light(device);
 	//create light
 	CreateLights(m_light, context);
+	m_device = device;
+	m_dragDrop = nullptr;
+	m_dragDropBlend = nullptr;
 }
 
 
@@ -41,6 +46,9 @@ Renderer::~Renderer()
 	delete m_polyShader;
 	delete m_light;
 	delete m_camera;
+
+	delete m_dragDrop;
+	delete m_dragDropBlend;
 }
 
 void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender* blender)
@@ -56,10 +64,17 @@ void Renderer::Render(ID3D11DeviceContext* deviceContext, XMMATRIX proj, Blender
 		
 		for (int j = 0; j < m_objects[i]->timesToDraw; j++)
 		{
-			temp.push_back(XMMatrixTranslation(100 * j, 0, 0) * (m_objects[i]->GetWorldMat()));
+			temp.push_back(XMMatrixTranslation(100.0f * (float)j, 0.0f, 0.0f) * (m_objects[i]->GetWorldMat()));
 		}
 		m_polyShader->Render(deviceContext, m_objects[i]->GetNumIndeces(), 
 			temp, m_camera->GetViewMatrix(), proj, m_objects[i], blender);
+	}
+	if (m_dragDrop)
+	{
+		std::vector<XMMATRIX> temp;
+		temp.push_back(m_dragDrop->GetWorldMat());
+		m_polyShader->Render(deviceContext, m_dragDrop->GetNumIndeces(), temp,
+			m_camera->GetViewMatrix(), proj, m_dragDrop, m_dragDropBlend);
 	}
 }
 
@@ -72,8 +87,26 @@ void Renderer::AddModel(ID3D11Device* device, HWND hwnd, Model* key)
 	
 }
 
-void Renderer::Update(bool* keys, float dt, Blender* blender)
+void Renderer::Update(bool* keys, float dt, Blender* blender, HWND hwnd)
 {
+	if (loadBinFile)
+	{
+		delete m_dragDrop;
+		std::vector<FullVertex> vertices;
+		std::vector<unsigned short> indices;
+		m_dragDrop = new Model(m_device, vertices, indices);
+		m_dragDrop->Update(XMMatrixTranslation(-3, 0, 0));
+		m_dragDrop->hasAnimation = true;
+		m_dragDrop->timesToDraw = 1;
+		m_dragDrop->LoadAnimation(binFilePath, m_device);
+		m_polyShader->AddModel(m_dragDrop, vs, ps, nullptr, m_device, hwnd, L"SkinningShader.hlsl", L"PixelShader.hlsl", NULL);
+
+		delete m_dragDropBlend;
+		m_dragDropBlend = new Blender(m_dragDrop->GetAnimationSet().GetDefaultAnimation());
+		m_dragDropBlend->SetAnimSet(&m_dragDrop->GetAnimationSet());
+
+		loadBinFile = false;
+	}
 	m_light->Update(keys, dt);
 	m_camera->Update(keys, dt);
 	if (keys[16])
@@ -86,7 +119,6 @@ void Renderer::Update(bool* keys, float dt, Blender* blender)
 		else if (blender->m_currAnim->m_animation == m_objects[1]->GetAnimationSet().GetAnimation(1))
 		{
 			blender->SetNextAnim(m_objects[1]->GetAnimationSet().GetDefaultAnimation());
-
 		}
 	}
 	
@@ -94,6 +126,11 @@ void Renderer::Update(bool* keys, float dt, Blender* blender)
 	{
 		m_objects[i]->Update(dt);
 		if (i >= 2)
-			m_objects[i]->Update(XMMatrixMultiply(XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i - 2].m_world), XMMatrixScaling(.01, .01, .01)));
+			m_objects[i]->Update(XMMatrixMultiply(XMLoadFloat4x4(&blender->m_currAnim->m_currFrame.m_bones[i - 2].m_world), XMMatrixScaling(.01f, .01f, .01f)));
+	}
+	if (m_dragDrop)
+	{
+		m_dragDrop->Update(dt);
+		m_dragDropBlend->Update(dt);
 	}
 }

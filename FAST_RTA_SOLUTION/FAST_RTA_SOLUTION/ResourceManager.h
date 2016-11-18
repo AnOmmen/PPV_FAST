@@ -18,7 +18,7 @@ private:
 public:
 	void Init(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen,
 		float screenDepth, float screenNear);
-	void Update(bool* keys, float dt);
+	void Update(bool* keys, float dt, HWND hwnd);
 	void Render();
 	ResourceManager();
 	void loadOBJ(char* filename, wchar_t* texturename, ID3D11Device* device,

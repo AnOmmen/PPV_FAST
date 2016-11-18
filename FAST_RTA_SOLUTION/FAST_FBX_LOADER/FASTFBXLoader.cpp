@@ -66,6 +66,10 @@ namespace FASTFBXLoader
 		m_indices.clear();
 		m_vertices.clear();
 		m_skeleton.clear();
+		m_skeletonBindPose.clear();
+		for (auto iter = m_controlPoints.begin(); iter != m_controlPoints.end(); ++iter)
+			delete iter->second;
+		m_keyFrames.clear();
 	}
 
 	FASTFBXLOADER_API bool Init()

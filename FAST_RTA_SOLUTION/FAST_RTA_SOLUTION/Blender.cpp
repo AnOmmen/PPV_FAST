@@ -9,8 +9,8 @@ Blender::Blender(const Animation* anim)
 	m_currAnim = new Interpolator();
 	m_nextAnim = nullptr;
 	m_currAnim->SetAnimation(anim);
-	m_totalBlendTime = 0.2;
-	m_currBlendTime = 0;
+	m_totalBlendTime = 0.2f;
+	m_currBlendTime = 0.0f;
 }
 
 
@@ -69,12 +69,7 @@ void Blender::Update(float _time)
 			m_nextAnim = nullptr;
 			m_currBlendTime = 0;
 		}
-		else
-		{
-
-			
-
-		}
+		
 	}
 
 	m_boneOffsetArray.clear();
@@ -93,7 +88,7 @@ void Blender::Update(float _time)
 KeyFrame Blender::Interpolate(KeyFrame _prevFrame, KeyFrame _nextFrame, float _ratio)
 {
 	KeyFrame set;
-	int numBones = _prevFrame.m_bones.size();
+	int numBones = (int)_prevFrame.m_bones.size();
 	for (int i = 0; i < numBones; i++)
 	{
 		DirectX::XMVECTOR scaleCur;

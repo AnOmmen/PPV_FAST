@@ -371,14 +371,14 @@ void ResourceManager::loadOBJ(char* filename, wchar_t* texturename, ID3D11Device
 	}
 }
 
-void ResourceManager::Update(bool* keys, float dt)
+void ResourceManager::Update(bool* keys, float dt, HWND hwnd)
 {
 	
 	if (keys[11] && !pressed)
 	{
 		blender->m_currAnim->SetCurrTime(blender->m_currAnim->m_animation->GetFrame(currentFrame)->m_time);
 		currentFrame++;
-		if (currentFrame >= blender->m_currAnim->m_animation->GetNumKeyFrames())
+		if ((unsigned int)currentFrame >= blender->m_currAnim->m_animation->GetNumKeyFrames())
 			currentFrame = 0;
 		pressed = true;
 		loop = false;
@@ -400,7 +400,7 @@ void ResourceManager::Update(bool* keys, float dt)
 	{
 		blender->Update(0);
 	}
-	m_renderer->Update(keys, dt, blender);
+	m_renderer->Update(keys, dt, blender, hwnd);
 
 
 }

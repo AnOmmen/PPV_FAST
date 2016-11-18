@@ -21,7 +21,9 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-
+#include <shellapi.h>
+#include "../FAST_FBX_LOADER/FASTFBXLoader.h"
+#include "../FAST_BINARY_IO/FASTBinaryIO.h"
 
 
 #define _WIDTH	1000
@@ -85,6 +87,7 @@ DEMO_APP::DEMO_APP(HINSTANCE hinst, WNDPROC proc)
 		CW_USEDEFAULT, CW_USEDEFAULT, window_size.right - window_size.left, window_size.bottom - window_size.top,
 		NULL, NULL, app, this);
 	ShowWindow(HWindow, SW_SHOW);
+	DragAcceptFiles(HWindow, true);
 
 	//once we have our window, initialize any objects we need
 	manager = new ResourceManager();
@@ -177,7 +180,7 @@ bool DEMO_APP::Loop()
 	inputCheck();
 
 	//update
-	manager->Update(keys, .0025f);
+	manager->Update(keys, .0025f, HWindow);
 
 
 	manager->Render();
@@ -185,6 +188,8 @@ bool DEMO_APP::Loop()
 }
 
 
+char *binFilePath;
+bool loadBinFile;
 
 
 ///////////////////////////////////////////////////////////////////
@@ -194,6 +199,8 @@ bool DEMO_APP::Loop()
 bool DEMO_APP::CleanUp()
 {
 	delete manager;
+
+	delete[] binFilePath;
 	return true;
 }
 
@@ -246,6 +253,72 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 	}
+	case (WM_DROPFILES) :
+	{
+		TCHAR *filePath;
+		HDROP hDrop = (HDROP)wParam;
+		uint32_t numFiles = DragQueryFile(hDrop, -1, NULL, NULL);
+		if (numFiles == 1)
+		{
+			delete[] binFilePath;
+			binFilePath = nullptr;
+			uint32_t filePathSize = DragQueryFile(hDrop, 0, NULL, NULL) + 1;
+			filePath = new TCHAR[filePathSize];
+			DragQueryFile(hDrop, 0, filePath, filePathSize); char searchExt[4] = "fbx";
+			int32_t extCount = 3;
+			bool extSearchOn = true;
+			for (int32_t i = filePathSize - 1; i > -1; --i)
+			{
+				if (extSearchOn)
+				{
+					if (extCount > 0 && filePath[i] != searchExt[extCount--])
+						break;
+					if (filePath[i] == '.')
+					{
+						extSearchOn = false;
+						//loadBinFile = true;
+					}
+				}
+				if (filePath[i] == '\\')
+				{
+					//delete[] binFilePath;
+					uint32_t binFilePathSize = filePathSize - i - 6;
+					binFilePath = new char[binFilePathSize + 5];
+					uint32_t j;
+					for (j = 0; j < binFilePathSize; ++j)
+						binFilePath[j] = filePath[i + j + 1];
+					binFilePath[j + 0] = '.';
+					binFilePath[j + 1] = 'b';
+					binFilePath[j + 2] = 'i';
+					binFilePath[j + 3] = 'n';
+					binFilePath[j + 4] = '\0';
+					break;
+				}
+			}
+			if (binFilePath)
+			{
+				FASTBinaryIO::FASTFile *fastFile = FASTBinaryIO::Create(FASTBinaryIO::READ);
+				if (!FASTBinaryIO::Open(fastFile, binFilePath))
+				{
+					char *tempPath = new char[filePathSize];
+					for (uint32_t i = 0; i < filePathSize; ++i)
+						tempPath[i] = filePath[i];
+					FASTFBXLoader::Init();
+					FASTFBXLoader::Load(tempPath);
+					FASTFBXLoader::Export(binFilePath);
+					FASTFBXLoader::Clean();
+					delete tempPath;
+				}
+				else
+					FASTBinaryIO::Close(fastFile);
+				FASTBinaryIO::Destroy(fastFile);
+				loadBinFile = true;
+			}
+			delete filePath;
+		}
+		break;
+	}
+
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }

@@ -69,12 +69,7 @@ void Blender::Update(float _time)
 			m_nextAnim = nullptr;
 			m_currBlendTime = 0;
 		}
-		else
-		{
-
-			
-
-		}
+		
 	}
 
 	m_boneOffsetArray.clear();
